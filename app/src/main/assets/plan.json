@@ -1,0 +1,4082 @@
+{
+ "weeks": [
+  {
+   "label": "A",
+   "focus": "Dumbbell strength — heaviest loads of the block.",
+   "days": [
+    {
+     "num": 1,
+     "day": "Mon",
+     "title": "Upper Body\nStrength",
+     "mins": 48,
+     "coach": "Push-dominant upper day. Drive hard on the presses, then a 40/20 finisher to spike the burn.",
+     "strength": [
+      {
+       "id": "0426",
+       "name": "dumbbell standing overhead press",
+       "target": "delts",
+       "secondary": [
+        "triceps",
+        "upper back"
+       ],
+       "equipment": "dumbbell",
+       "category": "shoulders",
+       "steps": [
+        "Stand with your feet shoulder-width apart, holding a dumbbell in each hand at shoulder level with your palms facing forward.",
+        "Press the dumbbells upward until your arms are fully extended overhead.",
+        "Pause for a moment at the top, then slowly lower the dumbbells back down to shoulder level.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0426-A6wtbuL.gif",
+       "thumb": "assets/0426-A6wtbuL.jpg",
+       "sets": 4,
+       "weight": 14,
+       "rest": 90,
+       "type": "reps",
+       "reps": 8,
+       "last": "12 kg × 8"
+      },
+      {
+       "id": "0293",
+       "name": "dumbbell bent over row",
+       "target": "upper back",
+       "secondary": [
+        "biceps",
+        "forearms"
+       ],
+       "equipment": "dumbbell",
+       "category": "back",
+       "steps": [
+        "Stand with your feet shoulder-width apart, knees slightly bent, and hold a dumbbell in each hand with your palms facing your body.",
+        "Bend forward at the hips, keeping your back straight and your core engaged.",
+        "Let your arms hang straight down towards the floor, with your elbows slightly bent.",
+        "Pull the dumbbells up towards your chest, squeezing your shoulder blades together.",
+        "Pause for a moment at the top, then slowly lower the dumbbells back down to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0293-BJ0Hz5L.gif",
+       "thumb": "assets/0293-BJ0Hz5L.jpg",
+       "sets": 4,
+       "weight": 18,
+       "rest": 90,
+       "type": "reps",
+       "reps": 10,
+       "last": "16 kg × 10"
+      },
+      {
+       "id": "0334",
+       "name": "dumbbell lateral raise",
+       "target": "delts",
+       "secondary": [
+        "traps"
+       ],
+       "equipment": "dumbbell",
+       "category": "shoulders",
+       "steps": [
+        "Stand with your feet shoulder-width apart and hold a dumbbell in each hand, palms facing your body.",
+        "Keep your back straight and engage your core.",
+        "Raise your arms out to the sides until they are parallel to the floor, keeping a slight bend in your elbows.",
+        "Pause for a moment at the top, then slowly lower your arms back down to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0334-DsgkuIt.gif",
+       "thumb": "assets/0334-DsgkuIt.jpg",
+       "sets": 3,
+       "weight": 6,
+       "rest": 60,
+       "type": "reps",
+       "reps": 14,
+       "last": null
+      },
+      {
+       "id": "0662",
+       "name": "push-up",
+       "target": "pectorals",
+       "secondary": [
+        "triceps",
+        "deltoids",
+        "core"
+       ],
+       "equipment": "body weight",
+       "category": "chest",
+       "steps": [
+        "Start in a high plank position with your hands slightly wider than shoulder-width apart and your feet together.",
+        "Engage your core and lower your body towards the ground by bending your elbows, keeping your body in a straight line.",
+        "Pause for a moment when your chest is just above the ground, then push yourself back up to the starting position by straightening your arms.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0662-I4hDWkc.gif",
+       "thumb": "assets/0662-I4hDWkc.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 60,
+       "type": "reps",
+       "reps": 15,
+       "last": null
+      },
+      {
+       "id": "0430",
+       "name": "dumbbell standing triceps extension",
+       "target": "triceps",
+       "secondary": [
+        "shoulders"
+       ],
+       "equipment": "dumbbell",
+       "category": "upper arms",
+       "steps": [
+        "Stand with your feet shoulder-width apart and hold a dumbbell in one hand.",
+        "Raise the dumbbell overhead, keeping your arm straight.",
+        "Bend your elbow and lower the dumbbell behind your head, keeping your upper arm stationary.",
+        "Extend your arm back up to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0430-PdmaD0N.gif",
+       "thumb": "assets/0430-PdmaD0N.jpg",
+       "sets": 3,
+       "weight": 10,
+       "rest": 60,
+       "type": "reps",
+       "reps": 12,
+       "last": null
+      },
+      {
+       "id": "0416",
+       "name": "dumbbell standing biceps curl",
+       "target": "biceps",
+       "secondary": [
+        "forearms"
+       ],
+       "equipment": "dumbbell",
+       "category": "upper arms",
+       "steps": [
+        "Stand up straight with a dumbbell in each hand, palms facing forward and arms fully extended.",
+        "Keeping your upper arms stationary, exhale and curl the weights while contracting your biceps.",
+        "Continue to raise the dumbbells until your biceps are fully contracted and the dumbbells are at shoulder level.",
+        "Hold the contracted position for a brief pause as you squeeze your biceps.",
+        "Inhale and slowly begin to lower the dumbbells back to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0416-3s4NnTh.gif",
+       "thumb": "assets/0416-3s4NnTh.jpg",
+       "sets": 3,
+       "weight": 10,
+       "rest": 60,
+       "type": "reps",
+       "reps": 12,
+       "last": null
+      }
+     ],
+     "hiit": [
+      {
+       "id": "0699",
+       "name": "shoulder tap push-up",
+       "target": "pectorals",
+       "secondary": [
+        "triceps",
+        "core"
+       ],
+       "equipment": "body weight",
+       "category": "chest",
+       "steps": [
+        "Start in a high plank position with your hands slightly wider than shoulder-width apart and your body in a straight line from head to heels.",
+        "Lower your body towards the ground by bending your elbows, keeping them close to your sides.",
+        "As you push back up, lift your right hand off the ground and tap your left shoulder.",
+        "Return your right hand to the ground and repeat the push-up, this time lifting your left hand and tapping your right shoulder.",
+        "Continue alternating shoulder taps with each push-up repetition.",
+        "Maintain a stable core and avoid excessive hip rotation throughout the exercise.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0699-qEse6fe.gif",
+       "thumb": "assets/0699-qEse6fe.jpg",
+       "sets": 2,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      },
+      {
+       "id": "0630",
+       "name": "mountain climber",
+       "target": "cardiovascular system",
+       "secondary": [
+        "core",
+        "shoulders",
+        "triceps"
+       ],
+       "equipment": "body weight",
+       "category": "cardio",
+       "steps": [
+        "Start in a high plank position with your hands directly under your shoulders and your body in a straight line.",
+        "Engage your core and bring your right knee towards your chest, then quickly switch and bring your left knee towards your chest.",
+        "Continue alternating legs in a running motion, keeping your hips low and your core engaged.",
+        "Maintain a steady pace and breathe evenly throughout the exercise.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0630-RJgzwny.gif",
+       "thumb": "assets/0630-RJgzwny.jpg",
+       "sets": 2,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      },
+      {
+       "id": "1160",
+       "name": "burpee",
+       "target": "cardiovascular system",
+       "secondary": [
+        "quadriceps",
+        "hamstrings",
+        "calves",
+        "shoulders",
+        "chest"
+       ],
+       "equipment": "body weight",
+       "category": "cardio",
+       "steps": [
+        "Start in a standing position with your feet shoulder-width apart.",
+        "Lower your body into a squat position by bending your knees and placing your hands on the floor in front of you.",
+        "Kick your feet back into a push-up position.",
+        "Perform a push-up, keeping your body in a straight line.",
+        "Jump your feet back into the squat position.",
+        "Jump up explosively, reaching your arms overhead.",
+        "Land softly and immediately lower back into a squat position to begin the next repetition."
+       ],
+       "gif": "assets/1160-dK9394r.gif",
+       "thumb": "assets/1160-dK9394r.jpg",
+       "sets": 2,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      },
+      {
+       "id": "0464",
+       "name": "front plank with twist",
+       "target": "abs",
+       "secondary": [
+        "obliques",
+        "shoulders"
+       ],
+       "equipment": "body weight",
+       "category": "waist",
+       "steps": [
+        "Start in a high plank position with your hands directly under your shoulders and your body in a straight line from head to toe.",
+        "Engage your core and glutes to maintain a stable position.",
+        "Rotate your torso to the right, lifting your right arm and extending it towards the ceiling.",
+        "Keep your hips and legs stable as you twist.",
+        "Hold for a moment, then return to the starting position.",
+        "Repeat the twist on the left side.",
+        "Continue alternating sides for the desired number of repetitions."
+       ],
+       "gif": "assets/0464-CosupLu.gif",
+       "thumb": "assets/0464-CosupLu.jpg",
+       "sets": 2,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      }
+     ]
+    },
+    {
+     "num": 2,
+     "day": "Tue",
+     "title": "Lower Body\n& Glutes",
+     "mins": 46,
+     "coach": "Heavy legs on the mat and floor. Walkpad incline intervals close it out.",
+     "strength": [
+      {
+       "id": "1760",
+       "name": "dumbbell goblet squat",
+       "target": "quads",
+       "secondary": [
+        "glutes",
+        "hamstrings",
+        "calves"
+       ],
+       "equipment": "dumbbell",
+       "category": "upper legs",
+       "steps": [
+        "Stand with your feet shoulder-width apart, holding a dumbbell vertically against your chest with both hands.",
+        "Keeping your chest up and core engaged, lower your body down into a squat position by pushing your hips back and bending your knees.",
+        "Continue lowering until your thighs are parallel to the ground, or as low as you can comfortably go.",
+        "Pause for a moment at the bottom, then push through your heels to return to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/1760-yn8yg1r.gif",
+       "thumb": "assets/1760-yn8yg1r.jpg",
+       "sets": 4,
+       "weight": 20,
+       "rest": 90,
+       "type": "reps",
+       "reps": 12,
+       "last": "18 kg × 12"
+      },
+      {
+       "id": "1459",
+       "name": "dumbbell romanian deadlift",
+       "target": "glutes",
+       "secondary": [
+        "hamstrings",
+        "lower back"
+       ],
+       "equipment": "dumbbell",
+       "category": "upper legs",
+       "steps": [
+        "Stand with your feet shoulder-width apart, holding a dumbbell in each hand with an overhand grip.",
+        "Keeping your back straight and your core engaged, hinge at the hips and lower the dumbbells towards the ground, allowing your knees to bend slightly.",
+        "Lower the dumbbells until you feel a stretch in your hamstrings, then push through your heels and engage your glutes to return to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/1459-rR0LJzx.gif",
+       "thumb": "assets/1459-rR0LJzx.jpg",
+       "sets": 4,
+       "weight": 22,
+       "rest": 90,
+       "type": "reps",
+       "reps": 10,
+       "last": "20 kg × 10"
+      },
+      {
+       "id": "0381",
+       "name": "dumbbell rear lunge",
+       "target": "glutes",
+       "secondary": [
+        "quadriceps",
+        "hamstrings",
+        "calves"
+       ],
+       "equipment": "dumbbell",
+       "category": "upper legs",
+       "steps": [
+        "Stand with your feet shoulder-width apart, holding a dumbbell in each hand.",
+        "Take a step backward with your right foot, lowering your body into a lunge position.",
+        "Bend your left knee and lower your body until your left thigh is parallel to the ground.",
+        "Pause for a moment, then push through your left heel to return to the starting position.",
+        "Repeat on the other side, stepping back with your left foot."
+       ],
+       "gif": "assets/0381-SSsBDwB.gif",
+       "thumb": "assets/0381-SSsBDwB.jpg",
+       "sets": 3,
+       "weight": 14,
+       "rest": 75,
+       "type": "reps",
+       "reps": 10,
+       "last": null
+      },
+      {
+       "id": "3013",
+       "name": "low glute bridge on floor",
+       "target": "glutes",
+       "secondary": [
+        "hamstrings",
+        "core"
+       ],
+       "equipment": "body weight",
+       "category": "upper legs",
+       "steps": [
+        "Lie flat on your back with your knees bent and feet flat on the ground.",
+        "Place your arms by your sides, palms facing down.",
+        "Engage your glutes and core, then lift your hips off the ground until your body forms a straight line from your knees to your shoulders.",
+        "Pause for a moment at the top, squeezing your glutes.",
+        "Slowly lower your hips back down to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/3013-u0cNiij.gif",
+       "thumb": "assets/3013-u0cNiij.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 60,
+       "type": "reps",
+       "reps": 15,
+       "last": null
+      },
+      {
+       "id": "0417",
+       "name": "dumbbell standing calf raise",
+       "target": "calves",
+       "secondary": [
+        "ankles"
+       ],
+       "equipment": "dumbbell",
+       "category": "lower legs",
+       "steps": [
+        "Stand with your feet shoulder-width apart, holding a dumbbell in each hand.",
+        "Raise your heels off the ground as high as possible, using your calves.",
+        "Pause for a moment at the top, then slowly lower your heels back down to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0417-dPmaUaU.gif",
+       "thumb": "assets/0417-dPmaUaU.jpg",
+       "sets": 3,
+       "weight": 16,
+       "rest": 45,
+       "type": "reps",
+       "reps": 20,
+       "last": null
+      }
+     ],
+     "hiit": [
+      {
+       "id": "0685",
+       "name": "run",
+       "target": "cardiovascular system",
+       "secondary": [
+        "quadriceps",
+        "hamstrings",
+        "calves"
+       ],
+       "equipment": "body weight",
+       "category": "cardio",
+       "steps": [
+        "Start by standing upright with your feet hip-width apart.",
+        "Engage your core and keep your upper body relaxed.",
+        "Begin jogging in place, lifting your knees up towards your chest and landing softly on the balls of your feet.",
+        "Maintain a steady pace and continue jogging for the desired duration or distance.",
+        "Remember to breathe deeply and maintain good posture throughout the exercise."
+       ],
+       "gif": "assets/0685-oLrKqDH.gif",
+       "thumb": "assets/0685-oLrKqDH.jpg",
+       "sets": 2,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      },
+      {
+       "id": "0514",
+       "name": "jump squat",
+       "target": "glutes",
+       "secondary": [
+        "quadriceps",
+        "hamstrings",
+        "calves"
+       ],
+       "equipment": "body weight",
+       "category": "upper legs",
+       "steps": [
+        "Stand with your feet shoulder-width apart.",
+        "Lower your body into a squat position by bending your knees and pushing your hips back.",
+        "Jump explosively off the ground, extending your hips, knees, and ankles.",
+        "While in mid-air, quickly bring your arms forward for balance.",
+        "Land softly on the balls of your feet and immediately go into the next repetition.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0514-LIlE5Tn.gif",
+       "thumb": "assets/0514-LIlE5Tn.jpg",
+       "sets": 2,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      },
+      {
+       "id": "3361",
+       "name": "skater hops",
+       "target": "cardiovascular system",
+       "secondary": [
+        "quadriceps",
+        "hamstrings",
+        "glutes",
+        "calves"
+       ],
+       "equipment": "body weight",
+       "category": "cardio",
+       "steps": [
+        "Stand with your feet shoulder-width apart.",
+        "Bend your knees slightly and jump to the right, landing on your right foot.",
+        "As you land, swing your left leg behind your right leg and tap the ground with your left toes.",
+        "Immediately jump to the left, landing on your left foot.",
+        "As you land, swing your right leg behind your left leg and tap the ground with your right toes.",
+        "Continue alternating sides, jumping and tapping the ground with each leg.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/3361-zfNHMN9.gif",
+       "thumb": "assets/3361-zfNHMN9.jpg",
+       "sets": 2,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      },
+      {
+       "id": "0459",
+       "name": "flutter kicks",
+       "target": "glutes",
+       "secondary": [
+        "hip flexors",
+        "lower abs"
+       ],
+       "equipment": "body weight",
+       "category": "upper legs",
+       "steps": [
+        "Lie flat on your back with your legs extended and your hands by your sides.",
+        "Engage your core and lift your legs off the ground about 6 inches.",
+        "Keeping your legs straight, alternate lifting one leg slightly higher than the other.",
+        "Continue this fluttering motion for the desired number of repetitions."
+       ],
+       "gif": "assets/0459-UVo2Qs2.gif",
+       "thumb": "assets/0459-UVo2Qs2.jpg",
+       "sets": 2,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      }
+     ]
+    },
+    {
+     "num": 3,
+     "day": "Thu",
+     "title": "Push · Pull\nUpper",
+     "mins": 45,
+     "coach": "Pull-dominant balance day. Rows and pullovers build the back your posture wants.",
+     "strength": [
+      {
+       "id": "0292",
+       "name": "dumbbell one arm bent-over row",
+       "target": "upper back",
+       "secondary": [
+        "biceps",
+        "forearms"
+       ],
+       "equipment": "dumbbell",
+       "category": "back",
+       "steps": [
+        "Stand with your feet shoulder-width apart, holding a dumbbell in one hand with your palm facing your body.",
+        "Bend your knees slightly and hinge forward at the hips, keeping your back straight and your core engaged.",
+        "Let the dumbbell hang straight down towards the floor, with your arm fully extended.",
+        "Pull the dumbbell up towards your chest, keeping your elbow close to your body and squeezing your shoulder blades together.",
+        "Pause for a moment at the top, then slowly lower the dumbbell back down to the starting position.",
+        "Repeat for the desired number of repetitions, then switch sides."
+       ],
+       "gif": "assets/0292-C0MA9bC.gif",
+       "thumb": "assets/0292-C0MA9bC.jpg",
+       "sets": 4,
+       "weight": 20,
+       "rest": 75,
+       "type": "reps",
+       "reps": 10,
+       "last": "18 kg × 10"
+      },
+      {
+       "id": "0375",
+       "name": "dumbbell pullover",
+       "target": "pectorals",
+       "secondary": [
+        "latissimus dorsi",
+        "triceps"
+       ],
+       "equipment": "dumbbell",
+       "category": "chest",
+       "steps": [
+        "Lie flat on a bench with your head at one end and your feet on the floor.",
+        "Hold a dumbbell with both hands and extend your arms straight above your chest.",
+        "Keeping a slight bend in your elbows, slowly lower the dumbbell behind your head until you feel a stretch in your chest and shoulders.",
+        "Pause for a moment, then raise the dumbbell back to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0375-9XjtHvS.gif",
+       "thumb": "assets/0375-9XjtHvS.jpg",
+       "sets": 3,
+       "weight": 14,
+       "rest": 75,
+       "type": "reps",
+       "reps": 12,
+       "last": null
+      },
+      {
+       "id": "2137",
+       "name": "dumbbell arnold press",
+       "target": "delts",
+       "secondary": [
+        "triceps",
+        "upper chest"
+       ],
+       "equipment": "dumbbell",
+       "category": "shoulders",
+       "steps": [
+        "Sit on a bench with back support and hold a dumbbell in each hand at shoulder level, palms facing your body and elbows bent.",
+        "Press the dumbbells upward until your arms are fully extended and your palms are facing forward.",
+        "Rotate your wrists as you lift, so that your palms are facing forward at the top of the movement.",
+        "Pause for a moment at the top, then slowly lower the dumbbells back to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/2137-Xy4jlWA.gif",
+       "thumb": "assets/2137-Xy4jlWA.jpg",
+       "sets": 3,
+       "weight": 12,
+       "rest": 75,
+       "type": "reps",
+       "reps": 10,
+       "last": null
+      },
+      {
+       "id": "0259",
+       "name": "close-grip push-up",
+       "target": "triceps",
+       "secondary": [
+        "chest",
+        "shoulders"
+       ],
+       "equipment": "body weight",
+       "category": "upper arms",
+       "steps": [
+        "Start in a high plank position with your hands placed close together, directly under your shoulders.",
+        "Engage your core and lower your body towards the ground, keeping your elbows close to your sides.",
+        "Push through your palms to extend your arms and return to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0259-x6KpKpq.gif",
+       "thumb": "assets/0259-x6KpKpq.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 60,
+       "type": "reps",
+       "reps": 12,
+       "last": null
+      },
+      {
+       "id": "2292",
+       "name": "dumbbell rear delt raise",
+       "target": "delts",
+       "secondary": [
+        "trapezius",
+        "rhomboids"
+       ],
+       "equipment": "dumbbell",
+       "category": "shoulders",
+       "steps": [
+        "Stand with your feet shoulder-width apart and hold a dumbbell in each hand, palms facing your body.",
+        "Bend your knees slightly and hinge forward at the hips, keeping your back straight.",
+        "Raise your arms out to the sides, keeping a slight bend in your elbows, until they are parallel to the floor.",
+        "Pause for a moment at the top, then slowly lower your arms back down to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/2292-mu5Guxt.gif",
+       "thumb": "assets/2292-mu5Guxt.jpg",
+       "sets": 3,
+       "weight": 6,
+       "rest": 60,
+       "type": "reps",
+       "reps": 14,
+       "last": null
+      },
+      {
+       "id": "0313",
+       "name": "dumbbell hammer curl",
+       "target": "biceps",
+       "secondary": [
+        "forearms"
+       ],
+       "equipment": "dumbbell",
+       "category": "upper arms",
+       "steps": [
+        "Stand up straight with a dumbbell in each hand, palms facing your torso.",
+        "Keep your elbows close to your torso and rotate the palms of your hands until they are facing forward.",
+        "This will be your starting position.",
+        "Now, keeping the upper arms stationary, exhale and curl the weights while contracting your biceps.",
+        "Continue to raise the weights until your biceps are fully contracted and the dumbbells are at shoulder level.",
+        "Hold the contracted position for a brief pause as you squeeze your biceps.",
+        "Then, inhale and slowly begin to lower the dumbbells back to the starting position.",
+        "Repeat for the recommended amount of repetitions."
+       ],
+       "gif": "assets/0313-slDvUAU.gif",
+       "thumb": "assets/0313-slDvUAU.jpg",
+       "sets": 3,
+       "weight": 12,
+       "rest": 60,
+       "type": "reps",
+       "reps": 12,
+       "last": null
+      }
+     ],
+     "hiit": [
+      {
+       "id": "0660",
+       "name": "push-up close-grip off dumbbell",
+       "target": "triceps",
+       "secondary": [
+        "chest",
+        "shoulders"
+       ],
+       "equipment": "dumbbell",
+       "category": "upper arms",
+       "steps": [
+        "Start in a push-up position with your hands placed close together, directly under your shoulders.",
+        "Hold a dumbbell in each hand, resting them on the ground.",
+        "Lower your body towards the ground by bending your elbows, keeping them close to your sides.",
+        "Push through your palms to extend your arms and return to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0660-KZXAtKQ.gif",
+       "thumb": "assets/0660-KZXAtKQ.jpg",
+       "sets": 2,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      },
+      {
+       "id": "3655",
+       "name": "walking high knees lunge",
+       "target": "cardiovascular system",
+       "secondary": [
+        "quadriceps",
+        "hamstrings",
+        "glutes",
+        "calves"
+       ],
+       "equipment": "body weight",
+       "category": "cardio",
+       "steps": [
+        "Stand with your feet hip-width apart.",
+        "Lift your right knee up towards your chest as high as you can while balancing on your left leg.",
+        "Step forward with your right foot and lower your body into a lunge position, bending both knees to a 90-degree angle.",
+        "Push off with your right foot and bring your left knee up towards your chest.",
+        "Step forward with your left foot and lower your body into a lunge position.",
+        "Continue alternating legs and lunging forward, keeping your core engaged and maintaining a steady pace.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/3655-J9zIWig.gif",
+       "thumb": "assets/3655-J9zIWig.jpg",
+       "sets": 2,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      },
+      {
+       "id": "0295",
+       "name": "dumbbell clean",
+       "target": "glutes",
+       "secondary": [
+        "hamstrings",
+        "quadriceps",
+        "calves"
+       ],
+       "equipment": "dumbbell",
+       "category": "upper legs",
+       "steps": [
+        "Stand with your feet shoulder-width apart, holding a dumbbell in each hand with an overhand grip.",
+        "Bend your knees and lower your hips into a squat position, keeping your back straight and chest up.",
+        "Explosively extend your hips and knees, driving through your heels to jump off the ground.",
+        "As you jump, shrug your shoulders and pull the dumbbells up towards your shoulders, keeping them close to your body.",
+        "Catch the dumbbells at shoulder height, with your elbows pointing forward and your palms facing up.",
+        "Lower the dumbbells back down to the starting position by reversing the movement.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0295-7Hg55JG.gif",
+       "thumb": "assets/0295-7Hg55JG.jpg",
+       "sets": 2,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      },
+      {
+       "id": "0274",
+       "name": "crunch floor",
+       "target": "abs",
+       "secondary": [
+        "hip flexors"
+       ],
+       "equipment": "body weight",
+       "category": "waist",
+       "steps": [
+        "Lie flat on your back with your knees bent and feet flat on the ground.",
+        "Place your hands behind your head with your elbows pointing outwards.",
+        "Engage your abs and lift your shoulders off the ground, curling forward towards your knees.",
+        "Pause for a moment at the top, then slowly lower your shoulders back down to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0274-TFqbd8t.gif",
+       "thumb": "assets/0274-TFqbd8t.jpg",
+       "sets": 2,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      }
+     ]
+    },
+    {
+     "num": 4,
+     "day": "Sat",
+     "title": "Full Body\nHIIT Burner",
+     "mins": 42,
+     "coach": "Fat-loss day. Big compound moves at speed, walkpad bookends. Keep the weights light and honest.",
+     "strength": [
+      {
+       "id": "0413",
+       "name": "dumbbell squat",
+       "target": "glutes",
+       "secondary": [
+        "quadriceps",
+        "hamstrings",
+        "calves"
+       ],
+       "equipment": "dumbbell",
+       "category": "upper legs",
+       "steps": [
+        "Stand with your feet shoulder-width apart, holding a dumbbell in each hand at your sides.",
+        "Keeping your chest up and core engaged, lower your body down by bending at the knees and hips, as if sitting back into a chair.",
+        "Continue lowering until your thighs are parallel to the ground, or as low as you can comfortably go.",
+        "Pause for a moment at the bottom, then push through your heels to return to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0413-HsvHqgf.gif",
+       "thumb": "assets/0413-HsvHqgf.jpg",
+       "sets": 3,
+       "weight": 14,
+       "rest": 60,
+       "type": "reps",
+       "reps": 12,
+       "last": null
+      },
+      {
+       "id": "0300",
+       "name": "dumbbell deadlift",
+       "target": "glutes",
+       "secondary": [
+        "hamstrings",
+        "lower back"
+       ],
+       "equipment": "dumbbell",
+       "category": "upper legs",
+       "steps": [
+        "Stand with your feet shoulder-width apart, toes pointing forward.",
+        "Hold a dumbbell in each hand, palms facing your body, arms extended downwards.",
+        "Bend at your hips and knees, lowering the dumbbells towards the ground while keeping your back straight.",
+        "Push through your heels and extend your hips and knees, lifting the dumbbells back up to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0300-nUwVh7b.gif",
+       "thumb": "assets/0300-nUwVh7b.jpg",
+       "sets": 3,
+       "weight": 20,
+       "rest": 60,
+       "type": "reps",
+       "reps": 12,
+       "last": null
+      },
+      {
+       "id": "0437",
+       "name": "dumbbell upright row",
+       "target": "delts",
+       "secondary": [
+        "traps",
+        "biceps"
+       ],
+       "equipment": "dumbbell",
+       "category": "shoulders",
+       "steps": [
+        "Stand with your feet shoulder-width apart, holding a dumbbell in each hand with an overhand grip.",
+        "Let the dumbbells hang in front of your thighs, with your arms fully extended.",
+        "Keeping your back straight and your core engaged, exhale and lift the dumbbells straight up towards your chin, leading with your elbows.",
+        "Pause for a moment at the top, then inhale and slowly lower the dumbbells back down to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0437-ainizkb.gif",
+       "thumb": "assets/0437-ainizkb.jpg",
+       "sets": 3,
+       "weight": 10,
+       "rest": 60,
+       "type": "reps",
+       "reps": 12,
+       "last": null
+      }
+     ],
+     "hiit": [
+      {
+       "id": "1160",
+       "name": "burpee",
+       "target": "cardiovascular system",
+       "secondary": [
+        "quadriceps",
+        "hamstrings",
+        "calves",
+        "shoulders",
+        "chest"
+       ],
+       "equipment": "body weight",
+       "category": "cardio",
+       "steps": [
+        "Start in a standing position with your feet shoulder-width apart.",
+        "Lower your body into a squat position by bending your knees and placing your hands on the floor in front of you.",
+        "Kick your feet back into a push-up position.",
+        "Perform a push-up, keeping your body in a straight line.",
+        "Jump your feet back into the squat position.",
+        "Jump up explosively, reaching your arms overhead.",
+        "Land softly and immediately lower back into a squat position to begin the next repetition."
+       ],
+       "gif": "assets/1160-dK9394r.gif",
+       "thumb": "assets/1160-dK9394r.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      },
+      {
+       "id": "0630",
+       "name": "mountain climber",
+       "target": "cardiovascular system",
+       "secondary": [
+        "core",
+        "shoulders",
+        "triceps"
+       ],
+       "equipment": "body weight",
+       "category": "cardio",
+       "steps": [
+        "Start in a high plank position with your hands directly under your shoulders and your body in a straight line.",
+        "Engage your core and bring your right knee towards your chest, then quickly switch and bring your left knee towards your chest.",
+        "Continue alternating legs in a running motion, keeping your hips low and your core engaged.",
+        "Maintain a steady pace and breathe evenly throughout the exercise.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0630-RJgzwny.gif",
+       "thumb": "assets/0630-RJgzwny.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      },
+      {
+       "id": "0501",
+       "name": "jack burpee",
+       "target": "cardiovascular system",
+       "secondary": [
+        "quadriceps",
+        "hamstrings",
+        "calves",
+        "shoulders",
+        "triceps"
+       ],
+       "equipment": "body weight",
+       "category": "cardio",
+       "steps": [
+        "Start in a standing position with your feet shoulder-width apart.",
+        "Lower your body into a squat position, placing your hands on the ground in front of you.",
+        "Kick your feet back, landing in a push-up position.",
+        "Perform a push-up, lowering your chest to the ground and then pushing back up.",
+        "Jump your feet forward, landing in a squat position.",
+        "Jump up explosively, reaching your arms overhead.",
+        "Land softly and immediately lower back into the squat position to begin the next repetition."
+       ],
+       "gif": "assets/0501-mr7pkqP.gif",
+       "thumb": "assets/0501-mr7pkqP.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      },
+      {
+       "id": "0685",
+       "name": "run",
+       "target": "cardiovascular system",
+       "secondary": [
+        "quadriceps",
+        "hamstrings",
+        "calves"
+       ],
+       "equipment": "body weight",
+       "category": "cardio",
+       "steps": [
+        "Start by standing upright with your feet hip-width apart.",
+        "Engage your core and keep your upper body relaxed.",
+        "Begin jogging in place, lifting your knees up towards your chest and landing softly on the balls of your feet.",
+        "Maintain a steady pace and continue jogging for the desired duration or distance.",
+        "Remember to breathe deeply and maintain good posture throughout the exercise."
+       ],
+       "gif": "assets/0685-oLrKqDH.gif",
+       "thumb": "assets/0685-oLrKqDH.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "label": "B",
+   "focus": "Body weight & tempo — no loading, slow reps, high control.",
+   "days": [
+    {
+     "num": 1,
+     "day": "Mon",
+     "title": "Body Weight\nUpper",
+     "mins": 44,
+     "coach": "Zero dumbbells. Slow tempo push-ups and towel rows — control every rep instead of adding load.",
+     "strength": [
+      {
+       "id": "0662",
+       "name": "push-up",
+       "target": "pectorals",
+       "secondary": [
+        "triceps",
+        "deltoids",
+        "core"
+       ],
+       "equipment": "body weight",
+       "category": "chest",
+       "steps": [
+        "Start in a high plank position with your hands slightly wider than shoulder-width apart and your feet together.",
+        "Engage your core and lower your body towards the ground by bending your elbows, keeping your body in a straight line.",
+        "Pause for a moment when your chest is just above the ground, then push yourself back up to the starting position by straightening your arms.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0662-I4hDWkc.gif",
+       "thumb": "assets/0662-I4hDWkc.jpg",
+       "sets": 4,
+       "weight": 0,
+       "rest": 75,
+       "type": "reps",
+       "reps": 12,
+       "last": null
+      },
+      {
+       "id": "0283",
+       "name": "diamond push-up",
+       "target": "triceps",
+       "secondary": [
+        "chest",
+        "shoulders"
+       ],
+       "equipment": "body weight",
+       "category": "upper arms",
+       "steps": [
+        "Start in a high plank position with your hands close together, forming a diamond shape with your thumbs and index fingers.",
+        "Keep your body in a straight line from head to toe, engaging your core and glutes.",
+        "Lower your chest towards the diamond shape formed by your hands, keeping your elbows close to your body.",
+        "Pause for a moment at the bottom, then push yourself back up to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0283-soIB2rj.gif",
+       "thumb": "assets/0283-soIB2rj.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 75,
+       "type": "reps",
+       "reps": 10,
+       "last": null
+      },
+      {
+       "id": "3166",
+       "name": "bodyweight standing row",
+       "target": "upper back",
+       "secondary": [
+        "biceps",
+        "shoulders"
+       ],
+       "equipment": "body weight",
+       "category": "back",
+       "steps": [
+        "Stand with your feet shoulder-width apart and knees slightly bent.",
+        "Grasp a bar or handles with an overhand grip, palms facing down.",
+        "Keep your back straight and core engaged.",
+        "Pull the bar or handles towards your body, squeezing your shoulder blades together.",
+        "Pause for a moment at the top of the movement.",
+        "Slowly release and extend your arms back to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/3166-wd4ds3s.gif",
+       "thumb": "assets/3166-wd4ds3s.jpg",
+       "sets": 4,
+       "weight": 0,
+       "rest": 75,
+       "type": "reps",
+       "reps": 12,
+       "last": null
+      },
+      {
+       "id": "1311",
+       "name": "wide hand push up",
+       "target": "pectorals",
+       "secondary": [
+        "triceps",
+        "shoulders"
+       ],
+       "equipment": "body weight",
+       "category": "chest",
+       "steps": [
+        "Start in a high plank position with your hands wider than shoulder-width apart.",
+        "Keep your body in a straight line from head to toe.",
+        "Lower your chest towards the ground by bending your elbows, keeping them close to your sides.",
+        "Push through your palms to extend your arms and return to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/1311-JmMVpR3.gif",
+       "thumb": "assets/1311-JmMVpR3.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 60,
+       "type": "reps",
+       "reps": 12,
+       "last": null
+      },
+      {
+       "id": "0672",
+       "name": "reverse dip",
+       "target": "triceps",
+       "secondary": [
+        "chest",
+        "shoulders"
+       ],
+       "equipment": "body weight",
+       "category": "upper arms",
+       "steps": [
+        "Position yourself between two parallel bars with your arms fully extended and your body straight.",
+        "Lower your body by bending your elbows until your upper arms are parallel to the ground.",
+        "Pause for a moment, then push yourself back up to the starting position by straightening your arms.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0672-NZ5Qqkz.gif",
+       "thumb": "assets/0672-NZ5Qqkz.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 60,
+       "type": "reps",
+       "reps": 12,
+       "last": null
+      },
+      {
+       "id": "3162",
+       "name": "bodyweight standing one arm row",
+       "target": "upper back",
+       "secondary": [
+        "biceps",
+        "forearms"
+       ],
+       "equipment": "body weight",
+       "category": "back",
+       "steps": [
+        "Stand with your feet shoulder-width apart, knees slightly bent, and hold a dumbbell in one hand.",
+        "Bend forward at the hips, keeping your back straight and your core engaged.",
+        "Let the dumbbell hang straight down in front of you, with your arm fully extended.",
+        "Pull the dumbbell up towards your chest, keeping your elbow close to your body.",
+        "Squeeze your shoulder blades together at the top of the movement.",
+        "Lower the dumbbell back down to the starting position.",
+        "Repeat for the desired number of repetitions, then switch sides."
+       ],
+       "gif": "assets/3162-xbkPfaw.gif",
+       "thumb": "assets/3162-xbkPfaw.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 60,
+       "type": "reps",
+       "reps": 10,
+       "last": null
+      }
+     ],
+     "hiit": [
+      {
+       "id": "0699",
+       "name": "shoulder tap push-up",
+       "target": "pectorals",
+       "secondary": [
+        "triceps",
+        "core"
+       ],
+       "equipment": "body weight",
+       "category": "chest",
+       "steps": [
+        "Start in a high plank position with your hands slightly wider than shoulder-width apart and your body in a straight line from head to heels.",
+        "Lower your body towards the ground by bending your elbows, keeping them close to your sides.",
+        "As you push back up, lift your right hand off the ground and tap your left shoulder.",
+        "Return your right hand to the ground and repeat the push-up, this time lifting your left hand and tapping your right shoulder.",
+        "Continue alternating shoulder taps with each push-up repetition.",
+        "Maintain a stable core and avoid excessive hip rotation throughout the exercise.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0699-qEse6fe.gif",
+       "thumb": "assets/0699-qEse6fe.jpg",
+       "sets": 2,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      },
+      {
+       "id": "0630",
+       "name": "mountain climber",
+       "target": "cardiovascular system",
+       "secondary": [
+        "core",
+        "shoulders",
+        "triceps"
+       ],
+       "equipment": "body weight",
+       "category": "cardio",
+       "steps": [
+        "Start in a high plank position with your hands directly under your shoulders and your body in a straight line.",
+        "Engage your core and bring your right knee towards your chest, then quickly switch and bring your left knee towards your chest.",
+        "Continue alternating legs in a running motion, keeping your hips low and your core engaged.",
+        "Maintain a steady pace and breathe evenly throughout the exercise.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0630-RJgzwny.gif",
+       "thumb": "assets/0630-RJgzwny.jpg",
+       "sets": 2,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      },
+      {
+       "id": "3224",
+       "name": "jack jump (male)",
+       "target": "cardiovascular system",
+       "secondary": [
+        "quadriceps",
+        "calves"
+       ],
+       "equipment": "body weight",
+       "category": "cardio",
+       "steps": [
+        "Stand with your feet together and your arms by your sides.",
+        "Jump up, spreading your feet apart and raising your arms above your head.",
+        "As you land, quickly jump back to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/3224-1g5bPpA.gif",
+       "thumb": "assets/3224-1g5bPpA.jpg",
+       "sets": 2,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      },
+      {
+       "id": "0464",
+       "name": "front plank with twist",
+       "target": "abs",
+       "secondary": [
+        "obliques",
+        "shoulders"
+       ],
+       "equipment": "body weight",
+       "category": "waist",
+       "steps": [
+        "Start in a high plank position with your hands directly under your shoulders and your body in a straight line from head to toe.",
+        "Engage your core and glutes to maintain a stable position.",
+        "Rotate your torso to the right, lifting your right arm and extending it towards the ceiling.",
+        "Keep your hips and legs stable as you twist.",
+        "Hold for a moment, then return to the starting position.",
+        "Repeat the twist on the left side.",
+        "Continue alternating sides for the desired number of repetitions."
+       ],
+       "gif": "assets/0464-CosupLu.gif",
+       "thumb": "assets/0464-CosupLu.jpg",
+       "sets": 2,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      }
+     ]
+    },
+    {
+     "num": 2,
+     "day": "Tue",
+     "title": "Body Weight\nLower",
+     "mins": 42,
+     "coach": "Single-leg work exposes the weak side. Full range, pause at the bottom, no bouncing.",
+     "strength": [
+      {
+       "id": "2368",
+       "name": "split squats",
+       "target": "quads",
+       "secondary": [
+        "glutes",
+        "hamstrings",
+        "calves"
+       ],
+       "equipment": "body weight",
+       "category": "upper legs",
+       "steps": [
+        "Stand with your feet shoulder-width apart.",
+        "Take a step forward with one foot and place it about two feet in front of the other foot.",
+        "Lower your body by bending your knees and hips, keeping your back straight.",
+        "Continue lowering until your front thigh is parallel to the ground, and your back knee is hovering just above the ground.",
+        "Pause for a moment, then push through your front heel to return to the starting position.",
+        "Repeat for the desired number of repetitions, then switch legs and repeat."
+       ],
+       "gif": "assets/2368-9E25EOx.gif",
+       "thumb": "assets/2368-9E25EOx.jpg",
+       "sets": 4,
+       "weight": 0,
+       "rest": 75,
+       "type": "reps",
+       "reps": 12,
+       "last": null
+      },
+      {
+       "id": "3470",
+       "name": "forward lunge (male)",
+       "target": "glutes",
+       "secondary": [
+        "quadriceps",
+        "hamstrings",
+        "calves"
+       ],
+       "equipment": "body weight",
+       "category": "upper legs",
+       "steps": [
+        "Stand with your feet hip-width apart and hands on your hips.",
+        "Take a big step forward with your right foot, lowering your body into a lunge position.",
+        "Bend your right knee to about 90 degrees, keeping your knee aligned with your ankle.",
+        "Push off with your right foot and return to the starting position.",
+        "Repeat with your left leg, alternating sides for the desired number of repetitions."
+       ],
+       "gif": "assets/3470-kMzUs9Y.gif",
+       "thumb": "assets/3470-kMzUs9Y.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 75,
+       "type": "reps",
+       "reps": 12,
+       "last": null
+      },
+      {
+       "id": "3769",
+       "name": "curtsey squat",
+       "target": "glutes",
+       "secondary": [
+        "quadriceps",
+        "hamstrings",
+        "calves"
+       ],
+       "equipment": "body weight",
+       "category": "upper legs",
+       "steps": [
+        "Stand with your feet shoulder-width apart.",
+        "Take a step diagonally behind and across your body with your right foot, crossing it behind your left leg.",
+        "Bend both knees as if you were curtsying, lowering your body towards the ground.",
+        "Keep your torso upright and your weight on your front foot.",
+        "Push through your front foot to return to the starting position.",
+        "Repeat on the other side, stepping diagonally behind and across your body with your left foot."
+       ],
+       "gif": "assets/3769-gUjqdei.gif",
+       "thumb": "assets/3769-gUjqdei.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 60,
+       "type": "reps",
+       "reps": 12,
+       "last": null
+      },
+      {
+       "id": "3013",
+       "name": "low glute bridge on floor",
+       "target": "glutes",
+       "secondary": [
+        "hamstrings",
+        "core"
+       ],
+       "equipment": "body weight",
+       "category": "upper legs",
+       "steps": [
+        "Lie flat on your back with your knees bent and feet flat on the ground.",
+        "Place your arms by your sides, palms facing down.",
+        "Engage your glutes and core, then lift your hips off the ground until your body forms a straight line from your knees to your shoulders.",
+        "Pause for a moment at the top, squeezing your glutes.",
+        "Slowly lower your hips back down to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/3013-u0cNiij.gif",
+       "thumb": "assets/3013-u0cNiij.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 60,
+       "type": "reps",
+       "reps": 20,
+       "last": null
+      },
+      {
+       "id": "3561",
+       "name": "glute bridge march",
+       "target": "glutes",
+       "secondary": [
+        "hamstrings",
+        "quadriceps"
+       ],
+       "equipment": "body weight",
+       "category": "upper legs",
+       "steps": [
+        "Lie flat on your back with your knees bent and feet flat on the ground.",
+        "Engage your glutes and lift your hips off the ground, forming a straight line from your knees to your shoulders.",
+        "While keeping your hips lifted, lift one foot off the ground and bring your knee towards your chest.",
+        "Lower your foot back to the ground and repeat the movement with the other leg.",
+        "Continue alternating legs in a marching motion while maintaining the bridge position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/3561-GibBPPg.gif",
+       "thumb": "assets/3561-GibBPPg.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 45,
+       "type": "reps",
+       "reps": 16,
+       "last": null
+      },
+      {
+       "id": "1373",
+       "name": "bodyweight standing calf raise",
+       "target": "calves",
+       "secondary": [
+        "ankles",
+        "feet"
+       ],
+       "equipment": "body weight",
+       "category": "lower legs",
+       "steps": [
+        "Stand with your feet shoulder-width apart, toes pointing forward.",
+        "Place your hands on a wall or stable surface for balance.",
+        "Slowly raise your heels off the ground, lifting your body weight onto the balls of your feet.",
+        "Pause for a moment at the top, then slowly lower your heels back down to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/1373-bJYHBIN.gif",
+       "thumb": "assets/1373-bJYHBIN.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 45,
+       "type": "reps",
+       "reps": 25,
+       "last": null
+      }
+     ],
+     "hiit": [
+      {
+       "id": "0514",
+       "name": "jump squat",
+       "target": "glutes",
+       "secondary": [
+        "quadriceps",
+        "hamstrings",
+        "calves"
+       ],
+       "equipment": "body weight",
+       "category": "upper legs",
+       "steps": [
+        "Stand with your feet shoulder-width apart.",
+        "Lower your body into a squat position by bending your knees and pushing your hips back.",
+        "Jump explosively off the ground, extending your hips, knees, and ankles.",
+        "While in mid-air, quickly bring your arms forward for balance.",
+        "Land softly on the balls of your feet and immediately go into the next repetition.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0514-LIlE5Tn.gif",
+       "thumb": "assets/0514-LIlE5Tn.jpg",
+       "sets": 2,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      },
+      {
+       "id": "3361",
+       "name": "skater hops",
+       "target": "cardiovascular system",
+       "secondary": [
+        "quadriceps",
+        "hamstrings",
+        "glutes",
+        "calves"
+       ],
+       "equipment": "body weight",
+       "category": "cardio",
+       "steps": [
+        "Stand with your feet shoulder-width apart.",
+        "Bend your knees slightly and jump to the right, landing on your right foot.",
+        "As you land, swing your left leg behind your right leg and tap the ground with your left toes.",
+        "Immediately jump to the left, landing on your left foot.",
+        "As you land, swing your right leg behind your left leg and tap the ground with your right toes.",
+        "Continue alternating sides, jumping and tapping the ground with each leg.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/3361-zfNHMN9.gif",
+       "thumb": "assets/3361-zfNHMN9.jpg",
+       "sets": 2,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      },
+      {
+       "id": "3582",
+       "name": "lunge with jump",
+       "target": "glutes",
+       "secondary": [
+        "quadriceps",
+        "hamstrings",
+        "calves"
+       ],
+       "equipment": "body weight",
+       "category": "upper legs",
+       "steps": [
+        "Start by standing with your feet shoulder-width apart.",
+        "Take a step forward with your right foot, lowering your body into a lunge position.",
+        "Push off with your right foot and jump into the air, switching the position of your feet mid-air.",
+        "Land softly with your left foot forward and immediately lower your body into a lunge position.",
+        "Continue alternating between lunges and jumps for the desired number of repetitions."
+       ],
+       "gif": "assets/3582-PM1PZjg.gif",
+       "thumb": "assets/3582-PM1PZjg.jpg",
+       "sets": 2,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      },
+      {
+       "id": "0459",
+       "name": "flutter kicks",
+       "target": "glutes",
+       "secondary": [
+        "hip flexors",
+        "lower abs"
+       ],
+       "equipment": "body weight",
+       "category": "upper legs",
+       "steps": [
+        "Lie flat on your back with your legs extended and your hands by your sides.",
+        "Engage your core and lift your legs off the ground about 6 inches.",
+        "Keeping your legs straight, alternate lifting one leg slightly higher than the other.",
+        "Continue this fluttering motion for the desired number of repetitions."
+       ],
+       "gif": "assets/0459-UVo2Qs2.gif",
+       "thumb": "assets/0459-UVo2Qs2.jpg",
+       "sets": 2,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      }
+     ]
+    },
+    {
+     "num": 3,
+     "day": "Thu",
+     "title": "Body Weight\nPush · Pull",
+     "mins": 43,
+     "coach": "Rows and pike push-ups. Light dumbbells only where body weight cannot load the delts.",
+     "strength": [
+      {
+       "id": "3158",
+       "name": "bodyweight standing close-grip row",
+       "target": "upper back",
+       "secondary": [
+        "biceps",
+        "forearms"
+       ],
+       "equipment": "body weight",
+       "category": "back",
+       "steps": [
+        "Stand with your feet shoulder-width apart and knees slightly bent.",
+        "Bend forward at the waist, keeping your back straight and your core engaged.",
+        "Extend your arms straight in front of you, gripping the bar or handles with a close grip.",
+        "Pull the bar or handles towards your body, squeezing your shoulder blades together.",
+        "Pause for a moment at the top of the movement, then slowly release and return to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/3158-tig3PXb.gif",
+       "thumb": "assets/3158-tig3PXb.jpg",
+       "sets": 4,
+       "weight": 0,
+       "rest": 75,
+       "type": "reps",
+       "reps": 12,
+       "last": null
+      },
+      {
+       "id": "0259",
+       "name": "close-grip push-up",
+       "target": "triceps",
+       "secondary": [
+        "chest",
+        "shoulders"
+       ],
+       "equipment": "body weight",
+       "category": "upper arms",
+       "steps": [
+        "Start in a high plank position with your hands placed close together, directly under your shoulders.",
+        "Engage your core and lower your body towards the ground, keeping your elbows close to your sides.",
+        "Push through your palms to extend your arms and return to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0259-x6KpKpq.gif",
+       "thumb": "assets/0259-x6KpKpq.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 60,
+       "type": "reps",
+       "reps": 12,
+       "last": null
+      },
+      {
+       "id": "3662",
+       "name": "pike-to-cobra push-up",
+       "target": "glutes",
+       "secondary": [
+        "core",
+        "shoulders",
+        "triceps"
+       ],
+       "equipment": "body weight",
+       "category": "upper legs",
+       "steps": [
+        "Start in a push-up position with your hands slightly wider than shoulder-width apart and your feet together.",
+        "Engage your core and lift your hips up towards the ceiling, forming an inverted V shape with your body.",
+        "Lower your upper body towards the ground by bending your elbows, keeping them close to your body.",
+        "As you lower down, shift your weight forward and transition into a cobra pose by straightening your arms and lifting your chest up.",
+        "Reverse the movement by bending your elbows and lowering your chest back down towards the ground.",
+        "Push through your hands to return to the inverted V position.",
+        "Continue the movement by lowering your hips back down towards the ground, returning to the starting push-up position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/3662-XPUDTt7.gif",
+       "thumb": "assets/3662-XPUDTt7.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 75,
+       "type": "reps",
+       "reps": 10,
+       "last": null
+      },
+      {
+       "id": "0334",
+       "name": "dumbbell lateral raise",
+       "target": "delts",
+       "secondary": [
+        "traps"
+       ],
+       "equipment": "dumbbell",
+       "category": "shoulders",
+       "steps": [
+        "Stand with your feet shoulder-width apart and hold a dumbbell in each hand, palms facing your body.",
+        "Keep your back straight and engage your core.",
+        "Raise your arms out to the sides until they are parallel to the floor, keeping a slight bend in your elbows.",
+        "Pause for a moment at the top, then slowly lower your arms back down to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0334-DsgkuIt.gif",
+       "thumb": "assets/0334-DsgkuIt.jpg",
+       "sets": 3,
+       "weight": 6,
+       "rest": 60,
+       "type": "reps",
+       "reps": 15,
+       "last": null
+      },
+      {
+       "id": "0378",
+       "name": "dumbbell rear fly",
+       "target": "delts",
+       "secondary": [
+        "trapezius",
+        "rhomboids"
+       ],
+       "equipment": "dumbbell",
+       "category": "shoulders",
+       "steps": [
+        "Stand with your feet shoulder-width apart and hold a dumbbell in each hand.",
+        "Bend your knees slightly and hinge forward at the hips, keeping your back straight.",
+        "Extend your arms straight down towards the ground, palms facing each other.",
+        "Keeping a slight bend in your elbows, lift your arms out to the sides and squeeze your shoulder blades together.",
+        "Pause for a moment at the top, then slowly lower your arms back down to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0378-8DiFDVA.gif",
+       "thumb": "assets/0378-8DiFDVA.jpg",
+       "sets": 3,
+       "weight": 6,
+       "rest": 60,
+       "type": "reps",
+       "reps": 15,
+       "last": null
+      },
+      {
+       "id": "0664",
+       "name": "push-up to side plank",
+       "target": "abs",
+       "secondary": [
+        "shoulders",
+        "chest",
+        "triceps"
+       ],
+       "equipment": "body weight",
+       "category": "waist",
+       "steps": [
+        "Start in a push-up position with your hands shoulder-width apart and your body in a straight line.",
+        "Lower your body towards the ground by bending your elbows, keeping your core engaged.",
+        "Push back up to the starting position.",
+        "Shift your weight onto your left hand and rotate your body to the right, lifting your right arm towards the ceiling.",
+        "Hold the side plank position for a few seconds, then return to the starting position.",
+        "Repeat the push-up and side plank on the opposite side.",
+        "Continue alternating sides for the desired number of repetitions."
+       ],
+       "gif": "assets/0664-KhHJ338.gif",
+       "thumb": "assets/0664-KhHJ338.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 60,
+       "type": "reps",
+       "reps": 10,
+       "last": null
+      }
+     ],
+     "hiit": [
+      {
+       "id": "0660",
+       "name": "push-up close-grip off dumbbell",
+       "target": "triceps",
+       "secondary": [
+        "chest",
+        "shoulders"
+       ],
+       "equipment": "dumbbell",
+       "category": "upper arms",
+       "steps": [
+        "Start in a push-up position with your hands placed close together, directly under your shoulders.",
+        "Hold a dumbbell in each hand, resting them on the ground.",
+        "Lower your body towards the ground by bending your elbows, keeping them close to your sides.",
+        "Push through your palms to extend your arms and return to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0660-KZXAtKQ.gif",
+       "thumb": "assets/0660-KZXAtKQ.jpg",
+       "sets": 2,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      },
+      {
+       "id": "3655",
+       "name": "walking high knees lunge",
+       "target": "cardiovascular system",
+       "secondary": [
+        "quadriceps",
+        "hamstrings",
+        "glutes",
+        "calves"
+       ],
+       "equipment": "body weight",
+       "category": "cardio",
+       "steps": [
+        "Stand with your feet hip-width apart.",
+        "Lift your right knee up towards your chest as high as you can while balancing on your left leg.",
+        "Step forward with your right foot and lower your body into a lunge position, bending both knees to a 90-degree angle.",
+        "Push off with your right foot and bring your left knee up towards your chest.",
+        "Step forward with your left foot and lower your body into a lunge position.",
+        "Continue alternating legs and lunging forward, keeping your core engaged and maintaining a steady pace.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/3655-J9zIWig.gif",
+       "thumb": "assets/3655-J9zIWig.jpg",
+       "sets": 2,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      },
+      {
+       "id": "0687",
+       "name": "russian twist",
+       "target": "abs",
+       "secondary": [
+        "obliques"
+       ],
+       "equipment": "body weight",
+       "category": "waist",
+       "steps": [
+        "Sit on the ground with your knees bent and feet flat on the floor.",
+        "Lean back slightly while keeping your back straight and your core engaged.",
+        "Hold your hands together in front of your chest or hold a weight if desired.",
+        "Lift your feet off the ground, balancing on your sit bones.",
+        "Twist your torso to the right, bringing your hands or weight towards the right side of your body.",
+        "Pause for a moment, then twist your torso to the left, bringing your hands or weight towards the left side of your body.",
+        "Continue alternating sides for the desired number of repetitions."
+       ],
+       "gif": "assets/0687-XVDdcoj.gif",
+       "thumb": "assets/0687-XVDdcoj.jpg",
+       "sets": 2,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      },
+      {
+       "id": "0274",
+       "name": "crunch floor",
+       "target": "abs",
+       "secondary": [
+        "hip flexors"
+       ],
+       "equipment": "body weight",
+       "category": "waist",
+       "steps": [
+        "Lie flat on your back with your knees bent and feet flat on the ground.",
+        "Place your hands behind your head with your elbows pointing outwards.",
+        "Engage your abs and lift your shoulders off the ground, curling forward towards your knees.",
+        "Pause for a moment at the top, then slowly lower your shoulders back down to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0274-TFqbd8t.gif",
+       "thumb": "assets/0274-TFqbd8t.jpg",
+       "sets": 2,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      }
+     ]
+    },
+    {
+     "num": 4,
+     "day": "Sat",
+     "title": "Body Weight\nFull Body",
+     "mins": 40,
+     "coach": "Pure conditioning. Nothing but your own weight and the mat — move fast, breathe hard.",
+     "strength": [
+      {
+       "id": "2368",
+       "name": "split squats",
+       "target": "quads",
+       "secondary": [
+        "glutes",
+        "hamstrings",
+        "calves"
+       ],
+       "equipment": "body weight",
+       "category": "upper legs",
+       "steps": [
+        "Stand with your feet shoulder-width apart.",
+        "Take a step forward with one foot and place it about two feet in front of the other foot.",
+        "Lower your body by bending your knees and hips, keeping your back straight.",
+        "Continue lowering until your front thigh is parallel to the ground, and your back knee is hovering just above the ground.",
+        "Pause for a moment, then push through your front heel to return to the starting position.",
+        "Repeat for the desired number of repetitions, then switch legs and repeat."
+       ],
+       "gif": "assets/2368-9E25EOx.gif",
+       "thumb": "assets/2368-9E25EOx.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 60,
+       "type": "reps",
+       "reps": 15,
+       "last": null
+      },
+      {
+       "id": "0662",
+       "name": "push-up",
+       "target": "pectorals",
+       "secondary": [
+        "triceps",
+        "deltoids",
+        "core"
+       ],
+       "equipment": "body weight",
+       "category": "chest",
+       "steps": [
+        "Start in a high plank position with your hands slightly wider than shoulder-width apart and your feet together.",
+        "Engage your core and lower your body towards the ground by bending your elbows, keeping your body in a straight line.",
+        "Pause for a moment when your chest is just above the ground, then push yourself back up to the starting position by straightening your arms.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0662-I4hDWkc.gif",
+       "thumb": "assets/0662-I4hDWkc.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 60,
+       "type": "reps",
+       "reps": 15,
+       "last": null
+      },
+      {
+       "id": "3013",
+       "name": "low glute bridge on floor",
+       "target": "glutes",
+       "secondary": [
+        "hamstrings",
+        "core"
+       ],
+       "equipment": "body weight",
+       "category": "upper legs",
+       "steps": [
+        "Lie flat on your back with your knees bent and feet flat on the ground.",
+        "Place your arms by your sides, palms facing down.",
+        "Engage your glutes and core, then lift your hips off the ground until your body forms a straight line from your knees to your shoulders.",
+        "Pause for a moment at the top, squeezing your glutes.",
+        "Slowly lower your hips back down to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/3013-u0cNiij.gif",
+       "thumb": "assets/3013-u0cNiij.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 60,
+       "type": "reps",
+       "reps": 20,
+       "last": null
+      }
+     ],
+     "hiit": [
+      {
+       "id": "1160",
+       "name": "burpee",
+       "target": "cardiovascular system",
+       "secondary": [
+        "quadriceps",
+        "hamstrings",
+        "calves",
+        "shoulders",
+        "chest"
+       ],
+       "equipment": "body weight",
+       "category": "cardio",
+       "steps": [
+        "Start in a standing position with your feet shoulder-width apart.",
+        "Lower your body into a squat position by bending your knees and placing your hands on the floor in front of you.",
+        "Kick your feet back into a push-up position.",
+        "Perform a push-up, keeping your body in a straight line.",
+        "Jump your feet back into the squat position.",
+        "Jump up explosively, reaching your arms overhead.",
+        "Land softly and immediately lower back into a squat position to begin the next repetition."
+       ],
+       "gif": "assets/1160-dK9394r.gif",
+       "thumb": "assets/1160-dK9394r.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      },
+      {
+       "id": "0501",
+       "name": "jack burpee",
+       "target": "cardiovascular system",
+       "secondary": [
+        "quadriceps",
+        "hamstrings",
+        "calves",
+        "shoulders",
+        "triceps"
+       ],
+       "equipment": "body weight",
+       "category": "cardio",
+       "steps": [
+        "Start in a standing position with your feet shoulder-width apart.",
+        "Lower your body into a squat position, placing your hands on the ground in front of you.",
+        "Kick your feet back, landing in a push-up position.",
+        "Perform a push-up, lowering your chest to the ground and then pushing back up.",
+        "Jump your feet forward, landing in a squat position.",
+        "Jump up explosively, reaching your arms overhead.",
+        "Land softly and immediately lower back into the squat position to begin the next repetition."
+       ],
+       "gif": "assets/0501-mr7pkqP.gif",
+       "thumb": "assets/0501-mr7pkqP.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      },
+      {
+       "id": "0630",
+       "name": "mountain climber",
+       "target": "cardiovascular system",
+       "secondary": [
+        "core",
+        "shoulders",
+        "triceps"
+       ],
+       "equipment": "body weight",
+       "category": "cardio",
+       "steps": [
+        "Start in a high plank position with your hands directly under your shoulders and your body in a straight line.",
+        "Engage your core and bring your right knee towards your chest, then quickly switch and bring your left knee towards your chest.",
+        "Continue alternating legs in a running motion, keeping your hips low and your core engaged.",
+        "Maintain a steady pace and breathe evenly throughout the exercise.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0630-RJgzwny.gif",
+       "thumb": "assets/0630-RJgzwny.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      },
+      {
+       "id": "3220",
+       "name": "astride jumps (male)",
+       "target": "cardiovascular system",
+       "secondary": [
+        "quadriceps",
+        "hamstrings",
+        "calves"
+       ],
+       "equipment": "body weight",
+       "category": "cardio",
+       "steps": [
+        "Stand with your feet shoulder-width apart.",
+        "Bend your knees and lower your body into a squat position.",
+        "Jump explosively upwards, extending your legs and arms.",
+        "While in the air, spread your legs apart and bring your arms out to the sides.",
+        "Land softly with your feet shoulder-width apart, bending your knees to absorb the impact.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/3220-f9lVSSI.gif",
+       "thumb": "assets/3220-f9lVSSI.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "label": "C",
+   "focus": "Dumbbell volume — lighter loads, more reps, new movement patterns.",
+   "days": [
+    {
+     "num": 1,
+     "day": "Mon",
+     "title": "Upper Body\nVolume",
+     "mins": 47,
+     "coach": "Different angles from week A. Lighter bells, longer sets, short rests — chase the pump.",
+     "strength": [
+      {
+       "id": "0286",
+       "name": "dumbbell alternate side press",
+       "target": "delts",
+       "secondary": [
+        "triceps",
+        "core"
+       ],
+       "equipment": "dumbbell",
+       "category": "shoulders",
+       "steps": [
+        "Stand with your feet shoulder-width apart, holding a dumbbell in each hand at shoulder height.",
+        "Press one dumbbell overhead while keeping the other dumbbell at shoulder height.",
+        "Lower the pressed dumbbell back to shoulder height while pressing the other dumbbell overhead.",
+        "Continue alternating sides for the desired number of repetitions."
+       ],
+       "gif": "assets/0286-izMnLqz.gif",
+       "thumb": "assets/0286-izMnLqz.jpg",
+       "sets": 4,
+       "weight": 10,
+       "rest": 75,
+       "type": "reps",
+       "reps": 12,
+       "last": null
+      },
+      {
+       "id": "0296",
+       "name": "dumbbell close-grip press",
+       "target": "triceps",
+       "secondary": [
+        "chest",
+        "shoulders"
+       ],
+       "equipment": "dumbbell",
+       "category": "upper arms",
+       "steps": [
+        "Sit on a flat bench with a dumbbell in each hand, resting on your thighs.",
+        "Using your thighs to help raise the dumbbells, lift the dumbbells one at a time so that you can hold them in front of you at shoulder width.",
+        "Once at shoulder width, rotate your wrists forward so that the palms of your hands are facing away from you. This will be your starting position.",
+        "As you breathe in, slowly lower the dumbbells to your side until they are about level with your chest.",
+        "As you exhale, use your triceps to lift the dumbbells back to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0296-RxayqAZ.gif",
+       "thumb": "assets/0296-RxayqAZ.jpg",
+       "sets": 3,
+       "weight": 12,
+       "rest": 75,
+       "type": "reps",
+       "reps": 12,
+       "last": null
+      },
+      {
+       "id": "0310",
+       "name": "dumbbell front raise",
+       "target": "delts",
+       "secondary": [
+        "biceps",
+        "trapezius"
+       ],
+       "equipment": "dumbbell",
+       "category": "shoulders",
+       "steps": [
+        "Stand with your feet shoulder-width apart, holding a dumbbell in each hand with your palms facing your thighs.",
+        "Keeping your arms straight, exhale and lift the dumbbells in front of you until they are at shoulder level.",
+        "Pause for a moment at the top, then inhale and slowly lower the dumbbells back down to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0310-3eGE2JC.gif",
+       "thumb": "assets/0310-3eGE2JC.jpg",
+       "sets": 3,
+       "weight": 6,
+       "rest": 60,
+       "type": "reps",
+       "reps": 14,
+       "last": null
+      },
+      {
+       "id": "0378",
+       "name": "dumbbell rear fly",
+       "target": "delts",
+       "secondary": [
+        "trapezius",
+        "rhomboids"
+       ],
+       "equipment": "dumbbell",
+       "category": "shoulders",
+       "steps": [
+        "Stand with your feet shoulder-width apart and hold a dumbbell in each hand.",
+        "Bend your knees slightly and hinge forward at the hips, keeping your back straight.",
+        "Extend your arms straight down towards the ground, palms facing each other.",
+        "Keeping a slight bend in your elbows, lift your arms out to the sides and squeeze your shoulder blades together.",
+        "Pause for a moment at the top, then slowly lower your arms back down to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0378-8DiFDVA.gif",
+       "thumb": "assets/0378-8DiFDVA.jpg",
+       "sets": 3,
+       "weight": 6,
+       "rest": 60,
+       "type": "reps",
+       "reps": 15,
+       "last": null
+      },
+      {
+       "id": "0406",
+       "name": "dumbbell shrug",
+       "target": "traps",
+       "secondary": [
+        "shoulders"
+       ],
+       "equipment": "dumbbell",
+       "category": "back",
+       "steps": [
+        "Stand with your feet shoulder-width apart and hold a dumbbell in each hand with your palms facing your body.",
+        "Keep your arms straight and let the dumbbells hang by your sides.",
+        "Raise your shoulders as high as possible, as if you are trying to touch your ears with your shoulders.",
+        "Hold the contraction for a second, then slowly lower your shoulders back down to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0406-NJzBsGJ.gif",
+       "thumb": "assets/0406-NJzBsGJ.jpg",
+       "sets": 3,
+       "weight": 20,
+       "rest": 60,
+       "type": "reps",
+       "reps": 15,
+       "last": null
+      },
+      {
+       "id": "0285",
+       "name": "dumbbell alternate biceps curl",
+       "target": "biceps",
+       "secondary": [
+        "forearms"
+       ],
+       "equipment": "dumbbell",
+       "category": "upper arms",
+       "steps": [
+        "Stand up straight with a dumbbell in each hand, palms facing forward and arms fully extended.",
+        "Keeping your upper arms stationary, exhale and curl the weights while contracting your biceps.",
+        "Continue to raise the dumbbells until your biceps are fully contracted and the dumbbells are at shoulder level.",
+        "Hold the contracted position for a brief pause as you squeeze your biceps.",
+        "Inhale and slowly begin to lower the dumbbells back to the starting position.",
+        "Repeat for the desired number of repetitions, alternating arms."
+       ],
+       "gif": "assets/0285-BU15nH4.gif",
+       "thumb": "assets/0285-BU15nH4.jpg",
+       "sets": 3,
+       "weight": 8,
+       "rest": 60,
+       "type": "reps",
+       "reps": 14,
+       "last": null
+      }
+     ],
+     "hiit": [
+      {
+       "id": "0699",
+       "name": "shoulder tap push-up",
+       "target": "pectorals",
+       "secondary": [
+        "triceps",
+        "core"
+       ],
+       "equipment": "body weight",
+       "category": "chest",
+       "steps": [
+        "Start in a high plank position with your hands slightly wider than shoulder-width apart and your body in a straight line from head to heels.",
+        "Lower your body towards the ground by bending your elbows, keeping them close to your sides.",
+        "As you push back up, lift your right hand off the ground and tap your left shoulder.",
+        "Return your right hand to the ground and repeat the push-up, this time lifting your left hand and tapping your right shoulder.",
+        "Continue alternating shoulder taps with each push-up repetition.",
+        "Maintain a stable core and avoid excessive hip rotation throughout the exercise.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0699-qEse6fe.gif",
+       "thumb": "assets/0699-qEse6fe.jpg",
+       "sets": 2,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      },
+      {
+       "id": "0630",
+       "name": "mountain climber",
+       "target": "cardiovascular system",
+       "secondary": [
+        "core",
+        "shoulders",
+        "triceps"
+       ],
+       "equipment": "body weight",
+       "category": "cardio",
+       "steps": [
+        "Start in a high plank position with your hands directly under your shoulders and your body in a straight line.",
+        "Engage your core and bring your right knee towards your chest, then quickly switch and bring your left knee towards your chest.",
+        "Continue alternating legs in a running motion, keeping your hips low and your core engaged.",
+        "Maintain a steady pace and breathe evenly throughout the exercise.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0630-RJgzwny.gif",
+       "thumb": "assets/0630-RJgzwny.jpg",
+       "sets": 2,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      },
+      {
+       "id": "1160",
+       "name": "burpee",
+       "target": "cardiovascular system",
+       "secondary": [
+        "quadriceps",
+        "hamstrings",
+        "calves",
+        "shoulders",
+        "chest"
+       ],
+       "equipment": "body weight",
+       "category": "cardio",
+       "steps": [
+        "Start in a standing position with your feet shoulder-width apart.",
+        "Lower your body into a squat position by bending your knees and placing your hands on the floor in front of you.",
+        "Kick your feet back into a push-up position.",
+        "Perform a push-up, keeping your body in a straight line.",
+        "Jump your feet back into the squat position.",
+        "Jump up explosively, reaching your arms overhead.",
+        "Land softly and immediately lower back into a squat position to begin the next repetition."
+       ],
+       "gif": "assets/1160-dK9394r.gif",
+       "thumb": "assets/1160-dK9394r.jpg",
+       "sets": 2,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      },
+      {
+       "id": "0687",
+       "name": "russian twist",
+       "target": "abs",
+       "secondary": [
+        "obliques"
+       ],
+       "equipment": "body weight",
+       "category": "waist",
+       "steps": [
+        "Sit on the ground with your knees bent and feet flat on the floor.",
+        "Lean back slightly while keeping your back straight and your core engaged.",
+        "Hold your hands together in front of your chest or hold a weight if desired.",
+        "Lift your feet off the ground, balancing on your sit bones.",
+        "Twist your torso to the right, bringing your hands or weight towards the right side of your body.",
+        "Pause for a moment, then twist your torso to the left, bringing your hands or weight towards the left side of your body.",
+        "Continue alternating sides for the desired number of repetitions."
+       ],
+       "gif": "assets/0687-XVDdcoj.gif",
+       "thumb": "assets/0687-XVDdcoj.jpg",
+       "sets": 2,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      }
+     ]
+    },
+    {
+     "num": 2,
+     "day": "Tue",
+     "title": "Lower Body\nUnilateral",
+     "mins": 46,
+     "coach": "One leg at a time. Lower weight than week A on purpose — balance is the point.",
+     "strength": [
+      {
+       "id": "0336",
+       "name": "dumbbell lunge",
+       "target": "glutes",
+       "secondary": [
+        "quadriceps",
+        "hamstrings",
+        "calves"
+       ],
+       "equipment": "dumbbell",
+       "category": "upper legs",
+       "steps": [
+        "Stand with your feet shoulder-width apart, holding a dumbbell in each hand.",
+        "Take a step forward with your right foot, lowering your body into a lunge position.",
+        "Keep your back straight and your chest up as you lower your body.",
+        "Push through your right heel to return to the starting position.",
+        "Repeat with your left leg.",
+        "Alternate legs for the desired number of repetitions."
+       ],
+       "gif": "assets/0336-RRWFUcw.gif",
+       "thumb": "assets/0336-RRWFUcw.jpg",
+       "sets": 4,
+       "weight": 14,
+       "rest": 90,
+       "type": "reps",
+       "reps": 12,
+       "last": null
+      },
+      {
+       "id": "0432",
+       "name": "dumbbell stiff leg deadlift",
+       "target": "glutes",
+       "secondary": [
+        "hamstrings",
+        "lower back"
+       ],
+       "equipment": "dumbbell",
+       "category": "upper legs",
+       "steps": [
+        "Stand with your feet shoulder-width apart, holding a dumbbell in each hand with an overhand grip.",
+        "Keeping your back straight and your core engaged, hinge at the hips and lower the dumbbells towards the ground, allowing a slight bend in your knees.",
+        "Lower the dumbbells until you feel a stretch in your hamstrings, then squeeze your glutes and push through your heels to return to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0432-5eLRITT.gif",
+       "thumb": "assets/0432-5eLRITT.jpg",
+       "sets": 4,
+       "weight": 18,
+       "rest": 90,
+       "type": "reps",
+       "reps": 12,
+       "last": null
+      },
+      {
+       "id": "1757",
+       "name": "dumbbell single leg deadlift",
+       "target": "glutes",
+       "secondary": [
+        "hamstrings",
+        "lower back"
+       ],
+       "equipment": "dumbbell",
+       "category": "upper legs",
+       "steps": [
+        "Stand with your feet hip-width apart, holding a dumbbell in your right hand.",
+        "Shift your weight onto your left leg and lift your right foot slightly off the ground.",
+        "Keeping your back straight, hinge forward at the hips and lower the dumbbell towards the ground.",
+        "At the same time, extend your right leg straight behind you, maintaining a slight bend in your left knee.",
+        "Lower the dumbbell until your torso and right leg are parallel to the ground.",
+        "Pause for a moment, then engage your glutes and hamstrings to return to the starting position.",
+        "Repeat for the desired number of repetitions, then switch sides."
+       ],
+       "gif": "assets/1757-gKozT8X.gif",
+       "thumb": "assets/1757-gKozT8X.jpg",
+       "sets": 3,
+       "weight": 12,
+       "rest": 75,
+       "type": "reps",
+       "reps": 10,
+       "last": null
+      },
+      {
+       "id": "0431",
+       "name": "dumbbell step-up",
+       "target": "glutes",
+       "secondary": [
+        "quadriceps",
+        "hamstrings",
+        "calves"
+       ],
+       "equipment": "dumbbell",
+       "category": "upper legs",
+       "steps": [
+        "Stand in front of a bench or step with a dumbbell in each hand, palms facing your body.",
+        "Place your right foot on the bench or step, ensuring your entire foot is in contact with the surface.",
+        "Push through your right heel and lift your body up onto the bench or step, straightening your right leg.",
+        "Bring your left foot up onto the bench or step, standing fully upright.",
+        "Step back down with your left foot, followed by your right foot, returning to the starting position.",
+        "Repeat for the desired number of repetitions, then switch legs."
+       ],
+       "gif": "assets/0431-aXtJhlg.gif",
+       "thumb": "assets/0431-aXtJhlg.jpg",
+       "sets": 3,
+       "weight": 12,
+       "rest": 75,
+       "type": "reps",
+       "reps": 12,
+       "last": null
+      },
+      {
+       "id": "0409",
+       "name": "dumbbell single leg calf raise",
+       "target": "calves",
+       "secondary": [
+        "ankles"
+       ],
+       "equipment": "dumbbell",
+       "category": "lower legs",
+       "steps": [
+        "Stand on the edge of a step or platform with your heels hanging off and your toes on the step.",
+        "Hold a dumbbell in one hand and place your other hand on a wall or railing for support.",
+        "Raise your heel as high as possible, lifting your body up onto your toes.",
+        "Pause for a moment at the top, then slowly lower your heel back down below the step.",
+        "Repeat for the desired number of repetitions, then switch to the other leg."
+       ],
+       "gif": "assets/0409-1kB3Wmk.gif",
+       "thumb": "assets/0409-1kB3Wmk.jpg",
+       "sets": 3,
+       "weight": 12,
+       "rest": 45,
+       "type": "reps",
+       "reps": 20,
+       "last": null
+      }
+     ],
+     "hiit": [
+      {
+       "id": "0685",
+       "name": "run",
+       "target": "cardiovascular system",
+       "secondary": [
+        "quadriceps",
+        "hamstrings",
+        "calves"
+       ],
+       "equipment": "body weight",
+       "category": "cardio",
+       "steps": [
+        "Start by standing upright with your feet hip-width apart.",
+        "Engage your core and keep your upper body relaxed.",
+        "Begin jogging in place, lifting your knees up towards your chest and landing softly on the balls of your feet.",
+        "Maintain a steady pace and continue jogging for the desired duration or distance.",
+        "Remember to breathe deeply and maintain good posture throughout the exercise."
+       ],
+       "gif": "assets/0685-oLrKqDH.gif",
+       "thumb": "assets/0685-oLrKqDH.jpg",
+       "sets": 2,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      },
+      {
+       "id": "3582",
+       "name": "lunge with jump",
+       "target": "glutes",
+       "secondary": [
+        "quadriceps",
+        "hamstrings",
+        "calves"
+       ],
+       "equipment": "body weight",
+       "category": "upper legs",
+       "steps": [
+        "Start by standing with your feet shoulder-width apart.",
+        "Take a step forward with your right foot, lowering your body into a lunge position.",
+        "Push off with your right foot and jump into the air, switching the position of your feet mid-air.",
+        "Land softly with your left foot forward and immediately lower your body into a lunge position.",
+        "Continue alternating between lunges and jumps for the desired number of repetitions."
+       ],
+       "gif": "assets/3582-PM1PZjg.gif",
+       "thumb": "assets/3582-PM1PZjg.jpg",
+       "sets": 2,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      },
+      {
+       "id": "3361",
+       "name": "skater hops",
+       "target": "cardiovascular system",
+       "secondary": [
+        "quadriceps",
+        "hamstrings",
+        "glutes",
+        "calves"
+       ],
+       "equipment": "body weight",
+       "category": "cardio",
+       "steps": [
+        "Stand with your feet shoulder-width apart.",
+        "Bend your knees slightly and jump to the right, landing on your right foot.",
+        "As you land, swing your left leg behind your right leg and tap the ground with your left toes.",
+        "Immediately jump to the left, landing on your left foot.",
+        "As you land, swing your right leg behind your left leg and tap the ground with your right toes.",
+        "Continue alternating sides, jumping and tapping the ground with each leg.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/3361-zfNHMN9.gif",
+       "thumb": "assets/3361-zfNHMN9.jpg",
+       "sets": 2,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      },
+      {
+       "id": "0459",
+       "name": "flutter kicks",
+       "target": "glutes",
+       "secondary": [
+        "hip flexors",
+        "lower abs"
+       ],
+       "equipment": "body weight",
+       "category": "upper legs",
+       "steps": [
+        "Lie flat on your back with your legs extended and your hands by your sides.",
+        "Engage your core and lift your legs off the ground about 6 inches.",
+        "Keeping your legs straight, alternate lifting one leg slightly higher than the other.",
+        "Continue this fluttering motion for the desired number of repetitions."
+       ],
+       "gif": "assets/0459-UVo2Qs2.gif",
+       "thumb": "assets/0459-UVo2Qs2.jpg",
+       "sets": 2,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      }
+     ]
+    },
+    {
+     "num": 3,
+     "day": "Thu",
+     "title": "Push · Pull\nVolume",
+     "mins": 45,
+     "coach": "Straight-arm pullovers and cuban presses. Shoulders get healthier, not just bigger.",
+     "strength": [
+      {
+       "id": "3162",
+       "name": "bodyweight standing one arm row",
+       "target": "upper back",
+       "secondary": [
+        "biceps",
+        "forearms"
+       ],
+       "equipment": "body weight",
+       "category": "back",
+       "steps": [
+        "Stand with your feet shoulder-width apart, knees slightly bent, and hold a dumbbell in one hand.",
+        "Bend forward at the hips, keeping your back straight and your core engaged.",
+        "Let the dumbbell hang straight down in front of you, with your arm fully extended.",
+        "Pull the dumbbell up towards your chest, keeping your elbow close to your body.",
+        "Squeeze your shoulder blades together at the top of the movement.",
+        "Lower the dumbbell back down to the starting position.",
+        "Repeat for the desired number of repetitions, then switch sides."
+       ],
+       "gif": "assets/3162-xbkPfaw.gif",
+       "thumb": "assets/3162-xbkPfaw.jpg",
+       "sets": 4,
+       "weight": 0,
+       "rest": 75,
+       "type": "reps",
+       "reps": 12,
+       "last": null
+      },
+      {
+       "id": "0433",
+       "name": "dumbbell straight arm pullover",
+       "target": "pectorals",
+       "secondary": [
+        "latissimus dorsi",
+        "triceps"
+       ],
+       "equipment": "dumbbell",
+       "category": "chest",
+       "steps": [
+        "Lie flat on a bench with your head at one end and your feet planted firmly on the ground.",
+        "Hold a dumbbell with both hands and extend your arms straight above your chest.",
+        "Keeping your arms straight, slowly lower the dumbbell behind your head in an arc-like motion.",
+        "Pause for a moment, then raise the dumbbell back to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0433-i8BdLTK.gif",
+       "thumb": "assets/0433-i8BdLTK.jpg",
+       "sets": 3,
+       "weight": 12,
+       "rest": 75,
+       "type": "reps",
+       "reps": 14,
+       "last": null
+      },
+      {
+       "id": "0299",
+       "name": "dumbbell cuban press",
+       "target": "delts",
+       "secondary": [
+        "triceps",
+        "upper back"
+       ],
+       "equipment": "dumbbell",
+       "category": "shoulders",
+       "steps": [
+        "Stand with your feet shoulder-width apart, holding a dumbbell in each hand at shoulder height with your palms facing down.",
+        "Keeping your core engaged and your elbows slightly bent, press the dumbbells up and overhead until your arms are fully extended.",
+        "Rotate your wrists so that your palms are facing forward.",
+        "Slowly lower the dumbbells back to the starting position, rotating your wrists back to the starting position as you do so.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0299-QfAKy1G.gif",
+       "thumb": "assets/0299-QfAKy1G.jpg",
+       "sets": 3,
+       "weight": 8,
+       "rest": 75,
+       "type": "reps",
+       "reps": 12,
+       "last": null
+      },
+      {
+       "id": "0283",
+       "name": "diamond push-up",
+       "target": "triceps",
+       "secondary": [
+        "chest",
+        "shoulders"
+       ],
+       "equipment": "body weight",
+       "category": "upper arms",
+       "steps": [
+        "Start in a high plank position with your hands close together, forming a diamond shape with your thumbs and index fingers.",
+        "Keep your body in a straight line from head to toe, engaging your core and glutes.",
+        "Lower your chest towards the diamond shape formed by your hands, keeping your elbows close to your body.",
+        "Pause for a moment at the bottom, then push yourself back up to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0283-soIB2rj.gif",
+       "thumb": "assets/0283-soIB2rj.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 60,
+       "type": "reps",
+       "reps": 12,
+       "last": null
+      },
+      {
+       "id": "0359",
+       "name": "dumbbell one arm reverse fly (with support)",
+       "target": "delts",
+       "secondary": [
+        "trapezius",
+        "rhomboids"
+       ],
+       "equipment": "dumbbell",
+       "category": "shoulders",
+       "steps": [
+        "Sit on a bench with your feet flat on the ground and your back straight.",
+        "Hold a dumbbell in one hand with your palm facing inwards.",
+        "Lean forward and place your free hand on the bench for support.",
+        "Keep your arm slightly bent and raise it out to the side until it is parallel to the ground.",
+        "Pause for a moment at the top, then slowly lower your arm back down to the starting position.",
+        "Repeat for the desired number of repetitions, then switch arms."
+       ],
+       "gif": "assets/0359-e25F58f.gif",
+       "thumb": "assets/0359-e25F58f.jpg",
+       "sets": 3,
+       "weight": 6,
+       "rest": 60,
+       "type": "reps",
+       "reps": 14,
+       "last": null
+      },
+      {
+       "id": "0313",
+       "name": "dumbbell hammer curl",
+       "target": "biceps",
+       "secondary": [
+        "forearms"
+       ],
+       "equipment": "dumbbell",
+       "category": "upper arms",
+       "steps": [
+        "Stand up straight with a dumbbell in each hand, palms facing your torso.",
+        "Keep your elbows close to your torso and rotate the palms of your hands until they are facing forward.",
+        "This will be your starting position.",
+        "Now, keeping the upper arms stationary, exhale and curl the weights while contracting your biceps.",
+        "Continue to raise the weights until your biceps are fully contracted and the dumbbells are at shoulder level.",
+        "Hold the contracted position for a brief pause as you squeeze your biceps.",
+        "Then, inhale and slowly begin to lower the dumbbells back to the starting position.",
+        "Repeat for the recommended amount of repetitions."
+       ],
+       "gif": "assets/0313-slDvUAU.gif",
+       "thumb": "assets/0313-slDvUAU.jpg",
+       "sets": 3,
+       "weight": 10,
+       "rest": 60,
+       "type": "reps",
+       "reps": 14,
+       "last": null
+      }
+     ],
+     "hiit": [
+      {
+       "id": "0660",
+       "name": "push-up close-grip off dumbbell",
+       "target": "triceps",
+       "secondary": [
+        "chest",
+        "shoulders"
+       ],
+       "equipment": "dumbbell",
+       "category": "upper arms",
+       "steps": [
+        "Start in a push-up position with your hands placed close together, directly under your shoulders.",
+        "Hold a dumbbell in each hand, resting them on the ground.",
+        "Lower your body towards the ground by bending your elbows, keeping them close to your sides.",
+        "Push through your palms to extend your arms and return to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0660-KZXAtKQ.gif",
+       "thumb": "assets/0660-KZXAtKQ.jpg",
+       "sets": 2,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      },
+      {
+       "id": "3655",
+       "name": "walking high knees lunge",
+       "target": "cardiovascular system",
+       "secondary": [
+        "quadriceps",
+        "hamstrings",
+        "glutes",
+        "calves"
+       ],
+       "equipment": "body weight",
+       "category": "cardio",
+       "steps": [
+        "Stand with your feet hip-width apart.",
+        "Lift your right knee up towards your chest as high as you can while balancing on your left leg.",
+        "Step forward with your right foot and lower your body into a lunge position, bending both knees to a 90-degree angle.",
+        "Push off with your right foot and bring your left knee up towards your chest.",
+        "Step forward with your left foot and lower your body into a lunge position.",
+        "Continue alternating legs and lunging forward, keeping your core engaged and maintaining a steady pace.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/3655-J9zIWig.gif",
+       "thumb": "assets/3655-J9zIWig.jpg",
+       "sets": 2,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      },
+      {
+       "id": "0295",
+       "name": "dumbbell clean",
+       "target": "glutes",
+       "secondary": [
+        "hamstrings",
+        "quadriceps",
+        "calves"
+       ],
+       "equipment": "dumbbell",
+       "category": "upper legs",
+       "steps": [
+        "Stand with your feet shoulder-width apart, holding a dumbbell in each hand with an overhand grip.",
+        "Bend your knees and lower your hips into a squat position, keeping your back straight and chest up.",
+        "Explosively extend your hips and knees, driving through your heels to jump off the ground.",
+        "As you jump, shrug your shoulders and pull the dumbbells up towards your shoulders, keeping them close to your body.",
+        "Catch the dumbbells at shoulder height, with your elbows pointing forward and your palms facing up.",
+        "Lower the dumbbells back down to the starting position by reversing the movement.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0295-7Hg55JG.gif",
+       "thumb": "assets/0295-7Hg55JG.jpg",
+       "sets": 2,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      },
+      {
+       "id": "0274",
+       "name": "crunch floor",
+       "target": "abs",
+       "secondary": [
+        "hip flexors"
+       ],
+       "equipment": "body weight",
+       "category": "waist",
+       "steps": [
+        "Lie flat on your back with your knees bent and feet flat on the ground.",
+        "Place your hands behind your head with your elbows pointing outwards.",
+        "Engage your abs and lift your shoulders off the ground, curling forward towards your knees.",
+        "Pause for a moment at the top, then slowly lower your shoulders back down to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0274-TFqbd8t.gif",
+       "thumb": "assets/0274-TFqbd8t.jpg",
+       "sets": 2,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      }
+     ]
+    },
+    {
+     "num": 4,
+     "day": "Sat",
+     "title": "Full Body\nComplex",
+     "mins": 44,
+     "coach": "Complexes: squat, clean, press without putting the bells down. Light weight, no ego.",
+     "strength": [
+      {
+       "id": "0371",
+       "name": "dumbbell plyo squat",
+       "target": "glutes",
+       "secondary": [
+        "quadriceps",
+        "hamstrings",
+        "calves"
+       ],
+       "equipment": "dumbbell",
+       "category": "upper legs",
+       "steps": [
+        "Stand with your feet shoulder-width apart, holding a dumbbell in each hand at your sides.",
+        "Lower your body into a squat position by bending your knees and pushing your hips back.",
+        "As you reach the bottom of the squat, explode upward, jumping off the ground.",
+        "While in the air, quickly switch the position of your feet, landing with your opposite foot forward.",
+        "Immediately lower your body back into a squat position and repeat the jump, switching your feet again.",
+        "Continue alternating the position of your feet with each jump for the desired number of repetitions."
+       ],
+       "gif": "assets/0371-S4pwGlc.gif",
+       "thumb": "assets/0371-S4pwGlc.jpg",
+       "sets": 3,
+       "weight": 10,
+       "rest": 75,
+       "type": "reps",
+       "reps": 12,
+       "last": null
+      },
+      {
+       "id": "0295",
+       "name": "dumbbell clean",
+       "target": "glutes",
+       "secondary": [
+        "hamstrings",
+        "quadriceps",
+        "calves"
+       ],
+       "equipment": "dumbbell",
+       "category": "upper legs",
+       "steps": [
+        "Stand with your feet shoulder-width apart, holding a dumbbell in each hand with an overhand grip.",
+        "Bend your knees and lower your hips into a squat position, keeping your back straight and chest up.",
+        "Explosively extend your hips and knees, driving through your heels to jump off the ground.",
+        "As you jump, shrug your shoulders and pull the dumbbells up towards your shoulders, keeping them close to your body.",
+        "Catch the dumbbells at shoulder height, with your elbows pointing forward and your palms facing up.",
+        "Lower the dumbbells back down to the starting position by reversing the movement.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0295-7Hg55JG.gif",
+       "thumb": "assets/0295-7Hg55JG.jpg",
+       "sets": 3,
+       "weight": 12,
+       "rest": 75,
+       "type": "reps",
+       "reps": 10,
+       "last": null
+      },
+      {
+       "id": "1201",
+       "name": "dumbbell burpee",
+       "target": "cardiovascular system",
+       "secondary": [
+        "quadriceps",
+        "hamstrings",
+        "calves",
+        "shoulders",
+        "triceps"
+       ],
+       "equipment": "dumbbell",
+       "category": "cardio",
+       "steps": [
+        "Start in a standing position with your feet shoulder-width apart and a dumbbell in each hand.",
+        "Lower your body into a squat position, placing the dumbbells on the ground in front of you.",
+        "Kick your feet back into a push-up position, keeping your body in a straight line.",
+        "Perform a push-up, bending your elbows and lowering your chest towards the ground.",
+        "Jump your feet back towards your hands, landing in a squat position.",
+        "Stand up explosively, lifting the dumbbells off the ground and bringing them to your shoulders.",
+        "Press the dumbbells overhead, fully extending your arms.",
+        "Lower the dumbbells back to your shoulders and repeat the entire sequence for the desired number of repetitions."
+       ],
+       "gif": "assets/1201-0JtKWum.gif",
+       "thumb": "assets/1201-0JtKWum.jpg",
+       "sets": 3,
+       "weight": 8,
+       "rest": 75,
+       "type": "reps",
+       "reps": 10,
+       "last": null
+      }
+     ],
+     "hiit": [
+      {
+       "id": "1160",
+       "name": "burpee",
+       "target": "cardiovascular system",
+       "secondary": [
+        "quadriceps",
+        "hamstrings",
+        "calves",
+        "shoulders",
+        "chest"
+       ],
+       "equipment": "body weight",
+       "category": "cardio",
+       "steps": [
+        "Start in a standing position with your feet shoulder-width apart.",
+        "Lower your body into a squat position by bending your knees and placing your hands on the floor in front of you.",
+        "Kick your feet back into a push-up position.",
+        "Perform a push-up, keeping your body in a straight line.",
+        "Jump your feet back into the squat position.",
+        "Jump up explosively, reaching your arms overhead.",
+        "Land softly and immediately lower back into a squat position to begin the next repetition."
+       ],
+       "gif": "assets/1160-dK9394r.gif",
+       "thumb": "assets/1160-dK9394r.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      },
+      {
+       "id": "0630",
+       "name": "mountain climber",
+       "target": "cardiovascular system",
+       "secondary": [
+        "core",
+        "shoulders",
+        "triceps"
+       ],
+       "equipment": "body weight",
+       "category": "cardio",
+       "steps": [
+        "Start in a high plank position with your hands directly under your shoulders and your body in a straight line.",
+        "Engage your core and bring your right knee towards your chest, then quickly switch and bring your left knee towards your chest.",
+        "Continue alternating legs in a running motion, keeping your hips low and your core engaged.",
+        "Maintain a steady pace and breathe evenly throughout the exercise.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0630-RJgzwny.gif",
+       "thumb": "assets/0630-RJgzwny.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      },
+      {
+       "id": "0514",
+       "name": "jump squat",
+       "target": "glutes",
+       "secondary": [
+        "quadriceps",
+        "hamstrings",
+        "calves"
+       ],
+       "equipment": "body weight",
+       "category": "upper legs",
+       "steps": [
+        "Stand with your feet shoulder-width apart.",
+        "Lower your body into a squat position by bending your knees and pushing your hips back.",
+        "Jump explosively off the ground, extending your hips, knees, and ankles.",
+        "While in mid-air, quickly bring your arms forward for balance.",
+        "Land softly on the balls of your feet and immediately go into the next repetition.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0514-LIlE5Tn.gif",
+       "thumb": "assets/0514-LIlE5Tn.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      },
+      {
+       "id": "0685",
+       "name": "run",
+       "target": "cardiovascular system",
+       "secondary": [
+        "quadriceps",
+        "hamstrings",
+        "calves"
+       ],
+       "equipment": "body weight",
+       "category": "cardio",
+       "steps": [
+        "Start by standing upright with your feet hip-width apart.",
+        "Engage your core and keep your upper body relaxed.",
+        "Begin jogging in place, lifting your knees up towards your chest and landing softly on the balls of your feet.",
+        "Maintain a steady pace and continue jogging for the desired duration or distance.",
+        "Remember to breathe deeply and maintain good posture throughout the exercise."
+       ],
+       "gif": "assets/0685-oLrKqDH.gif",
+       "thumb": "assets/0685-oLrKqDH.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "label": "D",
+   "focus": "Hybrid conditioning — deload the loads, raise the heart rate.",
+   "days": [
+    {
+     "num": 1,
+     "day": "Mon",
+     "title": "Upper Body\nHybrid",
+     "mins": 44,
+     "coach": "Deload week for the joints. Moderate bells, longer finishers, keep the quality high.",
+     "strength": [
+      {
+       "id": "0426",
+       "name": "dumbbell standing overhead press",
+       "target": "delts",
+       "secondary": [
+        "triceps",
+        "upper back"
+       ],
+       "equipment": "dumbbell",
+       "category": "shoulders",
+       "steps": [
+        "Stand with your feet shoulder-width apart, holding a dumbbell in each hand at shoulder level with your palms facing forward.",
+        "Press the dumbbells upward until your arms are fully extended overhead.",
+        "Pause for a moment at the top, then slowly lower the dumbbells back down to shoulder level.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0426-A6wtbuL.gif",
+       "thumb": "assets/0426-A6wtbuL.jpg",
+       "sets": 3,
+       "weight": 10,
+       "rest": 75,
+       "type": "reps",
+       "reps": 10,
+       "last": null
+      },
+      {
+       "id": "0292",
+       "name": "dumbbell one arm bent-over row",
+       "target": "upper back",
+       "secondary": [
+        "biceps",
+        "forearms"
+       ],
+       "equipment": "dumbbell",
+       "category": "back",
+       "steps": [
+        "Stand with your feet shoulder-width apart, holding a dumbbell in one hand with your palm facing your body.",
+        "Bend your knees slightly and hinge forward at the hips, keeping your back straight and your core engaged.",
+        "Let the dumbbell hang straight down towards the floor, with your arm fully extended.",
+        "Pull the dumbbell up towards your chest, keeping your elbow close to your body and squeezing your shoulder blades together.",
+        "Pause for a moment at the top, then slowly lower the dumbbell back down to the starting position.",
+        "Repeat for the desired number of repetitions, then switch sides."
+       ],
+       "gif": "assets/0292-C0MA9bC.gif",
+       "thumb": "assets/0292-C0MA9bC.jpg",
+       "sets": 3,
+       "weight": 14,
+       "rest": 75,
+       "type": "reps",
+       "reps": 12,
+       "last": null
+      },
+      {
+       "id": "0334",
+       "name": "dumbbell lateral raise",
+       "target": "delts",
+       "secondary": [
+        "traps"
+       ],
+       "equipment": "dumbbell",
+       "category": "shoulders",
+       "steps": [
+        "Stand with your feet shoulder-width apart and hold a dumbbell in each hand, palms facing your body.",
+        "Keep your back straight and engage your core.",
+        "Raise your arms out to the sides until they are parallel to the floor, keeping a slight bend in your elbows.",
+        "Pause for a moment at the top, then slowly lower your arms back down to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0334-DsgkuIt.gif",
+       "thumb": "assets/0334-DsgkuIt.jpg",
+       "sets": 3,
+       "weight": 4,
+       "rest": 60,
+       "type": "reps",
+       "reps": 15,
+       "last": null
+      },
+      {
+       "id": "0662",
+       "name": "push-up",
+       "target": "pectorals",
+       "secondary": [
+        "triceps",
+        "deltoids",
+        "core"
+       ],
+       "equipment": "body weight",
+       "category": "chest",
+       "steps": [
+        "Start in a high plank position with your hands slightly wider than shoulder-width apart and your feet together.",
+        "Engage your core and lower your body towards the ground by bending your elbows, keeping your body in a straight line.",
+        "Pause for a moment when your chest is just above the ground, then push yourself back up to the starting position by straightening your arms.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0662-I4hDWkc.gif",
+       "thumb": "assets/0662-I4hDWkc.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 60,
+       "type": "reps",
+       "reps": 15,
+       "last": null
+      },
+      {
+       "id": "0296",
+       "name": "dumbbell close-grip press",
+       "target": "triceps",
+       "secondary": [
+        "chest",
+        "shoulders"
+       ],
+       "equipment": "dumbbell",
+       "category": "upper arms",
+       "steps": [
+        "Sit on a flat bench with a dumbbell in each hand, resting on your thighs.",
+        "Using your thighs to help raise the dumbbells, lift the dumbbells one at a time so that you can hold them in front of you at shoulder width.",
+        "Once at shoulder width, rotate your wrists forward so that the palms of your hands are facing away from you. This will be your starting position.",
+        "As you breathe in, slowly lower the dumbbells to your side until they are about level with your chest.",
+        "As you exhale, use your triceps to lift the dumbbells back to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0296-RxayqAZ.gif",
+       "thumb": "assets/0296-RxayqAZ.jpg",
+       "sets": 3,
+       "weight": 10,
+       "rest": 60,
+       "type": "reps",
+       "reps": 12,
+       "last": null
+      }
+     ],
+     "hiit": [
+      {
+       "id": "0699",
+       "name": "shoulder tap push-up",
+       "target": "pectorals",
+       "secondary": [
+        "triceps",
+        "core"
+       ],
+       "equipment": "body weight",
+       "category": "chest",
+       "steps": [
+        "Start in a high plank position with your hands slightly wider than shoulder-width apart and your body in a straight line from head to heels.",
+        "Lower your body towards the ground by bending your elbows, keeping them close to your sides.",
+        "As you push back up, lift your right hand off the ground and tap your left shoulder.",
+        "Return your right hand to the ground and repeat the push-up, this time lifting your left hand and tapping your right shoulder.",
+        "Continue alternating shoulder taps with each push-up repetition.",
+        "Maintain a stable core and avoid excessive hip rotation throughout the exercise.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0699-qEse6fe.gif",
+       "thumb": "assets/0699-qEse6fe.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      },
+      {
+       "id": "0630",
+       "name": "mountain climber",
+       "target": "cardiovascular system",
+       "secondary": [
+        "core",
+        "shoulders",
+        "triceps"
+       ],
+       "equipment": "body weight",
+       "category": "cardio",
+       "steps": [
+        "Start in a high plank position with your hands directly under your shoulders and your body in a straight line.",
+        "Engage your core and bring your right knee towards your chest, then quickly switch and bring your left knee towards your chest.",
+        "Continue alternating legs in a running motion, keeping your hips low and your core engaged.",
+        "Maintain a steady pace and breathe evenly throughout the exercise.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0630-RJgzwny.gif",
+       "thumb": "assets/0630-RJgzwny.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      },
+      {
+       "id": "3224",
+       "name": "jack jump (male)",
+       "target": "cardiovascular system",
+       "secondary": [
+        "quadriceps",
+        "calves"
+       ],
+       "equipment": "body weight",
+       "category": "cardio",
+       "steps": [
+        "Stand with your feet together and your arms by your sides.",
+        "Jump up, spreading your feet apart and raising your arms above your head.",
+        "As you land, quickly jump back to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/3224-1g5bPpA.gif",
+       "thumb": "assets/3224-1g5bPpA.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      },
+      {
+       "id": "0464",
+       "name": "front plank with twist",
+       "target": "abs",
+       "secondary": [
+        "obliques",
+        "shoulders"
+       ],
+       "equipment": "body weight",
+       "category": "waist",
+       "steps": [
+        "Start in a high plank position with your hands directly under your shoulders and your body in a straight line from head to toe.",
+        "Engage your core and glutes to maintain a stable position.",
+        "Rotate your torso to the right, lifting your right arm and extending it towards the ceiling.",
+        "Keep your hips and legs stable as you twist.",
+        "Hold for a moment, then return to the starting position.",
+        "Repeat the twist on the left side.",
+        "Continue alternating sides for the desired number of repetitions."
+       ],
+       "gif": "assets/0464-CosupLu.gif",
+       "thumb": "assets/0464-CosupLu.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      }
+     ]
+    },
+    {
+     "num": 2,
+     "day": "Tue",
+     "title": "Lower Body\nHybrid",
+     "mins": 43,
+     "coach": "Lighter legs, faster pace. The finisher is the session — save something for it.",
+     "strength": [
+      {
+       "id": "1760",
+       "name": "dumbbell goblet squat",
+       "target": "quads",
+       "secondary": [
+        "glutes",
+        "hamstrings",
+        "calves"
+       ],
+       "equipment": "dumbbell",
+       "category": "upper legs",
+       "steps": [
+        "Stand with your feet shoulder-width apart, holding a dumbbell vertically against your chest with both hands.",
+        "Keeping your chest up and core engaged, lower your body down into a squat position by pushing your hips back and bending your knees.",
+        "Continue lowering until your thighs are parallel to the ground, or as low as you can comfortably go.",
+        "Pause for a moment at the bottom, then push through your heels to return to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/1760-yn8yg1r.gif",
+       "thumb": "assets/1760-yn8yg1r.jpg",
+       "sets": 3,
+       "weight": 14,
+       "rest": 75,
+       "type": "reps",
+       "reps": 15,
+       "last": null
+      },
+      {
+       "id": "1459",
+       "name": "dumbbell romanian deadlift",
+       "target": "glutes",
+       "secondary": [
+        "hamstrings",
+        "lower back"
+       ],
+       "equipment": "dumbbell",
+       "category": "upper legs",
+       "steps": [
+        "Stand with your feet shoulder-width apart, holding a dumbbell in each hand with an overhand grip.",
+        "Keeping your back straight and your core engaged, hinge at the hips and lower the dumbbells towards the ground, allowing your knees to bend slightly.",
+        "Lower the dumbbells until you feel a stretch in your hamstrings, then push through your heels and engage your glutes to return to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/1459-rR0LJzx.gif",
+       "thumb": "assets/1459-rR0LJzx.jpg",
+       "sets": 3,
+       "weight": 16,
+       "rest": 75,
+       "type": "reps",
+       "reps": 12,
+       "last": null
+      },
+      {
+       "id": "3470",
+       "name": "forward lunge (male)",
+       "target": "glutes",
+       "secondary": [
+        "quadriceps",
+        "hamstrings",
+        "calves"
+       ],
+       "equipment": "body weight",
+       "category": "upper legs",
+       "steps": [
+        "Stand with your feet hip-width apart and hands on your hips.",
+        "Take a big step forward with your right foot, lowering your body into a lunge position.",
+        "Bend your right knee to about 90 degrees, keeping your knee aligned with your ankle.",
+        "Push off with your right foot and return to the starting position.",
+        "Repeat with your left leg, alternating sides for the desired number of repetitions."
+       ],
+       "gif": "assets/3470-kMzUs9Y.gif",
+       "thumb": "assets/3470-kMzUs9Y.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 60,
+       "type": "reps",
+       "reps": 12,
+       "last": null
+      },
+      {
+       "id": "3561",
+       "name": "glute bridge march",
+       "target": "glutes",
+       "secondary": [
+        "hamstrings",
+        "quadriceps"
+       ],
+       "equipment": "body weight",
+       "category": "upper legs",
+       "steps": [
+        "Lie flat on your back with your knees bent and feet flat on the ground.",
+        "Engage your glutes and lift your hips off the ground, forming a straight line from your knees to your shoulders.",
+        "While keeping your hips lifted, lift one foot off the ground and bring your knee towards your chest.",
+        "Lower your foot back to the ground and repeat the movement with the other leg.",
+        "Continue alternating legs in a marching motion while maintaining the bridge position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/3561-GibBPPg.gif",
+       "thumb": "assets/3561-GibBPPg.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 45,
+       "type": "reps",
+       "reps": 16,
+       "last": null
+      },
+      {
+       "id": "1373",
+       "name": "bodyweight standing calf raise",
+       "target": "calves",
+       "secondary": [
+        "ankles",
+        "feet"
+       ],
+       "equipment": "body weight",
+       "category": "lower legs",
+       "steps": [
+        "Stand with your feet shoulder-width apart, toes pointing forward.",
+        "Place your hands on a wall or stable surface for balance.",
+        "Slowly raise your heels off the ground, lifting your body weight onto the balls of your feet.",
+        "Pause for a moment at the top, then slowly lower your heels back down to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/1373-bJYHBIN.gif",
+       "thumb": "assets/1373-bJYHBIN.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 45,
+       "type": "reps",
+       "reps": 25,
+       "last": null
+      }
+     ],
+     "hiit": [
+      {
+       "id": "0514",
+       "name": "jump squat",
+       "target": "glutes",
+       "secondary": [
+        "quadriceps",
+        "hamstrings",
+        "calves"
+       ],
+       "equipment": "body weight",
+       "category": "upper legs",
+       "steps": [
+        "Stand with your feet shoulder-width apart.",
+        "Lower your body into a squat position by bending your knees and pushing your hips back.",
+        "Jump explosively off the ground, extending your hips, knees, and ankles.",
+        "While in mid-air, quickly bring your arms forward for balance.",
+        "Land softly on the balls of your feet and immediately go into the next repetition.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0514-LIlE5Tn.gif",
+       "thumb": "assets/0514-LIlE5Tn.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      },
+      {
+       "id": "3361",
+       "name": "skater hops",
+       "target": "cardiovascular system",
+       "secondary": [
+        "quadriceps",
+        "hamstrings",
+        "glutes",
+        "calves"
+       ],
+       "equipment": "body weight",
+       "category": "cardio",
+       "steps": [
+        "Stand with your feet shoulder-width apart.",
+        "Bend your knees slightly and jump to the right, landing on your right foot.",
+        "As you land, swing your left leg behind your right leg and tap the ground with your left toes.",
+        "Immediately jump to the left, landing on your left foot.",
+        "As you land, swing your right leg behind your left leg and tap the ground with your right toes.",
+        "Continue alternating sides, jumping and tapping the ground with each leg.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/3361-zfNHMN9.gif",
+       "thumb": "assets/3361-zfNHMN9.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      },
+      {
+       "id": "3582",
+       "name": "lunge with jump",
+       "target": "glutes",
+       "secondary": [
+        "quadriceps",
+        "hamstrings",
+        "calves"
+       ],
+       "equipment": "body weight",
+       "category": "upper legs",
+       "steps": [
+        "Start by standing with your feet shoulder-width apart.",
+        "Take a step forward with your right foot, lowering your body into a lunge position.",
+        "Push off with your right foot and jump into the air, switching the position of your feet mid-air.",
+        "Land softly with your left foot forward and immediately lower your body into a lunge position.",
+        "Continue alternating between lunges and jumps for the desired number of repetitions."
+       ],
+       "gif": "assets/3582-PM1PZjg.gif",
+       "thumb": "assets/3582-PM1PZjg.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      },
+      {
+       "id": "0459",
+       "name": "flutter kicks",
+       "target": "glutes",
+       "secondary": [
+        "hip flexors",
+        "lower abs"
+       ],
+       "equipment": "body weight",
+       "category": "upper legs",
+       "steps": [
+        "Lie flat on your back with your legs extended and your hands by your sides.",
+        "Engage your core and lift your legs off the ground about 6 inches.",
+        "Keeping your legs straight, alternate lifting one leg slightly higher than the other.",
+        "Continue this fluttering motion for the desired number of repetitions."
+       ],
+       "gif": "assets/0459-UVo2Qs2.gif",
+       "thumb": "assets/0459-UVo2Qs2.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      }
+     ]
+    },
+    {
+     "num": 3,
+     "day": "Thu",
+     "title": "Push · Pull\nHybrid",
+     "mins": 43,
+     "coach": "Rows and presses at a conversational weight. Finish every set with reps left over.",
+     "strength": [
+      {
+       "id": "3166",
+       "name": "bodyweight standing row",
+       "target": "upper back",
+       "secondary": [
+        "biceps",
+        "shoulders"
+       ],
+       "equipment": "body weight",
+       "category": "back",
+       "steps": [
+        "Stand with your feet shoulder-width apart and knees slightly bent.",
+        "Grasp a bar or handles with an overhand grip, palms facing down.",
+        "Keep your back straight and core engaged.",
+        "Pull the bar or handles towards your body, squeezing your shoulder blades together.",
+        "Pause for a moment at the top of the movement.",
+        "Slowly release and extend your arms back to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/3166-wd4ds3s.gif",
+       "thumb": "assets/3166-wd4ds3s.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 60,
+       "type": "reps",
+       "reps": 15,
+       "last": null
+      },
+      {
+       "id": "0375",
+       "name": "dumbbell pullover",
+       "target": "pectorals",
+       "secondary": [
+        "latissimus dorsi",
+        "triceps"
+       ],
+       "equipment": "dumbbell",
+       "category": "chest",
+       "steps": [
+        "Lie flat on a bench with your head at one end and your feet on the floor.",
+        "Hold a dumbbell with both hands and extend your arms straight above your chest.",
+        "Keeping a slight bend in your elbows, slowly lower the dumbbell behind your head until you feel a stretch in your chest and shoulders.",
+        "Pause for a moment, then raise the dumbbell back to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0375-9XjtHvS.gif",
+       "thumb": "assets/0375-9XjtHvS.jpg",
+       "sets": 3,
+       "weight": 10,
+       "rest": 75,
+       "type": "reps",
+       "reps": 14,
+       "last": null
+      },
+      {
+       "id": "2137",
+       "name": "dumbbell arnold press",
+       "target": "delts",
+       "secondary": [
+        "triceps",
+        "upper chest"
+       ],
+       "equipment": "dumbbell",
+       "category": "shoulders",
+       "steps": [
+        "Sit on a bench with back support and hold a dumbbell in each hand at shoulder level, palms facing your body and elbows bent.",
+        "Press the dumbbells upward until your arms are fully extended and your palms are facing forward.",
+        "Rotate your wrists as you lift, so that your palms are facing forward at the top of the movement.",
+        "Pause for a moment at the top, then slowly lower the dumbbells back to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/2137-Xy4jlWA.gif",
+       "thumb": "assets/2137-Xy4jlWA.jpg",
+       "sets": 3,
+       "weight": 8,
+       "rest": 75,
+       "type": "reps",
+       "reps": 12,
+       "last": null
+      },
+      {
+       "id": "0259",
+       "name": "close-grip push-up",
+       "target": "triceps",
+       "secondary": [
+        "chest",
+        "shoulders"
+       ],
+       "equipment": "body weight",
+       "category": "upper arms",
+       "steps": [
+        "Start in a high plank position with your hands placed close together, directly under your shoulders.",
+        "Engage your core and lower your body towards the ground, keeping your elbows close to your sides.",
+        "Push through your palms to extend your arms and return to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0259-x6KpKpq.gif",
+       "thumb": "assets/0259-x6KpKpq.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 60,
+       "type": "reps",
+       "reps": 15,
+       "last": null
+      },
+      {
+       "id": "2292",
+       "name": "dumbbell rear delt raise",
+       "target": "delts",
+       "secondary": [
+        "trapezius",
+        "rhomboids"
+       ],
+       "equipment": "dumbbell",
+       "category": "shoulders",
+       "steps": [
+        "Stand with your feet shoulder-width apart and hold a dumbbell in each hand, palms facing your body.",
+        "Bend your knees slightly and hinge forward at the hips, keeping your back straight.",
+        "Raise your arms out to the sides, keeping a slight bend in your elbows, until they are parallel to the floor.",
+        "Pause for a moment at the top, then slowly lower your arms back down to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/2292-mu5Guxt.gif",
+       "thumb": "assets/2292-mu5Guxt.jpg",
+       "sets": 3,
+       "weight": 4,
+       "rest": 60,
+       "type": "reps",
+       "reps": 15,
+       "last": null
+      }
+     ],
+     "hiit": [
+      {
+       "id": "0660",
+       "name": "push-up close-grip off dumbbell",
+       "target": "triceps",
+       "secondary": [
+        "chest",
+        "shoulders"
+       ],
+       "equipment": "dumbbell",
+       "category": "upper arms",
+       "steps": [
+        "Start in a push-up position with your hands placed close together, directly under your shoulders.",
+        "Hold a dumbbell in each hand, resting them on the ground.",
+        "Lower your body towards the ground by bending your elbows, keeping them close to your sides.",
+        "Push through your palms to extend your arms and return to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0660-KZXAtKQ.gif",
+       "thumb": "assets/0660-KZXAtKQ.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      },
+      {
+       "id": "3655",
+       "name": "walking high knees lunge",
+       "target": "cardiovascular system",
+       "secondary": [
+        "quadriceps",
+        "hamstrings",
+        "glutes",
+        "calves"
+       ],
+       "equipment": "body weight",
+       "category": "cardio",
+       "steps": [
+        "Stand with your feet hip-width apart.",
+        "Lift your right knee up towards your chest as high as you can while balancing on your left leg.",
+        "Step forward with your right foot and lower your body into a lunge position, bending both knees to a 90-degree angle.",
+        "Push off with your right foot and bring your left knee up towards your chest.",
+        "Step forward with your left foot and lower your body into a lunge position.",
+        "Continue alternating legs and lunging forward, keeping your core engaged and maintaining a steady pace.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/3655-J9zIWig.gif",
+       "thumb": "assets/3655-J9zIWig.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      },
+      {
+       "id": "0687",
+       "name": "russian twist",
+       "target": "abs",
+       "secondary": [
+        "obliques"
+       ],
+       "equipment": "body weight",
+       "category": "waist",
+       "steps": [
+        "Sit on the ground with your knees bent and feet flat on the floor.",
+        "Lean back slightly while keeping your back straight and your core engaged.",
+        "Hold your hands together in front of your chest or hold a weight if desired.",
+        "Lift your feet off the ground, balancing on your sit bones.",
+        "Twist your torso to the right, bringing your hands or weight towards the right side of your body.",
+        "Pause for a moment, then twist your torso to the left, bringing your hands or weight towards the left side of your body.",
+        "Continue alternating sides for the desired number of repetitions."
+       ],
+       "gif": "assets/0687-XVDdcoj.gif",
+       "thumb": "assets/0687-XVDdcoj.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      },
+      {
+       "id": "0274",
+       "name": "crunch floor",
+       "target": "abs",
+       "secondary": [
+        "hip flexors"
+       ],
+       "equipment": "body weight",
+       "category": "waist",
+       "steps": [
+        "Lie flat on your back with your knees bent and feet flat on the ground.",
+        "Place your hands behind your head with your elbows pointing outwards.",
+        "Engage your abs and lift your shoulders off the ground, curling forward towards your knees.",
+        "Pause for a moment at the top, then slowly lower your shoulders back down to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0274-TFqbd8t.gif",
+       "thumb": "assets/0274-TFqbd8t.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      }
+     ]
+    },
+    {
+     "num": 4,
+     "day": "Sat",
+     "title": "Full Body\nBurner",
+     "mins": 42,
+     "coach": "Last session of the block. Empty the tank, then start week A heavier than you finished.",
+     "strength": [
+      {
+       "id": "0413",
+       "name": "dumbbell squat",
+       "target": "glutes",
+       "secondary": [
+        "quadriceps",
+        "hamstrings",
+        "calves"
+       ],
+       "equipment": "dumbbell",
+       "category": "upper legs",
+       "steps": [
+        "Stand with your feet shoulder-width apart, holding a dumbbell in each hand at your sides.",
+        "Keeping your chest up and core engaged, lower your body down by bending at the knees and hips, as if sitting back into a chair.",
+        "Continue lowering until your thighs are parallel to the ground, or as low as you can comfortably go.",
+        "Pause for a moment at the bottom, then push through your heels to return to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0413-HsvHqgf.gif",
+       "thumb": "assets/0413-HsvHqgf.jpg",
+       "sets": 3,
+       "weight": 10,
+       "rest": 60,
+       "type": "reps",
+       "reps": 15,
+       "last": null
+      },
+      {
+       "id": "0300",
+       "name": "dumbbell deadlift",
+       "target": "glutes",
+       "secondary": [
+        "hamstrings",
+        "lower back"
+       ],
+       "equipment": "dumbbell",
+       "category": "upper legs",
+       "steps": [
+        "Stand with your feet shoulder-width apart, toes pointing forward.",
+        "Hold a dumbbell in each hand, palms facing your body, arms extended downwards.",
+        "Bend at your hips and knees, lowering the dumbbells towards the ground while keeping your back straight.",
+        "Push through your heels and extend your hips and knees, lifting the dumbbells back up to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0300-nUwVh7b.gif",
+       "thumb": "assets/0300-nUwVh7b.jpg",
+       "sets": 3,
+       "weight": 16,
+       "rest": 60,
+       "type": "reps",
+       "reps": 15,
+       "last": null
+      },
+      {
+       "id": "0437",
+       "name": "dumbbell upright row",
+       "target": "delts",
+       "secondary": [
+        "traps",
+        "biceps"
+       ],
+       "equipment": "dumbbell",
+       "category": "shoulders",
+       "steps": [
+        "Stand with your feet shoulder-width apart, holding a dumbbell in each hand with an overhand grip.",
+        "Let the dumbbells hang in front of your thighs, with your arms fully extended.",
+        "Keeping your back straight and your core engaged, exhale and lift the dumbbells straight up towards your chin, leading with your elbows.",
+        "Pause for a moment at the top, then inhale and slowly lower the dumbbells back down to the starting position.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0437-ainizkb.gif",
+       "thumb": "assets/0437-ainizkb.jpg",
+       "sets": 3,
+       "weight": 8,
+       "rest": 60,
+       "type": "reps",
+       "reps": 15,
+       "last": null
+      }
+     ],
+     "hiit": [
+      {
+       "id": "1160",
+       "name": "burpee",
+       "target": "cardiovascular system",
+       "secondary": [
+        "quadriceps",
+        "hamstrings",
+        "calves",
+        "shoulders",
+        "chest"
+       ],
+       "equipment": "body weight",
+       "category": "cardio",
+       "steps": [
+        "Start in a standing position with your feet shoulder-width apart.",
+        "Lower your body into a squat position by bending your knees and placing your hands on the floor in front of you.",
+        "Kick your feet back into a push-up position.",
+        "Perform a push-up, keeping your body in a straight line.",
+        "Jump your feet back into the squat position.",
+        "Jump up explosively, reaching your arms overhead.",
+        "Land softly and immediately lower back into a squat position to begin the next repetition."
+       ],
+       "gif": "assets/1160-dK9394r.gif",
+       "thumb": "assets/1160-dK9394r.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      },
+      {
+       "id": "0501",
+       "name": "jack burpee",
+       "target": "cardiovascular system",
+       "secondary": [
+        "quadriceps",
+        "hamstrings",
+        "calves",
+        "shoulders",
+        "triceps"
+       ],
+       "equipment": "body weight",
+       "category": "cardio",
+       "steps": [
+        "Start in a standing position with your feet shoulder-width apart.",
+        "Lower your body into a squat position, placing your hands on the ground in front of you.",
+        "Kick your feet back, landing in a push-up position.",
+        "Perform a push-up, lowering your chest to the ground and then pushing back up.",
+        "Jump your feet forward, landing in a squat position.",
+        "Jump up explosively, reaching your arms overhead.",
+        "Land softly and immediately lower back into the squat position to begin the next repetition."
+       ],
+       "gif": "assets/0501-mr7pkqP.gif",
+       "thumb": "assets/0501-mr7pkqP.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      },
+      {
+       "id": "0630",
+       "name": "mountain climber",
+       "target": "cardiovascular system",
+       "secondary": [
+        "core",
+        "shoulders",
+        "triceps"
+       ],
+       "equipment": "body weight",
+       "category": "cardio",
+       "steps": [
+        "Start in a high plank position with your hands directly under your shoulders and your body in a straight line.",
+        "Engage your core and bring your right knee towards your chest, then quickly switch and bring your left knee towards your chest.",
+        "Continue alternating legs in a running motion, keeping your hips low and your core engaged.",
+        "Maintain a steady pace and breathe evenly throughout the exercise.",
+        "Repeat for the desired number of repetitions."
+       ],
+       "gif": "assets/0630-RJgzwny.gif",
+       "thumb": "assets/0630-RJgzwny.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      },
+      {
+       "id": "0685",
+       "name": "run",
+       "target": "cardiovascular system",
+       "secondary": [
+        "quadriceps",
+        "hamstrings",
+        "calves"
+       ],
+       "equipment": "body weight",
+       "category": "cardio",
+       "steps": [
+        "Start by standing upright with your feet hip-width apart.",
+        "Engage your core and keep your upper body relaxed.",
+        "Begin jogging in place, lifting your knees up towards your chest and landing softly on the balls of your feet.",
+        "Maintain a steady pace and continue jogging for the desired duration or distance.",
+        "Remember to breathe deeply and maintain good posture throughout the exercise."
+       ],
+       "gif": "assets/0685-oLrKqDH.gif",
+       "thumb": "assets/0685-oLrKqDH.jpg",
+       "sets": 3,
+       "weight": 0,
+       "rest": 20,
+       "type": "time",
+       "time": 40,
+       "block": "hiit"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}
