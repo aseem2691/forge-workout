@@ -40,8 +40,10 @@ fun PlanScreen(
     week: Week,
     saved: Persisted,
     todayIndex: Int,
+    watchLinked: Boolean,
     onOpenDay: (Int) -> Unit,
     onEditBody: () -> Unit,
+    onOpenWatch: () -> Unit,
 ) {
     val plan = week.days
     val done = saved.doneThisWeek()
@@ -96,6 +98,41 @@ fun PlanScreen(
                 StatTile(Modifier.weight(1f), "${done.size}/${plan.size}", "Sessions done")
                 StatTile(Modifier.weight(1f), formatTonnes(volume), "Volume this wk")
                 StatTile(Modifier.weight(1f), "${minutes}m", "Time this wk")
+            }
+        }
+
+        item {
+            Row(
+                Modifier
+                    .padding(start = 20.dp, end = 20.dp, top = 12.dp)
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(13.dp))
+                    .background(C.Card)
+                    .border(1.dp, C.Border, RoundedCornerShape(13.dp))
+                    .clickable(onClick = onOpenWatch)
+                    .padding(horizontal = 14.dp, vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+            ) {
+                Text("⌚", style = arch(14.0, 500, C.Text, line = 1.0))
+                Column(Modifier.weight(1f)) {
+                    Text(
+                        if (watchLinked) "Watch connected" else "Connect your watch",
+                        style = arch(12.5, 600, C.Text, line = 1.2),
+                    )
+                    Text(
+                        if (watchLinked) {
+                            "Heart rate and calories sync after each session"
+                        } else {
+                            "Live heart rate and workout sync from your Amazfit"
+                        },
+                        style = arch(10.5, 500, C.Muted, line = 1.35),
+                    )
+                }
+                Text(
+                    if (watchLinked) "✓" else "›",
+                    style = arch(14.0, 700, if (watchLinked) C.Accent else C.Faint, line = 1.0),
+                )
             }
         }
 

@@ -53,6 +53,7 @@ fun PlayerScreen(
     day: Day,
     state: SessionState,
     saved: Persisted,
+    bpm: Int?,
     onClose: () -> Unit,
     onToggleHow: () -> Unit,
     onToggleRun: () -> Unit,
@@ -173,6 +174,22 @@ fun PlayerScreen(
                             .align(Alignment.BottomEnd)
                             .padding(end = 11.dp, bottom = 8.dp),
                     )
+                    if (bpm != null) {
+                        Row(
+                            Modifier
+                                .align(Alignment.BottomStart)
+                                .padding(start = 12.dp, bottom = 10.dp)
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(Color(0xDB0D1005))
+                                .padding(horizontal = 9.dp, vertical = 6.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(6.dp),
+                        ) {
+                            Text("♥", style = arch(11.0, 700, C.Accent, line = 1.0))
+                            Text("$bpm", style = display(15.0, C.Text, line = 1.0))
+                            Text("BPM", style = arch(7.5, 700, C.Ghost, track = 0.12, line = 1.0))
+                        }
+                    }
                 }
 
                 Column(
