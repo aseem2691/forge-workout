@@ -1,11 +1,19 @@
 package com.forge.workout
 
 import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.ui.platform.LocalContext
+import androidx.health.connect.client.PermissionController
+import com.forge.workout.ui.WatchScreen
+import com.forge.workout.watch.HcStatus
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -61,9 +69,47 @@ private fun ForgeApp(vm: WorkoutViewModel = viewModel()) {
     val state by vm.state.collectAsState()
     val saved by vm.saved.collectAsState()
     val loaded by vm.loaded.collectAsState()
+    val bpm by vm.bpm.collectAsState()
+    val hrState by vm.hrState.collectAsState()
+    val hrDevices by vm.hrDevices.collectAsState()
+    val hcStatus by vm.hcStatus.collectAsState()
+    val watchSummary by vm.watchSummary.collectAsState()
+    val syncing by vm.syncing.collectAsState()
     var editingBody by remember { mutableStateOf(false) }
+    var showWatch by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
+    val healthPermissions = rememberLauncherForActivityResult(
+        PermissionController.createRequestPermissionResultContract(),
+    ) { vm.refreshHealthConnect() }
+
+    val blePermissions = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions(),
+    ) { granted -> if (granted.values.all { it }) vm.scanForHeartRate() }
 
     if (!loaded) return
+
+    if (showWatch) {
+        WatchScreen(
+            hcStatus = hcStatus,
+            hrState = hrState,
+            bpm = bpm,
+            savedName = saved.hrName,
+            devices = hrDevices,
+            onBack = { vm.stopHeartRateScan(); showWatch = false },
+            onLinkHealthConnect = { healthPermissions.launch(vm.health.permissions) },
+            onOpenHealthConnect = { openHealthConnect(context) },
+            onScan = {
+                if (vm.heart.hasPermissions()) vm.scanForHeartRate()
+                else blePermissions.launch(vm.heart.requiredPermissions())
+            },
+            onStopScan = vm::stopHeartRateScan,
+            onPick = { vm.useHeartRateDevice(it) },
+            onForget = vm::forgetHeartRateDevice,
+        )
+        BackHandler { vm.stopHeartRateScan(); showWatch = false }
+        return
+    }
 
     KeepScreenOn(state.screen == Screen.Player)
 
@@ -83,8 +129,10 @@ private fun ForgeApp(vm: WorkoutViewModel = viewModel()) {
             week = vm.week(state.weekIdx),
             saved = saved,
             todayIndex = vm.todayIndex(),
+            watchLinked = hcStatus == HcStatus.Ready || saved.hrAddress != null,
             onOpenDay = vm::openDay,
             onEditBody = { editingBody = true },
+            onOpenWatch = { vm.refreshHealthConnect(); showWatch = true },
         )
 
         Screen.Day -> day?.let {
@@ -102,6 +150,7 @@ private fun ForgeApp(vm: WorkoutViewModel = viewModel()) {
                 day = it,
                 state = state,
                 saved = saved,
+                bpm = bpm,
                 onClose = vm::goDay,
                 onToggleHow = vm::toggleHow,
                 onToggleRun = vm::toggleRun,
@@ -116,10 +165,17 @@ private fun ForgeApp(vm: WorkoutViewModel = viewModel()) {
         }
 
         Screen.Done -> day?.let {
+            val last = saved.history.lastOrNull()
             DoneScreen(
                 day = it,
                 nextDay = vm.plan[(state.dayIdx + 1) % vm.plan.size],
                 state = state,
+                watch = watchSummary,
+                sessionAvgHr = last?.avgHr,
+                sessionMaxHr = last?.maxHr,
+                syncing = syncing,
+                canSync = hcStatus == HcStatus.Ready,
+                onSyncWatch = vm::refreshWatchSync,
                 onBackToWeek = vm::goPlan,
             )
         }
@@ -139,6 +195,25 @@ private fun ForgeApp(vm: WorkoutViewModel = viewModel()) {
                 editingBody = false
             },
         )
+    }
+}
+
+/** Health Connect lives in system settings on Android 14+, and as its own app before that. */
+private fun openHealthConnect(context: Context) {
+    val intents = listOf(
+        // Platform settings screen on Android 14+, the standalone app before that.
+        Intent("android.settings.HEALTH_CONNECT_SETTINGS"),
+        Intent("androidx.health.ACTION_HEALTH_CONNECT_SETTINGS"),
+        Intent(Intent.ACTION_VIEW).setData(
+            android.net.Uri.parse("market://details?id=com.google.android.apps.healthdata"),
+        ),
+    )
+    for (intent in intents) {
+        if (runCatching { context.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)); true }
+                .getOrDefault(false)
+        ) {
+            return
+        }
     }
 }
 

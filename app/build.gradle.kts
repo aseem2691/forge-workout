@@ -59,6 +59,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.androidx.health.connect)
     debugImplementation(libs.androidx.ui.tooling)
     testImplementation(libs.junit)
 }

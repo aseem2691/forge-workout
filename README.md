@@ -102,6 +102,29 @@ to real data here:
 Added for daily use: the screen stays awake in the player, and the phone buzzes when a set ends,
 a rest finishes, and a session completes.
 
+## Amazfit / Zepp OS watch
+
+Forge connects to an Amazfit watch two ways, set up from **Connect your watch** on the plan screen.
+
+**Post-workout sync — Health Connect.** The Zepp app writes its data into Health Connect
+(Zepp: Profile → 3rd-party account linking → Health Connect). Forge reads the exercise session,
+heart rate and calories that overlap the session you just logged and attaches them to it, and
+publishes the Forge session back into Health Connect. Zepp only ever *writes* to Health Connect, so
+Forge sessions will not appear inside Zepp.
+
+Two details worth knowing: Forge filters out its own records when looking for the watch's, so a
+session it just published is never mistaken for the watch's recording; and if the watch logged no
+distinct workout, Forge still reports the heart rate it recorded across the session window.
+
+**Live heart rate — Bluetooth.** With **Heart Rate Push** enabled (GTR 4, Zepp OS 3.0+, under
+Settings → Heart rate), the watch advertises itself as a standard BLE heart-rate monitor. Forge
+connects to it like any chest strap over the Heart Rate Service (`0x180D` / `0x2A37`) and shows live
+BPM on the player, then stores the session's average and max. Many watches only broadcast while a
+workout is running on the watch, so start one there first.
+
+> Talking to the watch over Zepp's own protocol was deliberately not attempted — it is proprietary
+> and encrypted, needs pairing-key extraction, and breaks on firmware updates.
+
 ## Display and media resolution
 
 Every part of the UI that Forge draws — type, layout, icons, timer rings — is vector and scales to

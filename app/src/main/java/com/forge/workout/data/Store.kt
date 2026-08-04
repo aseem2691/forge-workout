@@ -25,6 +25,14 @@ data class SessionRecord(
     val reps: Int,
     val volume: Int,
     val seconds: Int,
+    /** Wall-clock bounds, used to match this session against the watch's own recording. */
+    val startedAtMs: Long = 0L,
+    val endedAtMs: Long = 0L,
+    /** From the live BLE monitor during the session, or from the watch via Health Connect. */
+    val avgHr: Int? = null,
+    val maxHr: Int? = null,
+    val calories: Int? = null,
+    val watchTitle: String? = null,
 )
 
 @Serializable
@@ -41,6 +49,9 @@ data class Persisted(
     val programStart: Long = 0L,
     val mode: String = "tap",
     val initials: String = "RK",
+    /** Remembered BLE heart-rate broadcaster (the watch, or a strap). */
+    val hrAddress: String? = null,
+    val hrName: String? = null,
 ) {
     fun weightFor(e: Exercise): Int = weights[e.id] ?: e.weight
 

@@ -3,6 +3,7 @@ package com.forge.workout.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import com.forge.workout.watch.WatchSummary
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,6 +35,12 @@ fun DoneScreen(
     day: Day,
     nextDay: Day,
     state: SessionState,
+    watch: WatchSummary?,
+    sessionAvgHr: Int?,
+    sessionMaxHr: Int?,
+    syncing: Boolean,
+    canSync: Boolean,
+    onSyncWatch: () -> Unit,
     onBackToWeek: () -> Unit,
 ) {
     Column(
@@ -48,8 +55,8 @@ fun DoneScreen(
             Text("SESSION COMPLETE", style = arch(10.0, 800, C.Accent, track = 0.24, line = 1.0))
             Text("${day.flatTitle.uppercase()}\nDONE", style = display(42.0, line = 0.94))
             Text(
-                "That is ${state.setsDone} sets banked. Protein within the hour, " +
-                    "and you are one session closer to target.",
+                "That is ${state.setsDone} ${if (state.setsDone == 1) "set" else "sets"} banked. " +
+                    "Protein within the hour, and you are one session closer to target.",
                 style = arch(12.5, 500, C.DayHeader, line = 1.5),
             )
         }
@@ -67,6 +74,10 @@ fun DoneScreen(
                     "Time on task",
                 )
             }
+        }
+
+        if (canSync || watch != null || sessionAvgHr != null) {
+            WatchBlock(watch, sessionAvgHr, sessionMaxHr, syncing, canSync, onSyncWatch)
         }
 
         Column(
@@ -98,6 +109,76 @@ fun DoneScreen(
                 "BACK TO MY WEEK",
                 style = display(17.0, C.OnAccent, line = 1.0, track = 0.08),
                 textAlign = TextAlign.Center,
+            )
+        }
+    }
+}
+
+@Composable
+private fun WatchBlock(
+    watch: WatchSummary?,
+    sessionAvgHr: Int?,
+    sessionMaxHr: Int?,
+    syncing: Boolean,
+    canSync: Boolean,
+    onSync: () -> Unit,
+) {
+    val avg = sessionAvgHr ?: watch?.avgHr
+    val max = sessionMaxHr ?: watch?.maxHr
+
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(15.dp))
+            .background(C.Card)
+            .border(1.dp, C.Border, RoundedCornerShape(15.dp))
+            .padding(horizontal = 16.dp, vertical = 15.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
+        Row(
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text("FROM YOUR WATCH", style = arch(9.0, 700, C.Dim, track = 0.16, line = 1.0))
+            if (canSync) {
+                Text(
+                    if (syncing) "SYNCING…" else "SYNC NOW",
+                    style = arch(9.5, 700, if (syncing) C.Faint else C.Accent, track = 0.1, line = 1.0),
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .clickable(enabled = !syncing, onClick = onSync)
+                        .padding(horizontal = 8.dp, vertical = 4.dp),
+                )
+            }
+        }
+
+        if (avg == null && max == null && watch?.calories == null) {
+            Text(
+                if (syncing) {
+                    "Looking for your watch's recording…"
+                } else {
+                    "Nothing from the watch yet. Open the Zepp app so it uploads this workout, then tap Sync now."
+                },
+                style = arch(11.5, 500, C.Muted, line = 1.5),
+            )
+            return@Column
+        }
+
+        Row(horizontalArrangement = Arrangement.spacedBy(9.dp)) {
+            if (avg != null) DoneTile(Modifier.weight(1f), "$avg", "Avg heart rate")
+            if (max != null) DoneTile(Modifier.weight(1f), "$max", "Max heart rate")
+        }
+        watch?.calories?.let { kcal ->
+            Row(horizontalArrangement = Arrangement.spacedBy(9.dp)) {
+                DoneTile(Modifier.weight(1f), "$kcal", "Calories")
+                Spacer(Modifier.weight(1f))
+            }
+        }
+        watch?.let {
+            Text(
+                "Matched to “${it.title}” on your watch.",
+                style = arch(10.5, 500, C.Faint, line = 1.4),
             )
         }
     }

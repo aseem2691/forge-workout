@@ -16,6 +16,12 @@ import com.forge.workout.data.Program
 import com.forge.workout.data.SessionRecord
 import com.forge.workout.data.Store
 import com.forge.workout.data.Week
+import com.forge.workout.watch.HcStatus
+import com.forge.workout.watch.HealthConnectRepo
+import com.forge.workout.watch.HeartRateMonitor
+import com.forge.workout.watch.HrDevice
+import com.forge.workout.watch.HrState
+import com.forge.workout.watch.WatchSummary
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -86,6 +92,29 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
     private var sessionActive = false
     private val pendingPerf = mutableMapOf<String, String>()
 
+    // ── watch ───────────────────────────────────────────────────────────────────
+
+    val heart = HeartRateMonitor(app)
+    val health = HealthConnectRepo(app)
+
+    val bpm: StateFlow<Int?> = heart.bpm
+    val hrState: StateFlow<HrState> = heart.state
+    val hrDevices: StateFlow<List<HrDevice>> = heart.found
+
+    private val _hcStatus = MutableStateFlow(HcStatus.Unavailable)
+    val hcStatus: StateFlow<HcStatus> = _hcStatus.asStateFlow()
+
+    private val _watchSummary = MutableStateFlow<WatchSummary?>(null)
+    val watchSummary: StateFlow<WatchSummary?> = _watchSummary.asStateFlow()
+
+    private val _syncing = MutableStateFlow(false)
+    val syncing: StateFlow<Boolean> = _syncing.asStateFlow()
+
+    private var sessionStartWallMs = 0L
+    private var hrSum = 0L
+    private var hrCount = 0
+    private var hrMax = 0
+
     init {
         viewModelScope.launch {
             store.data.collect { p ->
@@ -109,6 +138,46 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
                 tick()
             }
         }
+        // Accumulate heart rate for the session average as samples arrive (~1 Hz).
+        viewModelScope.launch {
+            heart.bpm.collect { value ->
+                if (value != null && sessionActive) {
+                    hrSum += value
+                    hrCount++
+                    if (value > hrMax) hrMax = value
+                }
+            }
+        }
+        refreshHealthConnect()
+    }
+
+    fun refreshHealthConnect() {
+        viewModelScope.launch { _hcStatus.value = health.status() }
+    }
+
+    // ── heart-rate monitor ──────────────────────────────────────────────────────
+
+    fun scanForHeartRate() = heart.startScan()
+
+    fun stopHeartRateScan() = heart.stopScan()
+
+    fun useHeartRateDevice(device: HrDevice) {
+        viewModelScope.launch {
+            store.update { it.copy(hrAddress = device.address, hrName = device.name) }
+        }
+        heart.connect(device.address)
+    }
+
+    fun forgetHeartRateDevice() {
+        heart.disconnect()
+        viewModelScope.launch { store.update { it.copy(hrAddress = null, hrName = null) } }
+    }
+
+    /** Reconnects to the remembered broadcaster, e.g. when a session starts. */
+    fun connectSavedHeartRate() {
+        val address = _saved.value.hrAddress ?: return
+        if (heart.state.value == HrState.Connected || heart.state.value == HrState.Connecting) return
+        heart.connect(address)
     }
 
     // ── plan helpers ────────────────────────────────────────────────────────────
@@ -169,7 +238,11 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
         if (fresh) {
             sessionActive = true
             sessionStartAt = now
+            sessionStartWallMs = System.currentTimeMillis()
             pendingPerf.clear()
+            hrSum = 0L; hrCount = 0; hrMax = 0
+            _watchSummary.value = null
+            connectSavedHeartRate()
         }
         frozenAt = 0L
         workLeftMs = e.time * 1000L
@@ -341,6 +414,7 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
             _state.update { it.copy(screen = Screen.Done, running = false, resting = false, showHow = false) }
             return
         }
+        val endedAtMs = System.currentTimeMillis()
         val record = SessionRecord(
             epochDay = LocalDate.now().toEpochDay(),
             dayIdx = s.dayIdx,
@@ -349,6 +423,10 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
             reps = s.repsDone,
             volume = s.volume,
             seconds = s.elapsed,
+            startedAtMs = sessionStartWallMs,
+            endedAtMs = endedAtMs,
+            avgHr = if (hrCount > 0) (hrSum / hrCount).toInt() else null,
+            maxHr = hrMax.takeIf { it > 0 },
         )
         val perf = pendingPerf.toMap()
         viewModelScope.launch {
@@ -359,10 +437,62 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
                     programStart = if (it.programStart == 0L) record.epochDay else it.programStart,
                 )
             }
+            syncWatch(record)
         }
         sessionActive = false
         buzz(220)
         _state.update { it.copy(screen = Screen.Done, running = false, resting = false, showHow = false) }
+    }
+
+    /**
+     * Publishes the session to Health Connect and pulls back whatever the watch recorded for the
+     * same window. The watch only reaches Health Connect once the Zepp app syncs, so this is
+     * best-effort — [refreshWatchSync] re-runs it on demand.
+     */
+    private suspend fun syncWatch(record: SessionRecord) {
+        if (_hcStatus.value != HcStatus.Ready) return
+        _syncing.value = true
+        health.publish(
+            title = "Forge — ${record.dayTitle}",
+            startMs = record.startedAtMs,
+            endMs = record.endedAtMs,
+            hiit = record.dayTitle.contains("HIIT", ignoreCase = true),
+        )
+        val summary = health.summaryFor(record.startedAtMs, record.endedAtMs)
+        _watchSummary.value = summary
+        if (summary != null) {
+            store.update { saved ->
+                saved.copy(
+                    history = saved.history.map {
+                        if (it.startedAtMs == record.startedAtMs) {
+                            it.copy(
+                                avgHr = it.avgHr ?: summary.avgHr,
+                                maxHr = it.maxHr ?: summary.maxHr,
+                                calories = summary.calories,
+                                watchTitle = summary.title,
+                            )
+                        } else {
+                            it
+                        }
+                    },
+                )
+            }
+        }
+        _syncing.value = false
+    }
+
+    /** "Sync now" on the done screen — the watch often lands in Health Connect a minute late. */
+    fun refreshWatchSync() {
+        val record = _saved.value.history.lastOrNull() ?: return
+        viewModelScope.launch {
+            _hcStatus.value = health.status()
+            syncWatch(record)
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        heart.disconnect()
     }
 
     fun setBodyWeight(kg: Float) {
