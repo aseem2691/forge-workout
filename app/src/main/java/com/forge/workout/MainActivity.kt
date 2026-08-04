@@ -15,11 +15,23 @@ import androidx.health.connect.client.PermissionController
 import com.forge.workout.ui.WatchScreen
 import com.forge.workout.watch.HcStatus
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import com.forge.workout.ui.ProgressScreen
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -75,8 +87,11 @@ private fun ForgeApp(vm: WorkoutViewModel = viewModel()) {
     val hcStatus by vm.hcStatus.collectAsState()
     val watchSummary by vm.watchSummary.collectAsState()
     val syncing by vm.syncing.collectAsState()
+    val range by vm.range.collectAsState()
+    val progress by vm.progress.collectAsState()
     var editingBody by remember { mutableStateOf(false) }
     var showWatch by remember { mutableStateOf(false) }
+    var tab by remember { mutableStateOf(Tab.Train) }
     val context = LocalContext.current
 
     val healthPermissions = rememberLauncherForActivityResult(
@@ -125,15 +140,31 @@ private fun ForgeApp(vm: WorkoutViewModel = viewModel()) {
     val day = vm.plan.getOrNull(state.dayIdx)
 
     when (state.screen) {
-        Screen.Plan -> PlanScreen(
-            week = vm.week(state.weekIdx),
-            saved = saved,
-            todayIndex = vm.todayIndex(),
-            watchLinked = hcStatus == HcStatus.Ready || saved.hrAddress != null,
-            onOpenDay = vm::openDay,
-            onEditBody = { editingBody = true },
-            onOpenWatch = { vm.refreshHealthConnect(); showWatch = true },
-        )
+        Screen.Plan -> Column(Modifier.fillMaxSize()) {
+            Box(Modifier.weight(1f)) {
+                when (tab) {
+                    Tab.Train -> PlanScreen(
+                        week = vm.week(state.weekIdx),
+                        saved = saved,
+                        todayIndex = vm.todayIndex(),
+                        watchLinked = hcStatus == HcStatus.Ready || saved.hrAddress != null,
+                        onOpenDay = vm::openDay,
+                        onEditBody = { editingBody = true },
+                        onOpenWatch = { vm.refreshHealthConnect(); showWatch = true },
+                    )
+
+                    Tab.Progress -> ProgressScreen(
+                        range = range,
+                        progress = progress,
+                        currentKg = saved.bodyNow,
+                        targetKg = saved.bodyTarget,
+                        fromScale = saved.bodyFromScale,
+                        onRange = vm::setRange,
+                    )
+                }
+            }
+            TabBar(tab) { tab = it }
+        }
 
         Screen.Day -> day?.let {
             DayScreen(
@@ -195,6 +226,59 @@ private fun ForgeApp(vm: WorkoutViewModel = viewModel()) {
                 editingBody = false
             },
         )
+    }
+}
+
+enum class Tab(val label: String, val glyph: String) {
+    Train("Train", "▦"),
+    Progress("Progress", "◪"),
+}
+
+@Composable
+private fun TabBar(selected: Tab, onSelect: (Tab) -> Unit) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .background(C.Bg)
+            .padding(top = 1.dp),
+    ) {
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .height(1.dp)
+                .background(C.Line),
+        )
+    }
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .background(C.Bg)
+            .padding(horizontal = 20.dp, vertical = 10.dp),
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
+        Tab.entries.forEach { entry ->
+            val active = entry == selected
+            Row(
+                Modifier
+                    .weight(1f)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(if (active) C.Card else Color.Transparent)
+                    .clickable { onSelect(entry) }
+                    .padding(vertical = 11.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    entry.glyph,
+                    style = arch(12.0, 700, if (active) C.Accent else C.Faint, line = 1.0),
+                )
+                Spacer(Modifier.width(7.dp))
+                Text(
+                    entry.label.uppercase(),
+                    style = arch(10.5, 700, if (active) C.Text else C.Faint, track = 0.1, line = 1.0),
+                )
+            }
+        }
     }
 }
 

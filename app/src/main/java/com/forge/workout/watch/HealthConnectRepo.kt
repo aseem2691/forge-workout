@@ -7,6 +7,7 @@ import androidx.health.connect.client.permission.HealthPermission
 import androidx.health.connect.client.records.ExerciseSessionRecord
 import androidx.health.connect.client.records.HeartRateRecord
 import androidx.health.connect.client.records.TotalCaloriesBurnedRecord
+import androidx.health.connect.client.records.WeightRecord
 import androidx.health.connect.client.records.metadata.Device
 import androidx.health.connect.client.records.metadata.Metadata
 import androidx.health.connect.client.request.AggregateRequest
@@ -28,6 +29,9 @@ data class WatchSummary(
     val calories: Int?,
 )
 
+/** A single scale reading. */
+data class WeighIn(val atMs: Long, val kg: Float)
+
 enum class HcStatus { Unavailable, UpdateRequired, NeedsPermission, Ready }
 
 /**
@@ -43,8 +47,29 @@ class HealthConnectRepo(private val context: Context) {
         HealthPermission.getReadPermission(ExerciseSessionRecord::class),
         HealthPermission.getReadPermission(HeartRateRecord::class),
         HealthPermission.getReadPermission(TotalCaloriesBurnedRecord::class),
+        HealthPermission.getReadPermission(WeightRecord::class),
         HealthPermission.getWritePermission(ExerciseSessionRecord::class),
     )
+
+    /** Every scale reading in the window, oldest first. */
+    suspend fun weights(from: Instant, to: Instant): List<WeighIn> {
+        val hc = client ?: return emptyList()
+        if (!hasPermissions()) return emptyList()
+        return runCatching {
+            hc.readRecords(
+                ReadRecordsRequest(
+                    recordType = WeightRecord::class,
+                    timeRangeFilter = TimeRangeFilter.between(from, to),
+                ),
+            ).records
+                .map { WeighIn(it.time.toEpochMilli(), it.weight.inKilograms.toFloat()) }
+                .sortedBy { it.atMs }
+        }.getOrDefault(emptyList())
+    }
+
+    /** Most recent scale reading, looking back far enough to survive a quiet spell. */
+    suspend fun latestWeight(lookbackDays: Long = 400): WeighIn? =
+        weights(Instant.now().minusSeconds(lookbackDays * 86_400), Instant.now()).lastOrNull()
 
     private val sdkStatus: Int get() = HealthConnectClient.getSdkStatus(context)
 

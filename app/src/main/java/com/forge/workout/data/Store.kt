@@ -35,6 +35,10 @@ data class SessionRecord(
     val watchTitle: String? = null,
 )
 
+/** A manually entered weigh-in. Scale readings live in Health Connect, not here. */
+@Serializable
+data class WeightEntry(val atMs: Long, val kg: Float)
+
 @Serializable
 data class Persisted(
     /** Working weight per exercise id, as adjusted with the stepper. */
@@ -48,10 +52,16 @@ data class Persisted(
     /** Epoch day the program began; 0 until first launch stamps it. */
     val programStart: Long = 0L,
     val mode: String = "tap",
-    val initials: String = "RK",
+    val initials: String = "AG",
     /** Remembered BLE heart-rate broadcaster (the watch, or a strap). */
     val hrAddress: String? = null,
     val hrName: String? = null,
+    /** When bodyNow was last set, so a newer scale reading can supersede a manual entry. */
+    val bodyNowMs: Long = 0L,
+    /** True when bodyNow came from a scale via Health Connect rather than being typed in. */
+    val bodyFromScale: Boolean = false,
+    /** Manually entered weigh-ins, so a trend exists even without a connected scale. */
+    val weightLog: List<WeightEntry> = emptyList(),
 ) {
     fun weightFor(e: Exercise): Int = weights[e.id] ?: e.weight
 

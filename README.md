@@ -102,6 +102,34 @@ to real data here:
 Added for daily use: the screen stays awake in the player, and the phone buzzes when a set ends,
 a rest finishes, and a session completes.
 
+## Progress tab
+
+A second tab charting training and body weight over **7D / 30D / 6M / 1Y**. One range filter
+scopes everything below it, so every chart and the table always read the same slice.
+
+- **Stat tiles** — sessions, volume, time trained, average heart rate, reps, and a week streak
+  (consecutive Monday-start weeks with at least one session; the current week not being logged
+  yet doesn't break it).
+- **Body weight** — a line over time with the target drawn as a dashed threshold. Points are
+  positioned by *time*, not by index, so a fortnight between weigh-ins reads as a gap.
+- **Training volume** — one bar per bucket (days for 7D/30D, weeks for 6M, months for 1Y). Empty
+  buckets are kept: a missed week should look like a missed week rather than being closed up.
+- **Breakdown table** — every plotted value as text, so nothing is encoded by colour alone.
+
+Charts are drawn directly on a Compose `Canvas`; no charting dependency. Single series per chart
+(never a dual axis), one colour per series, hairline grid, and labels only on the endpoints and
+the peak. The bucketing, streak and range arithmetic are covered by unit tests.
+
+## Body weight from a smart scale
+
+If a scale (e.g. **MovingLife**) writes into Health Connect, Forge reads the weigh-ins from there —
+the plan card and the weight chart both follow the scale, and nothing needs typing. A reading
+supersedes what's on the card only if it is *newer* than the last manual entry, so typing a weight
+still works and isn't immediately overwritten. Without a scale, manual entries are kept in a local
+log so the trend chart still works.
+
+Requires the `READ_WEIGHT` permission, granted alongside the others under Connect your watch.
+
 ## Amazfit / Zepp OS watch
 
 Forge connects to an Amazfit watch two ways, set up from **Connect your watch** on the plan screen.

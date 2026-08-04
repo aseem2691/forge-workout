@@ -13,15 +13,24 @@ import com.forge.workout.data.Exercise
 import com.forge.workout.data.Persisted
 import com.forge.workout.data.PlanLoader
 import com.forge.workout.data.Program
+import com.forge.workout.data.Progress
+import com.forge.workout.data.Range
 import com.forge.workout.data.SessionRecord
 import com.forge.workout.data.Store
 import com.forge.workout.data.Week
+import com.forge.workout.data.WeightEntry
+import com.forge.workout.data.buildProgress
 import com.forge.workout.watch.HcStatus
 import com.forge.workout.watch.HealthConnectRepo
 import com.forge.workout.watch.HeartRateMonitor
 import com.forge.workout.watch.HrDevice
 import com.forge.workout.watch.HrState
 import com.forge.workout.watch.WatchSummary
+import com.forge.workout.watch.WeighIn
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
+import java.time.Instant
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -122,9 +131,17 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
                 if (!_loaded.value) {
                     _loaded.value = true
                     _state.value = _state.value.copy(mode = p.mode, weekIdx = currentWeekIdx())
-                    if (p.programStart == 0L) {
+                    if (p.programStart == 0L || p.initials == "RK") {
                         store.update {
-                            if (it.programStart == 0L) it.copy(programStart = LocalDate.now().toEpochDay()) else it
+                            it.copy(
+                                programStart = if (it.programStart == 0L) {
+                                    LocalDate.now().toEpochDay()
+                                } else {
+                                    it.programStart
+                                },
+                                // "RK" was the design mock's placeholder, never a real value.
+                                initials = if (it.initials == "RK") "AG" else it.initials,
+                            )
                         }
                     }
                 } else if (!sessionActive && _state.value.screen == Screen.Plan) {
@@ -152,7 +169,49 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun refreshHealthConnect() {
-        viewModelScope.launch { _hcStatus.value = health.status() }
+        viewModelScope.launch {
+            _hcStatus.value = health.status()
+            if (_hcStatus.value == HcStatus.Ready) syncWeight()
+        }
+    }
+
+    // ── body weight & progress ──────────────────────────────────────────────────
+
+    private val _range = MutableStateFlow(Range.Month)
+    val range: StateFlow<Range> = _range.asStateFlow()
+
+    private val _weighIns = MutableStateFlow<List<WeighIn>>(emptyList())
+
+    /** Scale readings from Health Connect, falling back to manual entries. */
+    val progress: StateFlow<Progress> = combine(_saved, _weighIns, _range) { saved, scale, range ->
+        val manual = saved.weightLog.map { WeighIn(it.atMs, it.kg) }
+        val series = (if (scale.isNotEmpty()) scale else manual).sortedBy { it.atMs }
+        buildProgress(saved.history, series, range)
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, buildProgress(emptyList(), emptyList(), Range.Month))
+
+    fun setRange(value: Range) {
+        _range.value = value
+    }
+
+    /**
+     * Pulls weigh-ins from Health Connect. A newer scale reading supersedes whatever is
+     * on the card; a manual entry made more recently is left alone.
+     */
+    fun syncWeight() {
+        viewModelScope.launch {
+            val readings = health.weights(
+                Instant.now().minusSeconds(400L * 86_400),
+                Instant.now(),
+            )
+            if (readings.isEmpty()) return@launch
+            _weighIns.value = readings
+            val latest = readings.last()
+            if (latest.atMs > _saved.value.bodyNowMs) {
+                store.update {
+                    it.copy(bodyNow = latest.kg, bodyNowMs = latest.atMs, bodyFromScale = true)
+                }
+            }
+        }
     }
 
     // ── heart-rate monitor ──────────────────────────────────────────────────────
@@ -495,8 +554,23 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
         heart.disconnect()
     }
 
+    /** Manual weigh-in: recorded to the local log so the trend works without a scale. */
     fun setBodyWeight(kg: Float) {
-        viewModelScope.launch { store.update { it.copy(bodyNow = kg) } }
+        val now = System.currentTimeMillis()
+        viewModelScope.launch {
+            store.update {
+                if (kg == it.bodyNow) {
+                    it
+                } else {
+                    it.copy(
+                        bodyNow = kg,
+                        bodyNowMs = now,
+                        bodyFromScale = false,
+                        weightLog = (it.weightLog + WeightEntry(now, kg)).takeLast(400),
+                    )
+                }
+            }
+        }
     }
 
     fun setBodyTargets(start: Float, target: Float) {
