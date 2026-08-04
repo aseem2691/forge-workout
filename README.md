@@ -102,6 +102,20 @@ to real data here:
 Added for daily use: the screen stays awake in the player, and the phone buzzes when a set ends,
 a rest finishes, and a session completes.
 
+## Progressive overload
+
+Forge records what each exercise actually produced — weight, sets, reps, and whether every set hit
+its target. When you next reach an exercise you cleared completely at the weight still set, it
+steps the working weight up 2 kg (dumbbells top out at 24) and says so on the player. Clear the
+new weight and it steps again; miss reps and it holds. The design mocked this with hardcoded coach
+text — here it runs off your own logged history.
+
+## Rest alerts
+
+Rest counts down with a tick over the last three seconds and a brighter tone when it ends, so a set
+can be run with the phone face-down. If the app isn't on screen when rest finishes, a heads-up
+notification names the next exercise. The 40/20 HIIT intervals get the same cues.
+
 ## Progress tab
 
 A second tab charting training and body weight over **7D / 30D / 6M / 1Y**. One range filter
@@ -115,6 +129,9 @@ scopes everything below it, so every chart and the table always read the same sl
 - **Training volume** — one bar per bucket (days for 7D/30D, weeks for 6M, months for 1Y). Empty
   buckets are kept: a missed week should look like a missed week rather than being closed up.
 - **Breakdown table** — every plotted value as text, so nothing is encoded by colour alone.
+- **Your lifts** — every exercise you've logged, and per-lift working-weight trends over time.
+- **Your sessions** — every completed workout with its sets, reps, volume, time and watch data.
+- **Km walked / steps** — read from Health Connect for the selected range, most of it the walkpad.
 
 Charts are drawn directly on a Compose `Canvas`; no charting dependency. Single series per chart
 (never a dual axis), one colour per series, hairline grid, and labels only on the endpoints and

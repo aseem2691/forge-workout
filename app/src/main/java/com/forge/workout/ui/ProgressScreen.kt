@@ -36,7 +36,11 @@ fun ProgressScreen(
     currentKg: Float,
     targetKg: Float,
     fromScale: Boolean,
+    walkKm: Float?,
+    walkSteps: Int?,
     onRange: (Range) -> Unit,
+    onOpenSessions: () -> Unit,
+    onOpenLifts: () -> Unit,
 ) {
     LazyColumn(
         Modifier
@@ -96,11 +100,14 @@ fun ProgressScreen(
                 Spacer(Modifier.height(9.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(9.dp)) {
                     Stat(Modifier.weight(1f), "${progress.reps}", "Reps logged")
-                    Stat(
-                        Modifier.weight(1f),
-                        "${progress.streakWeeks}",
-                        if (progress.streakWeeks == 1) "Week streak" else "Week streak",
-                    )
+                    Stat(Modifier.weight(1f), "${progress.streakWeeks}", "Week streak")
+                }
+                if (walkKm != null && walkKm > 0f) {
+                    Spacer(Modifier.height(9.dp))
+                    Row(horizontalArrangement = Arrangement.spacedBy(9.dp)) {
+                        Stat(Modifier.weight(1f), format1(walkKm), "Km walked")
+                        Stat(Modifier.weight(1f), "${walkSteps ?: 0}", "Steps")
+                    }
                 }
             }
         }
@@ -158,10 +165,38 @@ fun ProgressScreen(
             }
         }
 
+        item {
+            Column(Modifier.padding(start = 20.dp, end = 20.dp, top = 14.dp)) {
+                NavRow("Your lifts", "Weight per exercise over time", onOpenLifts)
+                Spacer(Modifier.height(9.dp))
+                NavRow("Your sessions", "Every workout you have finished", onOpenSessions)
+            }
+        }
+
         // The table view: every plotted value is readable as text, not colour-only.
         item {
             ProgressTable(progress.periods)
         }
+    }
+}
+
+@Composable
+private fun NavRow(title: String, subtitle: String, onClick: () -> Unit) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(13.dp))
+            .background(C.Card)
+            .border(1.dp, C.Border, RoundedCornerShape(13.dp))
+            .clickable(onClick = onClick)
+            .padding(horizontal = 14.dp, vertical = 13.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(Modifier.weight(1f)) {
+            Text(title, style = arch(12.5, 600, C.Text, line = 1.2))
+            Text(subtitle, style = arch(10.5, 500, C.Muted, line = 1.3))
+        }
+        Text("›", style = arch(14.0, 700, C.Faint, line = 1.0))
     }
 }
 

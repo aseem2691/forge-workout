@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.VIBRATE" />
+    <!-- Rest-over alert when the phone is face-down or the app is backgrounded. -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <!-- Live heart rate from a standard BLE monitor (Amazfit "Heart Rate Push"). -->
     <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
@@ -19,6 +21,9 @@
     <!-- Body composition, written by a smart scale (e.g. MovingLife). -->
     <uses-permission android:name="android.permission.health.READ_WEIGHT" />
     <uses-permission android:name="android.permission.health.READ_BODY_FAT" />
+    <!-- Walking, most of it on the walkpad. -->
+    <uses-permission android:name="android.permission.health.READ_DISTANCE" />
+    <uses-permission android:name="android.permission.health.READ_STEPS" />
 
     <uses-feature android:name="android.hardware.bluetooth_le" android:required="false" />
 

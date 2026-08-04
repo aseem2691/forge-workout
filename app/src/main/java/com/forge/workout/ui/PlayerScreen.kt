@@ -264,7 +264,19 @@ fun PlayerScreen(
                     }
                 }
 
-                ProgressNote(exercise, saved, weight)
+                state.progression?.let { note ->
+                    Text(
+                        "↑ $note",
+                        style = arch(10.5, 700, C.OnAccent, line = 1.35),
+                        modifier = Modifier
+                            .padding(start = 20.dp, end = 20.dp, top = 11.dp)
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(11.dp))
+                            .background(C.Accent)
+                            .padding(horizontal = 12.dp, vertical = 9.dp),
+                    )
+                }
+                if (state.progression == null) ProgressNote(exercise, saved, weight)
 
                 Spacer(Modifier.height(16.dp))
             }

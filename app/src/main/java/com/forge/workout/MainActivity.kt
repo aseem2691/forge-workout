@@ -1,8 +1,11 @@
 package com.forge.workout
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
@@ -31,24 +34,32 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import com.forge.workout.ui.ExerciseDetailScreen
+import com.forge.workout.ui.ExerciseListScreen
 import com.forge.workout.ui.ProgressScreen
+import com.forge.workout.ui.SessionListScreen
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.forge.workout.ui.C
 import com.forge.workout.ui.DayScreen
@@ -91,6 +102,9 @@ private fun ForgeApp(vm: WorkoutViewModel = viewModel()) {
     val progress by vm.progress.collectAsState()
     var editingBody by remember { mutableStateOf(false) }
     var showWatch by remember { mutableStateOf(false) }
+    var detail by remember { mutableStateOf<String?>(null) }
+    var liftId by remember { mutableStateOf<String?>(null) }
+    val walking by vm.walking.collectAsState()
     var tab by remember { mutableStateOf(Tab.Train) }
     val context = LocalContext.current
 
@@ -102,7 +116,61 @@ private fun ForgeApp(vm: WorkoutViewModel = viewModel()) {
         ActivityResultContracts.RequestMultiplePermissions(),
     ) { granted -> if (granted.values.all { it }) vm.scanForHeartRate() }
 
+    val notifyPermission = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+    ) { }
+
+    // Rest alerts are only worth posting when the user cannot see the screen.
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_START -> vm.onScreen = true
+                Lifecycle.Event.ON_STOP -> vm.onScreen = false
+                else -> Unit
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
+
+    // Asked at launch, never mid-workout — the prompt lands over the first set otherwise.
+    LaunchedEffect(Unit) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS)
+                != PackageManager.PERMISSION_GRANTED
+            ) {
+                notifyPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
+    }
+
     if (!loaded) return
+
+    when {
+        liftId != null -> {
+            ExerciseDetailScreen(
+                results = saved.resultsFor(liftId!!),
+                onBack = { liftId = null },
+            )
+            BackHandler { liftId = null }
+            return
+        }
+        detail == "lifts" -> {
+            ExerciseListScreen(
+                results = saved.exerciseHistory,
+                onBack = { detail = null },
+                onPick = { liftId = it },
+            )
+            BackHandler { detail = null }
+            return
+        }
+        detail == "sessions" -> {
+            SessionListScreen(history = saved.history, onBack = { detail = null })
+            BackHandler { detail = null }
+            return
+        }
+    }
 
     if (showWatch) {
         WatchScreen(
@@ -159,7 +227,11 @@ private fun ForgeApp(vm: WorkoutViewModel = viewModel()) {
                         currentKg = saved.bodyNow,
                         targetKg = saved.bodyTarget,
                         fromScale = saved.bodyFromScale,
+                        walkKm = walking?.km,
+                        walkSteps = walking?.steps,
                         onRange = vm::setRange,
+                        onOpenSessions = { detail = "sessions" },
+                        onOpenLifts = { detail = "lifts" },
                     )
                 }
             }

@@ -10,6 +10,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.forge.workout.data.Day
 import com.forge.workout.data.Exercise
+import com.forge.workout.data.ExerciseResult
 import com.forge.workout.data.Persisted
 import com.forge.workout.data.PlanLoader
 import com.forge.workout.data.Program
@@ -20,6 +21,7 @@ import com.forge.workout.data.Store
 import com.forge.workout.data.Week
 import com.forge.workout.data.WeightEntry
 import com.forge.workout.data.buildProgress
+import com.forge.workout.watch.Alerts
 import com.forge.workout.watch.BodyFatReading
 import com.forge.workout.watch.HcStatus
 import com.forge.workout.watch.HealthConnectRepo
@@ -27,6 +29,7 @@ import com.forge.workout.watch.HeartRateMonitor
 import com.forge.workout.watch.HrDevice
 import com.forge.workout.watch.HrState
 import com.forge.workout.watch.WatchSummary
+import com.forge.workout.watch.Walking
 import com.forge.workout.watch.WeighIn
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -59,6 +62,8 @@ data class SessionState(
     val restTotal: Int = 0,
     val showHow: Boolean = false,
     val tempoSec: Int = 0,
+    /** Set when the working weight was stepped up on entering this exercise. */
+    val progression: String? = null,
     val setsDone: Int = 0,
     val repsDone: Int = 0,
     val volume: Int = 0,
@@ -102,10 +107,24 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
     private var sessionActive = false
     private val pendingPerf = mutableMapOf<String, String>()
 
+    /** Per-exercise tally for the session in progress. */
+    private class Acc(val name: String, val targetReps: Int) {
+        var sets = 0
+        var reps = 0
+        var weight = 0
+        var cleared = true
+    }
+
+    private val pendingResults = mutableMapOf<String, Acc>()
+
     // ── watch ───────────────────────────────────────────────────────────────────
 
     val heart = HeartRateMonitor(app)
     val health = HealthConnectRepo(app)
+    private val alerts = Alerts(app)
+
+    /** Set from the activity lifecycle: alerts only notify when the user can't see the screen. */
+    var onScreen: Boolean = true
 
     val bpm: StateFlow<Int?> = heart.bpm
     val hrState: StateFlow<HrState> = heart.state
@@ -172,7 +191,7 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
     fun refreshHealthConnect() {
         viewModelScope.launch {
             _hcStatus.value = health.status()
-            if (_hcStatus.value == HcStatus.Ready) syncWeight()
+            if (_hcStatus.value == HcStatus.Ready) { syncWeight(); syncWalking() }
         }
     }
 
@@ -183,6 +202,8 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
 
     private val _weighIns = MutableStateFlow<List<WeighIn>>(emptyList())
     private val _bodyFat = MutableStateFlow<List<BodyFatReading>>(emptyList())
+    private val _walking = MutableStateFlow<Walking?>(null)
+    val walking: StateFlow<Walking?> = _walking.asStateFlow()
 
     /** Scale readings from Health Connect, falling back to manual entries. */
     val progress: StateFlow<Progress> =
@@ -198,6 +219,18 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
 
     fun setRange(value: Range) {
         _range.value = value
+        syncWalking()
+    }
+
+    /** Steps/distance for the selected range — the walkpad tile. */
+    fun syncWalking() {
+        viewModelScope.launch {
+            if (_hcStatus.value != HcStatus.Ready) return@launch
+            _walking.value = health.walking(
+                Instant.now().minusSeconds(_range.value.days * 86_400),
+                Instant.now(),
+            )
+        }
     }
 
     /**
@@ -311,11 +344,21 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
             sessionStartAt = now
             sessionStartWallMs = System.currentTimeMillis()
             pendingPerf.clear()
+            pendingResults.clear()
             hrSum = 0L; hrCount = 0; hrMax = 0
             _watchSummary.value = null
             connectSavedHeartRate()
         }
         frozenAt = 0L
+        // Cleared every set last time at this weight? Step it up before the first set.
+        val stepUp = _saved.value.progressionFor(e)
+        val note = if (stepUp != null) {
+            val previous = _saved.value.weightFor(e)
+            viewModelScope.launch { store.update { it.copy(weights = it.weights + (e.id to stepUp)) } }
+            "Cleared every set at $previous kg last time — stepped up to $stepUp kg."
+        } else {
+            null
+        }
         workLeftMs = e.time * 1000L
         workEndAt = now + workLeftMs
         tempoAccumMs = 0L
@@ -328,6 +371,7 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
                 count = 0,
                 tempoSec = 0,
                 showHow = false,
+                progression = note,
                 resting = false,
                 running = e.isTimed,
                 remaining = e.time,
@@ -415,6 +459,11 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
 
         if (!e.isTimed) {
             pendingPerf[e.id] = if (e.hasLoad) "$weight kg × $reps" else "$reps reps"
+            val acc = pendingResults.getOrPut(e.id) { Acc(e.name, e.reps) }
+            acc.sets++
+            acc.reps += reps
+            acc.weight = weight
+            if (reps < e.reps) acc.cleared = false
         }
 
         val setsDone = s.setsDone + 1
@@ -468,6 +517,8 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
         tempoAccumMs = 0L
         tempoResumeAt = now
         buzz(70)
+        alerts.go()
+        if (!onScreen) alerts.restFinished(e.name) else alerts.clear()
         _state.update {
             it.copy(
                 resting = false, exIdx = index, setIdx = if (advancing) 0 else it.setIdx,
@@ -500,11 +551,19 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
             maxHr = hrMax.takeIf { it > 0 },
         )
         val perf = pendingPerf.toMap()
+        val results = pendingResults.map { (id, acc) ->
+            ExerciseResult(
+                exerciseId = id, name = acc.name, atMs = endedAtMs,
+                epochDay = record.epochDay, weightKg = acc.weight, sets = acc.sets,
+                reps = acc.reps, targetReps = acc.targetReps, cleared = acc.cleared,
+            )
+        }
         viewModelScope.launch {
             store.update {
                 it.copy(
                     history = it.history + record,
                     lastPerf = it.lastPerf + perf,
+                    exerciseHistory = (it.exerciseHistory + results).takeLast(2000),
                     programStart = if (it.programStart == 0L) record.epochDay else it.programStart,
                 )
             }
@@ -605,7 +664,12 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
 
         if (s.resting) {
             val left = ceil((restEndAt - now) / 1000.0).toInt()
-            if (left <= 0) endRest() else _state.update { it.copy(restLeft = left, elapsed = elapsed) }
+            if (left <= 0) {
+                endRest()
+            } else {
+                if (left in 1..3 && left != s.restLeft) alerts.tick()
+                _state.update { it.copy(restLeft = left, elapsed = elapsed) }
+            }
             return
         }
         if (!s.running) {
@@ -616,9 +680,11 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
         if (e.isTimed) {
             val left = ceil((workEndAt - now) / 1000.0).toInt()
             if (left <= 0) {
+                alerts.go()
                 _state.update { it.copy(remaining = 0, elapsed = elapsed) }
                 finishSet()
             } else {
+                if (left in 1..3 && left != s.remaining) alerts.tick()
                 _state.update { it.copy(remaining = left, elapsed = elapsed) }
             }
         } else {

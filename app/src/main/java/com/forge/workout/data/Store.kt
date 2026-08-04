@@ -39,6 +39,21 @@ data class SessionRecord(
 @Serializable
 data class WeightEntry(val atMs: Long, val kg: Float)
 
+/** What one exercise actually produced in one session — the basis of progression. */
+@Serializable
+data class ExerciseResult(
+    val exerciseId: String,
+    val name: String,
+    val atMs: Long,
+    val epochDay: Long,
+    val weightKg: Int,
+    val sets: Int,
+    val reps: Int,
+    val targetReps: Int,
+    /** True when every set hit its target reps — the trigger for adding load. */
+    val cleared: Boolean,
+)
+
 @Serializable
 data class Persisted(
     /** Working weight per exercise id, as adjusted with the stepper. */
@@ -64,8 +79,25 @@ data class Persisted(
     val bodyFatPct: Float? = null,
     /** Manually entered weigh-ins, so a trend exists even without a connected scale. */
     val weightLog: List<WeightEntry> = emptyList(),
+    /** Per-exercise results, oldest first — drives progression and per-exercise trends. */
+    val exerciseHistory: List<ExerciseResult> = emptyList(),
 ) {
     fun weightFor(e: Exercise): Int = weights[e.id] ?: e.weight
+
+    fun resultsFor(exerciseId: String): List<ExerciseResult> =
+        exerciseHistory.filter { it.exerciseId == exerciseId }
+
+    /**
+     * The next working weight, when the last outing cleared every set at the weight still set.
+     * Dumbbells step in 2 kg and top out at 24.
+     */
+    fun progressionFor(e: Exercise): Int? {
+        if (!e.hasLoad) return null
+        val last = resultsFor(e.id).lastOrNull() ?: return null
+        val current = weightFor(e)
+        if (!last.cleared || last.weightKg != current || current >= 24) return null
+        return (current + 2).coerceAtMost(24)
+    }
 
     /** Sessions logged in the current Monday-start week. */
     fun thisWeek(today: LocalDate = LocalDate.now()): List<SessionRecord> {
