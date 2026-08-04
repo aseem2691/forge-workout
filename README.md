@@ -120,15 +120,19 @@ Charts are drawn directly on a Compose `Canvas`; no charting dependency. Single 
 (never a dual axis), one colour per series, hairline grid, and labels only on the endpoints and
 the peak. The bucketing, streak and range arithmetic are covered by unit tests.
 
-## Body weight from a smart scale
+## Body composition from a smart scale
 
-If a scale (e.g. **MovingLife**) writes into Health Connect, Forge reads the weigh-ins from there —
-the plan card and the weight chart both follow the scale, and nothing needs typing. A reading
+If a scale (e.g. **MovingLife**) writes into Health Connect, Forge reads both **weight** and
+**body-fat percentage** from there — the plan card and the charts follow the scale, and nothing
+needs typing. Body fat gets its own trend card on the Progress tab and a column in the breakdown
+table; it stays hidden until there is a reading, so the tab never shows an empty box. A reading
 supersedes what's on the card only if it is *newer* than the last manual entry, so typing a weight
 still works and isn't immediately overwritten. Without a scale, manual entries are kept in a local
 log so the trend chart still works.
 
-Requires the `READ_WEIGHT` permission, granted alongside the others under Connect your watch.
+Requires the `READ_WEIGHT` and `READ_BODY_FAT` permissions, granted alongside the others under
+Connect your watch. Adding a permission means re-granting after an update — Health Connect only
+asks for what the app declared at the time.
 
 ## Amazfit / Zepp OS watch
 

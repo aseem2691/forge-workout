@@ -21,7 +21,6 @@ import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 import com.forge.workout.data.Period
-import com.forge.workout.watch.WeighIn
 import java.util.Locale
 import kotlin.math.abs
 import kotlin.math.max
@@ -58,21 +57,25 @@ private fun DrawScope.label(
     drawText(layout, topLeft = Offset(dx.coerceAtLeast(0f), y))
 }
 
+/** A time-stamped measurement: what every trend chart here plots. */
+data class TrendPoint(val atMs: Long, val value: Float)
+
 /**
- * Body weight over time — a single series, so no legend: the card title names it.
- * The target is drawn as a dashed threshold (a reference line, not a second series).
+ * A single measurement over time — one series, so no legend: the card title names it.
+ * Any [target] is drawn as a dashed threshold (a reference line, not a second series).
  */
 @Composable
-fun WeightChart(
-    points: List<WeighIn>,
-    targetKg: Float?,
+fun TrendChart(
+    points: List<TrendPoint>,
+    target: Float?,
+    targetLabel: String?,
+    emptyMessage: String,
+    singleMessage: String,
     modifier: Modifier = Modifier,
+    format: (Float) -> String = { format1(it) },
 ) {
     if (points.size < 2) {
-        EmptyPlot(
-            if (points.isEmpty()) "No weigh-ins in this range" else "One weigh-in so far — need two to draw a trend",
-            modifier,
-        )
+        EmptyPlot(if (points.isEmpty()) emptyMessage else singleMessage, modifier)
         return
     }
     val measurer = rememberTextMeasurer()
@@ -80,10 +83,10 @@ fun WeightChart(
     Canvas(modifier.fillMaxWidth().height(150.dp)) {
         val axisBand = AXIS_BAND_DP.dp.toPx()
         val plotHeight = size.height - axisBand
-        val values = points.map { it.kg }
+        val values = points.map { it.value }
         var low = values.min()
         var high = values.max()
-        targetKg?.let { low = minOf(low, it); high = maxOf(high, it) }
+        target?.let { low = minOf(low, it); high = maxOf(high, it) }
         // Pad so the line never rides the frame, and never divide by zero on a flat series.
         val span = max(high - low, 0.6f)
         val pad = span * 0.18f
@@ -103,10 +106,10 @@ fun WeightChart(
         } else {
             size.width * ((points[index].atMs - firstMs) / spanMs)
         }
-        fun yAt(kg: Float) = plotHeight - ((kg - low) / range) * plotHeight
+        fun yAt(value: Float) = plotHeight - ((value - low) / range) * plotHeight
 
-        targetKg?.let { target ->
-            val y = yAt(target)
+        target?.let { threshold ->
+            val y = yAt(threshold)
             drawLine(
                 color = C.Blue.copy(alpha = 0.55f),
                 start = Offset(0f, y),
@@ -114,13 +117,17 @@ fun WeightChart(
                 strokeWidth = 1.5f,
                 pathEffect = PathEffect.dashPathEffect(floatArrayOf(8f, 8f)),
             )
-            label(measurer, "TARGET ${format1(target)}", size.width, y - 14.dp.toPx(), C.Blue, 8.5, 700, rightAlign = true)
+            label(
+                measurer,
+                targetLabel ?: "TARGET ${format(threshold)}",
+                size.width, y - 14.dp.toPx(), C.Blue, 8.5, 700, rightAlign = true,
+            )
         }
 
         val path = Path().apply {
             points.forEachIndexed { index, point ->
                 val x = xAt(index)
-                val y = yAt(point.kg)
+                val y = yAt(point.value)
                 if (index == 0) moveTo(x, y) else lineTo(x, y)
             }
         }
@@ -129,14 +136,14 @@ fun WeightChart(
         // Markers only when they can breathe; otherwise the line carries it.
         if (points.size <= 14) {
             points.forEachIndexed { index, point ->
-                drawCircle(C.Accent, radius = 4.dp.toPx(), center = Offset(xAt(index), yAt(point.kg)))
+                drawCircle(C.Accent, radius = 4.dp.toPx(), center = Offset(xAt(index), yAt(point.value)))
             }
         }
         // Direct-label the endpoints only — never a number on every point.
         val first = points.first()
         val last = points.last()
-        label(measurer, format1(first.kg), 0f, yAt(first.kg) - 16.dp.toPx(), C.Muted, 9.0)
-        label(measurer, format1(last.kg), size.width, yAt(last.kg) - 16.dp.toPx(), C.Text, 10.5, 700, rightAlign = true)
+        label(measurer, format(first.value), 0f, yAt(first.value) - 16.dp.toPx(), C.Muted, 9.0)
+        label(measurer, format(last.value), size.width, yAt(last.value) - 16.dp.toPx(), C.Text, 10.5, 700, rightAlign = true)
 
         drawLine(Grid, Offset(0f, plotHeight), Offset(size.width, plotHeight), strokeWidth = 1f)
     }

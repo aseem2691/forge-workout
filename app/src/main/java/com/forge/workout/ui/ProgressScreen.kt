@@ -115,7 +115,36 @@ fun ProgressScreen(
                     if (fromScale) append(" · from your scale")
                 },
             ) {
-                WeightChart(points = progress.weighIns, targetKg = targetKg)
+                TrendChart(
+                    points = progress.weighIns.map { TrendPoint(it.atMs, it.kg) },
+                    target = targetKg,
+                    targetLabel = "TARGET ${format1(targetKg)}",
+                    emptyMessage = "No weigh-ins in this range",
+                    singleMessage = "One weigh-in so far — need two to draw a trend",
+                )
+            }
+        }
+
+        if (progress.bodyFat.isNotEmpty()) {
+            item {
+                ChartCard(
+                    title = "Body fat",
+                    subtitle = buildString {
+                        append(format1(progress.bodyFat.last().percent))
+                        append("% now")
+                        progress.bodyFatChange?.let { append(" · ${signed(it)}% over ${range.label}") }
+                        append(" · from your scale")
+                    },
+                ) {
+                    TrendChart(
+                        points = progress.bodyFat.map { TrendPoint(it.atMs, it.percent) },
+                        target = null,
+                        targetLabel = null,
+                        emptyMessage = "No body-fat readings in this range",
+                        singleMessage = "One reading so far — need two to draw a trend",
+                        format = { "${format1(it)}%" },
+                    )
+                }
             }
         }
 
@@ -174,7 +203,8 @@ private fun Stat(modifier: Modifier, value: String, label: String) {
 private fun ProgressTable(periods: List<Period>) {
     // Newest first, and only rows with something in them — empty buckets belong in the
     // chart (to show the gap) but would be noise as table rows.
-    val rows = periods.reversed().filter { it.sessions > 0 || it.weightKg != null }
+    val rows = periods.reversed()
+        .filter { it.sessions > 0 || it.weightKg != null || it.bodyFatPct != null }
 
     Column(
         Modifier
@@ -202,8 +232,9 @@ private fun ProgressTable(periods: List<Period>) {
             HeaderCell("When", 1.1f)
             HeaderCell("Sess", 0.7f)
             HeaderCell("Volume", 1.1f)
-            HeaderCell("Min", 0.7f)
-            HeaderCell("Kg", 0.8f)
+            HeaderCell("Min", 0.6f)
+            HeaderCell("Kg", 0.75f)
+            HeaderCell("Fat", 0.7f)
         }
         Box(Modifier.fillMaxWidth().height(1.dp).background(C.Border))
 
@@ -217,8 +248,9 @@ private fun ProgressTable(periods: List<Period>) {
                 BodyCell(period.label, 1.1f, C.Text)
                 BodyCell(if (period.sessions > 0) "${period.sessions}" else "—", 0.7f, C.Muted)
                 BodyCell(if (period.volumeKg > 0) tonnes(period.volumeKg) else "—", 1.1f, C.Muted)
-                BodyCell(if (period.minutes > 0) "${period.minutes}" else "—", 0.7f, C.Muted)
-                BodyCell(period.weightKg?.let { format1(it) } ?: "—", 0.8f, C.Muted)
+                BodyCell(if (period.minutes > 0) "${period.minutes}" else "—", 0.6f, C.Muted)
+                BodyCell(period.weightKg?.let { format1(it) } ?: "—", 0.75f, C.Muted)
+                BodyCell(period.bodyFatPct?.let { format1(it) } ?: "—", 0.7f, C.Muted)
             }
             Box(Modifier.fillMaxWidth().height(1.dp).background(C.Line))
         }

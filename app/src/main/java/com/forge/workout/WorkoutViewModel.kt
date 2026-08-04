@@ -20,6 +20,7 @@ import com.forge.workout.data.Store
 import com.forge.workout.data.Week
 import com.forge.workout.data.WeightEntry
 import com.forge.workout.data.buildProgress
+import com.forge.workout.watch.BodyFatReading
 import com.forge.workout.watch.HcStatus
 import com.forge.workout.watch.HealthConnectRepo
 import com.forge.workout.watch.HeartRateMonitor
@@ -181,13 +182,19 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
     val range: StateFlow<Range> = _range.asStateFlow()
 
     private val _weighIns = MutableStateFlow<List<WeighIn>>(emptyList())
+    private val _bodyFat = MutableStateFlow<List<BodyFatReading>>(emptyList())
 
     /** Scale readings from Health Connect, falling back to manual entries. */
-    val progress: StateFlow<Progress> = combine(_saved, _weighIns, _range) { saved, scale, range ->
-        val manual = saved.weightLog.map { WeighIn(it.atMs, it.kg) }
-        val series = (if (scale.isNotEmpty()) scale else manual).sortedBy { it.atMs }
-        buildProgress(saved.history, series, range)
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, buildProgress(emptyList(), emptyList(), Range.Month))
+    val progress: StateFlow<Progress> =
+        combine(_saved, _weighIns, _bodyFat, _range) { saved, scale, fat, range ->
+            val manual = saved.weightLog.map { WeighIn(it.atMs, it.kg) }
+            val series = (if (scale.isNotEmpty()) scale else manual).sortedBy { it.atMs }
+            buildProgress(saved.history, series, fat, range)
+        }.stateIn(
+            viewModelScope,
+            SharingStarted.Eagerly,
+            buildProgress(emptyList(), emptyList(), emptyList(), Range.Month),
+        )
 
     fun setRange(value: Range) {
         _range.value = value
@@ -199,10 +206,15 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
      */
     fun syncWeight() {
         viewModelScope.launch {
-            val readings = health.weights(
-                Instant.now().minusSeconds(400L * 86_400),
-                Instant.now(),
-            )
+            val from = Instant.now().minusSeconds(400L * 86_400)
+            val now = Instant.now()
+
+            health.bodyFat(from, now).takeIf { it.isNotEmpty() }?.let { fat ->
+                _bodyFat.value = fat
+                store.update { it.copy(bodyFatPct = fat.last().percent) }
+            }
+
+            val readings = health.weights(from, now)
             if (readings.isEmpty()) return@launch
             _weighIns.value = readings
             val latest = readings.last()

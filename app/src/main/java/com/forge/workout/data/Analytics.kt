@@ -1,5 +1,6 @@
 package com.forge.workout.data
 
+import com.forge.workout.watch.BodyFatReading
 import com.forge.workout.watch.WeighIn
 import java.time.DayOfWeek
 import java.time.Instant
@@ -36,17 +37,21 @@ data class Period(
     val avgHr: Int?,
     /** Last weigh-in that falls in this bucket, if any. */
     val weightKg: Float?,
+    /** Last body-fat reading that falls in this bucket, if any. */
+    val bodyFatPct: Float?,
 )
 
 data class Progress(
     val periods: List<Period>,
     val weighIns: List<WeighIn>,
+    val bodyFat: List<BodyFatReading>,
     val sessions: Int,
     val volumeKg: Int,
     val minutes: Int,
     val reps: Int,
     val avgHr: Int?,
     val weightChange: Float?,
+    val bodyFatChange: Float?,
     val streakWeeks: Int,
 )
 
@@ -71,6 +76,7 @@ private fun label(date: LocalDate, bucket: Bucket): String = when (bucket) {
 fun buildProgress(
     history: List<SessionRecord>,
     weighIns: List<WeighIn>,
+    bodyFat: List<BodyFatReading> = emptyList(),
     range: Range,
     today: LocalDate = LocalDate.now(),
     zone: ZoneId = ZoneId.systemDefault(),
@@ -80,6 +86,9 @@ fun buildProgress(
 
     val inRange = history.filter { LocalDate.ofEpochDay(it.epochDay) >= from }
     val weighInsInRange = weighIns
+        .filter { !Instant.ofEpochMilli(it.atMs).atZone(zone).toLocalDate().isBefore(from) }
+        .sortedBy { it.atMs }
+    val bodyFatInRange = bodyFat
         .filter { !Instant.ofEpochMilli(it.atMs).atZone(zone).toLocalDate().isBefore(from) }
         .sortedBy { it.atMs }
 
@@ -101,6 +110,9 @@ fun buildProgress(
     val weightByBucket = weighInsInRange.groupBy {
         bucketStart(Instant.ofEpochMilli(it.atMs).atZone(zone).toLocalDate(), bucket)
     }
+    val fatByBucket = bodyFatInRange.groupBy {
+        bucketStart(Instant.ofEpochMilli(it.atMs).atZone(zone).toLocalDate(), bucket)
+    }
 
     val periods = starts.map { start ->
         val rows = sessionsByBucket[start].orEmpty()
@@ -114,6 +126,7 @@ fun buildProgress(
             reps = rows.sumOf { it.reps },
             avgHr = heartRates.takeIf { it.isNotEmpty() }?.average()?.toInt(),
             weightKg = weightByBucket[start]?.lastOrNull()?.kg,
+            bodyFatPct = fatByBucket[start]?.lastOrNull()?.percent,
         )
     }
 
@@ -121,6 +134,7 @@ fun buildProgress(
     return Progress(
         periods = periods,
         weighIns = weighInsInRange,
+        bodyFat = bodyFatInRange,
         sessions = inRange.size,
         volumeKg = inRange.sumOf { it.volume },
         minutes = inRange.sumOf { it.seconds } / 60,
@@ -128,6 +142,8 @@ fun buildProgress(
         avgHr = allHr.takeIf { it.isNotEmpty() }?.average()?.toInt(),
         weightChange = weighInsInRange.takeIf { it.size >= 2 }
             ?.let { it.last().kg - it.first().kg },
+        bodyFatChange = bodyFatInRange.takeIf { it.size >= 2 }
+            ?.let { it.last().percent - it.first().percent },
         streakWeeks = streak(history, today),
     )
 }

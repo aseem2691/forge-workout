@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.aggregate.AggregationResult
 import androidx.health.connect.client.permission.HealthPermission
+import androidx.health.connect.client.records.BodyFatRecord
 import androidx.health.connect.client.records.ExerciseSessionRecord
 import androidx.health.connect.client.records.HeartRateRecord
 import androidx.health.connect.client.records.TotalCaloriesBurnedRecord
@@ -32,6 +33,9 @@ data class WatchSummary(
 /** A single scale reading. */
 data class WeighIn(val atMs: Long, val kg: Float)
 
+/** A body-fat percentage reading from the scale. */
+data class BodyFatReading(val atMs: Long, val percent: Float)
+
 enum class HcStatus { Unavailable, UpdateRequired, NeedsPermission, Ready }
 
 /**
@@ -48,6 +52,7 @@ class HealthConnectRepo(private val context: Context) {
         HealthPermission.getReadPermission(HeartRateRecord::class),
         HealthPermission.getReadPermission(TotalCaloriesBurnedRecord::class),
         HealthPermission.getReadPermission(WeightRecord::class),
+        HealthPermission.getReadPermission(BodyFatRecord::class),
         HealthPermission.getWritePermission(ExerciseSessionRecord::class),
     )
 
@@ -70,6 +75,22 @@ class HealthConnectRepo(private val context: Context) {
     /** Most recent scale reading, looking back far enough to survive a quiet spell. */
     suspend fun latestWeight(lookbackDays: Long = 400): WeighIn? =
         weights(Instant.now().minusSeconds(lookbackDays * 86_400), Instant.now()).lastOrNull()
+
+    /** Body-fat percentage readings from the same scale, oldest first. */
+    suspend fun bodyFat(from: Instant, to: Instant): List<BodyFatReading> {
+        val hc = client ?: return emptyList()
+        if (!hasPermissions()) return emptyList()
+        return runCatching {
+            hc.readRecords(
+                ReadRecordsRequest(
+                    recordType = BodyFatRecord::class,
+                    timeRangeFilter = TimeRangeFilter.between(from, to),
+                ),
+            ).records
+                .map { BodyFatReading(it.time.toEpochMilli(), it.percentage.value.toFloat()) }
+                .sortedBy { it.atMs }
+        }.getOrDefault(emptyList())
+    }
 
     private val sdkStatus: Int get() = HealthConnectClient.getSdkStatus(context)
 

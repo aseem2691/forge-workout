@@ -220,6 +220,13 @@ private fun BodyWeightCard(saved: Persisted, onEdit: () -> Unit) {
                 Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(5.dp)) {
                     Text(format1(saved.bodyNow), style = display(32.0, line = 1.0))
                     Text("kg", style = arch(12.0, 600, Color(0xFF7E7E88), line = 1.0))
+                    saved.bodyFatPct?.let { fat ->
+                        Text(
+                            "· ${format1(fat)}% fat",
+                            style = arch(11.0, 600, C.Muted, line = 1.0),
+                            modifier = Modifier.padding(start = 3.dp, bottom = 1.dp),
+                        )
+                    }
                 }
             }
             Column(horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.spacedBy(2.dp)) {

@@ -60,6 +60,8 @@ data class Persisted(
     val bodyNowMs: Long = 0L,
     /** True when bodyNow came from a scale via Health Connect rather than being typed in. */
     val bodyFromScale: Boolean = false,
+    /** Latest body-fat percentage from the scale; null until one is read. */
+    val bodyFatPct: Float? = null,
     /** Manually entered weigh-ins, so a trend exists even without a connected scale. */
     val weightLog: List<WeightEntry> = emptyList(),
 ) {

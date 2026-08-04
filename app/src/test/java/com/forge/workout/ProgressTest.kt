@@ -4,6 +4,7 @@ import com.forge.workout.data.Bucket
 import com.forge.workout.data.Range
 import com.forge.workout.data.SessionRecord
 import com.forge.workout.data.buildProgress
+import com.forge.workout.watch.BodyFatReading
 import com.forge.workout.watch.WeighIn
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -29,7 +30,7 @@ class ProgressTest {
 
     @Test
     fun `week range produces seven daily buckets ending today`() {
-        val p = buildProgress(emptyList(), emptyList(), Range.Week, today, utc)
+        val p = buildProgress(emptyList(), emptyList(), emptyList(), Range.Week, today, utc)
         assertEquals(Bucket.Day, Range.Week.bucket)
         assertEquals(7, p.periods.size)
         assertEquals(LocalDate.parse("2026-07-29"), p.periods.first().start)
@@ -39,7 +40,7 @@ class ProgressTest {
     @Test
     fun `sessions land in their own bucket and empty buckets are kept`() {
         val history = listOf(session("2026-08-04", volume = 2000), session("2026-08-02", volume = 500))
-        val p = buildProgress(history, emptyList(), Range.Week, today, utc)
+        val p = buildProgress(history, emptyList(), emptyList(), Range.Week, today, utc)
 
         assertEquals(7, p.periods.size)
         assertEquals(2000, p.periods.last().volumeKg)
@@ -53,16 +54,16 @@ class ProgressTest {
     @Test
     fun `sessions outside the range are excluded`() {
         val history = listOf(session("2026-08-04"), session("2026-06-01"))
-        val week = buildProgress(history, emptyList(), Range.Week, today, utc)
+        val week = buildProgress(history, emptyList(), emptyList(), Range.Week, today, utc)
         assertEquals(1, week.sessions)
 
-        val year = buildProgress(history, emptyList(), Range.Year, today, utc)
+        val year = buildProgress(history, emptyList(), emptyList(), Range.Year, today, utc)
         assertEquals(2, year.sessions)
     }
 
     @Test
     fun `year range buckets by month`() {
-        val p = buildProgress(emptyList(), emptyList(), Range.Year, today, utc)
+        val p = buildProgress(emptyList(), emptyList(), emptyList(), Range.Year, today, utc)
         assertEquals(Bucket.Month, Range.Year.bucket)
         assertEquals(13, p.periods.size) // Aug 2025 .. Aug 2026 inclusive
         assertTrue(p.periods.all { it.start.dayOfMonth == 1 })
@@ -70,7 +71,7 @@ class ProgressTest {
 
     @Test
     fun `half year range buckets by monday-start weeks`() {
-        val p = buildProgress(emptyList(), emptyList(), Range.HalfYear, today, utc)
+        val p = buildProgress(emptyList(), emptyList(), emptyList(), Range.HalfYear, today, utc)
         assertEquals(Bucket.Week, Range.HalfYear.bucket)
         assertTrue(p.periods.all { it.start.dayOfWeek.value == 1 })
     }
@@ -78,7 +79,7 @@ class ProgressTest {
     @Test
     fun `weight change is measured across the range, not against target`() {
         val weighIns = listOf(weighIn("2026-07-30", 85f), weighIn("2026-08-03", 83.5f))
-        val p = buildProgress(emptyList(), weighIns, Range.Week, today, utc)
+        val p = buildProgress(emptyList(), weighIns, emptyList(), Range.Week, today, utc)
         assertEquals(-1.5f, p.weightChange!!, 0.001f)
         // Bucket carries the last reading of that day.
         assertEquals(83.5f, p.periods.first { it.start == LocalDate.parse("2026-08-03") }.weightKg!!, 0.001f)
@@ -86,7 +87,7 @@ class ProgressTest {
 
     @Test
     fun `a single weigh-in yields no change`() {
-        val p = buildProgress(emptyList(), listOf(weighIn("2026-08-01", 84f)), Range.Week, today, utc)
+        val p = buildProgress(emptyList(), listOf(weighIn("2026-08-01", 84f)), emptyList(), Range.Week, today, utc)
         assertNull(p.weightChange)
     }
 
@@ -97,8 +98,20 @@ class ProgressTest {
             session("2026-08-03", hr = 160),
             session("2026-08-02", hr = null),
         )
-        val p = buildProgress(history, emptyList(), Range.Week, today, utc)
+        val p = buildProgress(history, emptyList(), emptyList(), Range.Week, today, utc)
         assertEquals(150, p.avgHr)
+    }
+
+    @Test
+    fun `body fat is bucketed and its change measured across the range`() {
+        val fat = listOf(
+            BodyFatReading(LocalDate.parse("2026-07-30").atStartOfDay(utc).toInstant().toEpochMilli(), 22.4f),
+            BodyFatReading(LocalDate.parse("2026-08-03").atStartOfDay(utc).toInstant().toEpochMilli(), 21.6f),
+        )
+        val p = buildProgress(emptyList(), emptyList(), fat, Range.Week, today, utc)
+        assertEquals(-0.8f, p.bodyFatChange!!, 0.001f)
+        assertEquals(21.6f, p.periods.first { it.start == LocalDate.parse("2026-08-03") }.bodyFatPct!!, 0.001f)
+        assertNull(buildProgress(emptyList(), emptyList(), fat.take(1), Range.Week, today, utc).bodyFatChange)
     }
 
     @Test
@@ -107,12 +120,12 @@ class ProgressTest {
         val history = listOf(
             session("2026-07-28"), session("2026-07-21"), session("2026-07-14"),
         )
-        assertEquals(3, buildProgress(history, emptyList(), Range.Year, today, utc).streakWeeks)
+        assertEquals(3, buildProgress(history, emptyList(), emptyList(), Range.Year, today, utc).streakWeeks)
 
         // A missed week breaks it.
         val gapped = listOf(session("2026-07-28"), session("2026-07-14"))
-        assertEquals(1, buildProgress(gapped, emptyList(), Range.Year, today, utc).streakWeeks)
+        assertEquals(1, buildProgress(gapped, emptyList(), emptyList(), Range.Year, today, utc).streakWeeks)
 
-        assertEquals(0, buildProgress(emptyList(), emptyList(), Range.Year, today, utc).streakWeeks)
+        assertEquals(0, buildProgress(emptyList(), emptyList(), emptyList(), Range.Year, today, utc).streakWeeks)
     }
 }
