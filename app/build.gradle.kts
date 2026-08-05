@@ -14,8 +14,9 @@ android {
         // 28: ImageDecoder / AnimatedImageDrawable for the exercise GIFs.
         minSdk = 28
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+        // Bump both on every release — otherwise an installed build is unidentifiable.
+        versionCode = 5
+        versionName = "1.5"
     }
 
     buildTypes {

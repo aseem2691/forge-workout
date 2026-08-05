@@ -144,54 +144,17 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
     private var hrCount = 0
     private var hrMax = 0
 
-    init {
-        viewModelScope.launch {
-            store.data.collect { p ->
-                _saved.value = p
-                if (!_loaded.value) {
-                    _loaded.value = true
-                    _state.value = _state.value.copy(mode = p.mode, weekIdx = currentWeekIdx())
-                    if (p.programStart == 0L || p.initials == "RK") {
-                        store.update {
-                            it.copy(
-                                programStart = if (it.programStart == 0L) {
-                                    LocalDate.now().toEpochDay()
-                                } else {
-                                    it.programStart
-                                },
-                                // "RK" was the design mock's placeholder, never a real value.
-                                initials = if (it.initials == "RK") "AG" else it.initials,
-                            )
-                        }
-                    }
-                } else if (!sessionActive && _state.value.screen == Screen.Plan) {
-                    _state.value = _state.value.copy(mode = p.mode)
-                }
-            }
-        }
-        viewModelScope.launch {
-            while (true) {
-                delay(200)
-                tick()
-            }
-        }
-        // Accumulate heart rate for the session average as samples arrive (~1 Hz).
-        viewModelScope.launch {
-            heart.bpm.collect { value ->
-                if (value != null && sessionActive) {
-                    hrSum += value
-                    hrCount++
-                    if (value > hrMax) hrMax = value
-                }
-            }
-        }
-        refreshHealthConnect()
-    }
-
     fun refreshHealthConnect() {
         viewModelScope.launch {
-            _hcStatus.value = health.status()
-            if (_hcStatus.value == HcStatus.Ready) { syncWeight(); syncWalking() }
+            // Health Connect is optional: a provider that is missing, mid-update or throwing must
+            // never stop the app from opening.
+            runCatching {
+                _hcStatus.value = health.status()
+                if (_hcStatus.value == HcStatus.Ready) {
+                    syncWeight()
+                    syncWalking()
+                }
+            }
         }
     }
 
@@ -226,10 +189,12 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
     fun syncWalking() {
         viewModelScope.launch {
             if (_hcStatus.value != HcStatus.Ready) return@launch
-            _walking.value = health.walking(
-                Instant.now().minusSeconds(_range.value.days * 86_400),
-                Instant.now(),
-            )
+            runCatching {
+                _walking.value = health.walking(
+                    Instant.now().minusSeconds(_range.value.days * 86_400),
+                    Instant.now(),
+                )
+            }
         }
     }
 
@@ -239,6 +204,7 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
      */
     fun syncWeight() {
         viewModelScope.launch {
+            runCatching {
             val from = Instant.now().minusSeconds(400L * 86_400)
             val now = Instant.now()
 
@@ -248,13 +214,15 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
             }
 
             val readings = health.weights(from, now)
-            if (readings.isEmpty()) return@launch
-            _weighIns.value = readings
-            val latest = readings.last()
-            if (latest.atMs > _saved.value.bodyNowMs) {
-                store.update {
-                    it.copy(bodyNow = latest.kg, bodyNowMs = latest.atMs, bodyFromScale = true)
+            if (readings.isNotEmpty()) {
+                _weighIns.value = readings
+                val latest = readings.last()
+                if (latest.atMs > _saved.value.bodyNowMs) {
+                    store.update {
+                        it.copy(bodyNow = latest.kg, bodyNowMs = latest.atMs, bodyFromScale = true)
+                    }
                 }
+            }
             }
         }
     }
@@ -711,6 +679,54 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
         runCatching {
             vibrator?.vibrate(VibrationEffect.createOneShot(ms, VibrationEffect.DEFAULT_AMPLITUDE))
         }
+    }
+
+    // Declared last deliberately. viewModelScope uses Dispatchers.Main.immediate, so a launch
+    // here runs synchronously until it genuinely suspends — with this block above the progress
+    // flows, a Health Connect status that resolved without suspending reached them before they
+    // were constructed, killing the app on every launch after permissions had been granted.
+    init {
+        viewModelScope.launch {
+            store.data.collect { p ->
+                _saved.value = p
+                if (!_loaded.value) {
+                    _loaded.value = true
+                    _state.value = _state.value.copy(mode = p.mode, weekIdx = currentWeekIdx())
+                    if (p.programStart == 0L || p.initials == "RK") {
+                        store.update {
+                            it.copy(
+                                programStart = if (it.programStart == 0L) {
+                                    LocalDate.now().toEpochDay()
+                                } else {
+                                    it.programStart
+                                },
+                                // "RK" was the design mock's placeholder, never a real value.
+                                initials = if (it.initials == "RK") "AG" else it.initials,
+                            )
+                        }
+                    }
+                } else if (!sessionActive && _state.value.screen == Screen.Plan) {
+                    _state.value = _state.value.copy(mode = p.mode)
+                }
+            }
+        }
+        viewModelScope.launch {
+            while (true) {
+                delay(200)
+                tick()
+            }
+        }
+        // Accumulate heart rate for the session average as samples arrive (~1 Hz).
+        viewModelScope.launch {
+            heart.bpm.collect { value ->
+                if (value != null && sessionActive) {
+                    hrSum += value
+                    hrCount++
+                    if (value > hrMax) hrMax = value
+                }
+            }
+        }
+        refreshHealthConnect()
     }
 }
 

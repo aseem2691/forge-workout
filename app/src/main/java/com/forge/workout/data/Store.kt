@@ -4,9 +4,11 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -128,7 +130,14 @@ class Store(private val context: Context) {
     private fun parse(raw: String?): Persisted =
         raw?.let { runCatching { json.decodeFromString<Persisted>(it) }.getOrNull() } ?: Persisted()
 
-    val data: Flow<Persisted> = context.dataStore.data.map { parse(it[key]) }
+    /**
+     * A read failure here — a corrupt file, a disk error — would otherwise kill the collector and
+     * leave the app on a blank screen forever, since the UI waits for the first emission. Fall
+     * back to defaults instead: losing saved state is bad, never opening again is worse.
+     */
+    val data: Flow<Persisted> = context.dataStore.data
+        .catch { emit(emptyPreferences()) }
+        .map { parse(it[key]) }
 
     suspend fun update(transform: (Persisted) -> Persisted) {
         context.dataStore.edit { prefs ->
