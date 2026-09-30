@@ -22,7 +22,8 @@ class PlanTest {
     private val program: Program =
         Json { ignoreUnknownKeys = true }.decodeFromString(File(assets, "plan.json").readText())
     private val days = program.weeks.flatMap { it.days }
-    private val exercises = days.flatMap { it.all }
+    private val flows = program.mobility
+    private val exercises = (days + flows).flatMap { it.all }
 
     @Test
     fun `every session opens with a five to eight minute warm-up`() {
@@ -73,5 +74,40 @@ class PlanTest {
             assertTrue("${e.name} lights no muscle", e.bodyPrimary.isNotEmpty())
             (e.bodyPrimary + e.bodySecondary).forEach { assertTrue("${e.name}: $it", it in regions) }
         }
+    }
+
+    @Test
+    fun `every training day ends with a three to six minute cool-down`() {
+        days.forEach { day ->
+            assertTrue("${day.flatTitle}: ${day.cooldownMins} min", day.cooldownMins in 3..6)
+            assertEquals(day.cooldown, day.all.takeLast(day.cooldown.size))
+            day.cooldown.forEach {
+                assertTrue(it.name, it.isCooldown && it.isTimed && it.sets == 1 && !it.hasLoad)
+                assertTrue(it.name, it.cue != null)
+            }
+        }
+    }
+
+    @Test
+    fun `three rest-day mobility flows of twelve to sixteen minutes`() {
+        assertEquals(listOf("Wed", "Fri", "Sun"), flows.map { it.day })
+        flows.forEach { flow ->
+            assertTrue(flow.flatTitle, flow.isMobility)
+            assertTrue(flow.flatTitle, flow.warmup.isEmpty() && flow.main.isEmpty() && flow.cooldown.isEmpty())
+            val minutes = (flow.flow.sumOf { it.time + it.rest } - flow.flow.last().rest) / 60.0
+            assertTrue("${flow.flatTitle}: $minutes min", minutes in 12.0..16.0)
+            flow.flow.forEach {
+                assertTrue(it.name, it.isMobility && it.isTimed && it.sets == 1 && !it.hasLoad)
+                assertTrue(it.name, it.cue != null)
+            }
+        }
+    }
+
+    @Test
+    fun `cool-down and mobility moves are not counted as training`() {
+        days.forEach { day ->
+            assertEquals(day.strength.sumOf { it.sets } + day.hiit.sumOf { it.sets }, day.totalSets)
+        }
+        flows.forEach { assertEquals(0, it.totalSets) }
     }
 }

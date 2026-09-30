@@ -89,6 +89,85 @@ LUNGE = W('3470', 40, "Alternate legs. Upright torso, back knee hovering above t
 JACKS = W('3224', 30, "Light and springy — heart rate up before the first set.",
           name='jumping jacks')
 
+# ── cool-down & rest-day mobility ────────────────────────────────────────────────────────────
+# Held stretches from the same animated dataset. One-sided stretches run 60 s with a switch at
+# 30 s; two-sided ones 45 s in the cool-down. Mobility flows run every move for 60 s.
+
+RECOVERY_SWITCH = 10  # seconds to get into the next stretch
+
+CHEST_SH = W('1271', 45, "Towel held wide, lift it overhead and ease it back behind you. Slow and smooth.",
+             name='towel shoulder opener',
+             steps=["Hold a towel with both hands, wider than the shoulders.",
+                    "Keeping the arms straight, lift it overhead.",
+                    "Ease it back behind the head as far as is comfortable, then return.",
+                    "Move slowly and stop before any pinch in the shoulders."])
+LAT_KNEEL = W('1346', 45, "Sit the hips back towards the heels and let the chest sink. Breathe slowly.",
+              name='kneeling lat stretch')
+TRI_OH = W('0643', 60, "Hand down the back, ease the elbow behind the head. Switch arms at 30 s.",
+           name='overhead triceps stretch')
+REAR_DELT = W('0669', 60, "Pull the arm across the chest, shoulder down. Switch arms at 30 s.",
+              name='rear delt stretch')
+NECK = W('1403', 60, "Ear towards the shoulder, the other shoulder heavy. Switch sides at 30 s.",
+         name='neck side stretch')
+HAM = W('1511', 60, "On your back, hold behind the raised leg and ease it towards you. Switch legs at 30 s.",
+        name='hamstring stretch')
+QUAD = W('1512', 60, "On all fours, draw one heel towards the glute. Switch legs at 30 s.",
+         name='quad stretch')
+PIRI = W('2567', 60, "On a chair, ankle over the opposite knee, lean forward with a long back. Switch sides at 30 s.",
+         name='seated piriformis stretch')
+CALF = W('1377', 60, "Back heel down, lean into the wall. Switch legs at 30 s.", name='calf stretch')
+BUTTERFLY = W('1494', 45, "Soles together, knees falling open. Sit tall and breathe.",
+              name='butterfly stretch')
+RUNNERS = W('1585', 60, "Hips back over the heel, toes up, chest long. Switch legs at 30 s.",
+            name="runner's stretch")
+GLUTE_SEAT = W('1424', 60, "Hug the knee across the body and sit tall. Switch sides at 30 s.",
+               name='seated glute stretch')
+SPINE = W('1363', 45, "Sit tall with the legs long and reach slowly towards the toes.", name='seated forward fold')
+KNEE_CIRCLES = W('0257', 60, "Hands on the knees, slow circles. Change direction at 30 s.",
+                 name='knee circles')
+FROG = W('2571', 60, "Knees wide, rock the hips back and forward gently.", name='rocking frog')
+IRON_CROSS = W('1419', 60, "On the back, sweep one leg across the body. Alternate sides.", name='iron cross')
+SIDE_LYING = W('1358', 60, "On one side, reach long through the top arm. Switch sides at 30 s.",
+               name='side-lying stretch')
+LOW_BACK = W('0690', 60, "Sit tall on a chair, reach one arm overhead and lean away. Switch sides at 30 s.",
+             name='seated side reach')
+WRISTS = W('1428', 60, "Slow wrist circles. Change direction at 30 s.", name='wrist circles')
+NECK_PUSH = W('0716', 60, "Ease the head to the side with the hand. Switch sides at 30 s.",
+              name='neck stretch')
+BACK_PEC = W('1405', 60, "Hands on a chair back, walk the feet back and let the chest sink between the arms.",
+             name='chair chest stretch',
+             steps=["Place both hands on a chair back or bench at hip height.",
+                    "Walk the feet back until the arms are straight and you hinge at the hips.",
+                    "Let the chest sink towards the floor between the arms and hold.",
+                    "Breathe slowly; ease out before the shoulders pinch."])
+LATERAL = W('0794', 60, "Reach one arm overhead and lean away. Switch sides at 30 s.",
+            name='standing side stretch')
+UPPER_BACK = W('1365', 60, "Arms forward, round the upper back and spread the shoulder blades.",
+               name='upper back stretch')
+WIDE_ANGLE = W('1587', 60, "Legs wide, walk the hands forward, then to each side.",
+               name='seated wide-angle stretch')
+
+COOLDOWNS = {
+    'upper': [CHEST_SH, LAT_KNEEL, TRI_OH, REAR_DELT, NECK],
+    'lower': [HAM, QUAD, PIRI, CALF, BUTTERFLY],
+    'full': [RUNNERS, GLUTE_SEAT, CHEST_SH, LAT_KNEEL, SPINE],
+}
+
+MOBILITY = [
+    dict(day='Wed', title='Hips &\nLower Back',
+         coach="Unlock the hips and ease the lower back after leg day. Slow breaths; never force a stretch.",
+         moves=[KNEE_CIRCLES, FROG, BUTTERFLY, PIRI, GLUTE_SEAT, HAM, QUAD, IRON_CROSS, SIDE_LYING,
+                LOW_BACK, SPINE, WGS]),
+    dict(day='Fri', title='Upper Back\n& Shoulders',
+         coach="Undo the desk and the pressing: open the chest, free the shoulders, loosen the neck.",
+         moves=[WRISTS, NECK, NECK_PUSH, CHEST, CHEST_SH, BACK_PEC, LAT_KNEEL, LATERAL, REAR_DELT,
+                TRI_OH, UPPER_BACK, UPDOG]),
+    dict(day='Sun', title='Full-Body\nFlow',
+         coach="Head to toe, moving more than holding. Ready the body for Monday.",
+         moves=[INCH, WGS, SQUAT, REACH, WINDMILL, RUNNERS, WIDE_ANGLE, FROG, LAT_KNEEL, CHEST_SH,
+                SPINE, UPDOG]),
+]
+
 WARMUPS = {
     'upper': [WALK, REACH, SCAP, UPDOG, INCH, CHEST, WGS],
     'lower': [WALK, WINDMILL, SQUAT, BRIDGE, LUNGE, WGS, JACKS],
@@ -114,6 +193,8 @@ REGIONS = {
     'lower back': ['lower-back'], 'spine': ['lower-back'],
     'pectorals': ['chest'], 'chest': ['chest'], 'upper chest': ['chest'],
     'neck': ['neck'], 'cardiovascular system': [],
+    'levator scapulae': ['neck', 'trapezius'], 'sternocleidomastoid': ['neck'],
+    'groin': ['adductor'], 'ankle stabilizers': ['calves'], 'wrists': ['forearm'], 'hands': [],
 }
 
 
@@ -266,13 +347,14 @@ def build(slot):
     return out
 
 
-def build_warmup(moves):
+def build_recovery(moves, block, switch, handoff, secs=None):
+    """Timed, hands-free moves: warm-up, cool-down or a mobility flow. secs overrides every length."""
     out = []
     for n, m in enumerate(moves):
         e = build(dict(id=m['src'], sets=1, time=m['time'], rest=0, weight=0, type='time'))
         last = n == len(moves) - 1
-        e.update(sets=1, time=m['time'], rest=WARMUP_HANDOFF if last else WARMUP_SWITCH,
-                 weight=0, type='time', block='warmup', cue=m['cue'])
+        e.update(sets=1, time=secs or m['time'], rest=handoff if last else switch,
+                 weight=0, type='time', block=block, cue=m['cue'])
         if m['name']:
             e['name'] = m['name']
         if m['equipment']:
@@ -284,6 +366,10 @@ def build_warmup(moves):
     return out
 
 
+def build_warmup(moves):
+    return build_recovery(moves, 'warmup', WARMUP_SWITCH, WARMUP_HANDOFF)
+
+
 weeks_out, media = [], set()
 for w in WEEKS:
     days = []
@@ -293,16 +379,29 @@ for w in WEEKS:
         # it for the rest the cap removes and the warm-up that now leads the session.
         saved = sum(s['sets'] * (s['design_rest'] - s['rest']) for s in d['strength'])
         warm = sum(e['time'] + e['rest'] for e in warmup)
-        mins = d['mins'] - round(saved / 60) + round(warm / 60)
+        cooldown = build_recovery(COOLDOWNS[DAY_WARMUP[d['day']]], 'cooldown', RECOVERY_SWITCH, 0)
+        cool = sum(e['time'] + e['rest'] for e in cooldown)
+        mins = d['mins'] - round(saved / 60) + round(warm / 60) + round(cool / 60)
         day = dict(num=d['num'], day=d['day'], title=d['title'], mins=mins, coach=d['coach'],
                    warmup=warmup,
                    strength=[build(s) for s in d['strength']],
-                   hiit=[build(s) for s in d['hiit']])
-        for e in day['warmup'] + day['strength'] + day['hiit']:
+                   hiit=[build(s) for s in d['hiit']],
+                   cooldown=cooldown)
+        for e in day['warmup'] + day['strength'] + day['hiit'] + day['cooldown']:
             media.add(e['gif'].split('/')[-1].replace('.webp', '.gif'))
             media.add(e['thumb'].split('/')[-1])
         days.append(day)
     weeks_out.append(dict(label=w['label'], focus=w['focus'], days=days))
+
+mobility_out = []
+for n, f in enumerate(MOBILITY):
+    flow = build_recovery(f['moves'], 'mobility', RECOVERY_SWITCH, 0, secs=60)
+    mins = round(sum(e['time'] + e['rest'] for e in flow) / 60)
+    mobility_out.append(dict(num=n + 1, day=f['day'], title=f['title'], mins=mins, coach=f['coach'],
+                             kind='mobility', flow=flow))
+    for e in flow:
+        media.add(e['gif'].split('/')[-1].replace('.webp', '.gif'))
+        media.add(e['thumb'].split('/')[-1])
 
 # Carry week A's seeded "last time" values so the very first session still reads true.
 seed = {'0426': '12 kg × 8', '0293': '16 kg × 10', '1760': '18 kg × 12',
@@ -313,7 +412,7 @@ for e in weeks_out[0]['days'][0]['strength'] + weeks_out[0]['days'][1]['strength
 
 out_path = sys.argv[1]
 with open(out_path, 'w') as f:
-    json.dump(dict(weeks=weeks_out), f, indent=1, ensure_ascii=False)
+    json.dump(dict(weeks=weeks_out, mobility=mobility_out), f, indent=1, ensure_ascii=False)
 
 uniq_ex = {e['id'] for w in weeks_out for d in w['days'] for e in d['strength'] + d['hiit']}
 print(f"weeks={len(weeks_out)} unique exercises={len(uniq_ex)} media files={len(media)}")
