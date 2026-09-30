@@ -401,6 +401,13 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch { store.update { it.copy(mode = mode) } }
     }
 
+    /** Flips the demo panel between the real-person photos and the 3D model; remembered. */
+    fun toggleDemo() {
+        viewModelScope.launch {
+            store.update { it.copy(demo = if (it.demo == "3d") "photo" else "3d") }
+        }
+    }
+
     fun adjustWeight(delta: Int) {
         val e = current() ?: return
         val next = (_saved.value.weightFor(e) + delta).coerceIn(2, 24)
@@ -434,7 +441,8 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
             if (reps < e.reps) acc.cleared = false
         }
 
-        val setsDone = s.setsDone + 1
+        // Warm-up moves lead into the session; they are not training sets and never count as one.
+        val setsDone = s.setsDone + if (e.isWarmup) 0 else 1
         val repsDone = s.repsDone + reps
         val volume = s.volume + reps * weight * 2
         val rest = restFor(e)

@@ -28,6 +28,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.forge.workout.data.Day
 import com.forge.workout.data.Persisted
+import com.forge.workout.data.duration
 import com.forge.workout.data.titleCase
 
 @Composable
@@ -92,7 +93,7 @@ fun DayScreen(
 
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         MetaTile(Modifier.weight(1f), "${day.mins}", "Minutes")
-                        MetaTile(Modifier.weight(1f), "${exercises.size}", "Exercises")
+                        MetaTile(Modifier.weight(1f), "${day.main.size}", "Exercises")
                         MetaTile(Modifier.weight(1f), "${day.totalSets}", "Total sets")
                     }
 
@@ -113,8 +114,17 @@ fun DayScreen(
 
             itemsIndexed(exercises) { index, exercise ->
                 Column(Modifier.padding(horizontal = 20.dp)) {
-                    if (index == 0 || index == day.strength.size) {
-                        val strength = index == 0
+                    // A header wherever the block changes: warm-up → strength → HIIT.
+                    if (index == 0 || exercises[index - 1].block != exercise.block) {
+                        val (title, color, count) = when {
+                            exercise.isWarmup -> Triple("WARM-UP", C.Warm, "${day.warmupMins} min")
+                            exercise.isHiit -> Triple(
+                                "HIIT FINISHER — 40 / 20",
+                                C.Blue,
+                                "${day.hiit.firstOrNull()?.sets ?: 2} rounds",
+                            )
+                            else -> Triple("STRENGTH BLOCK", C.Text, "${day.strength.size} moves")
+                        }
                         Row(
                             Modifier
                                 .fillMaxWidth()
@@ -122,21 +132,14 @@ fun DayScreen(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(9.dp),
                         ) {
-                            Text(
-                                if (strength) "STRENGTH BLOCK" else "HIIT FINISHER — 40 / 20",
-                                style = display(13.0, if (strength) C.Text else C.Blue, line = 1.0, track = 0.1),
-                            )
+                            Text(title, style = display(13.0, color, line = 1.0, track = 0.1))
                             Box(
                                 Modifier
                                     .weight(1f)
                                     .height(1.dp)
                                     .background(C.Border),
                             )
-                            Text(
-                                if (strength) "${day.strength.size} moves"
-                                else "${day.hiit.firstOrNull()?.sets ?: 2} rounds",
-                                style = arch(10.0, 600, Color(0xFF6A6A73), line = 1.0),
-                            )
+                            Text(count, style = arch(10.0, 600, Color(0xFF6A6A73), line = 1.0))
                         }
                     }
 
@@ -157,15 +160,25 @@ fun DayScreen(
                         )
                         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
                             Text(exercise.name.titleCase(), style = arch(13.5, 600, C.Text, line = 1.25))
-                            Text(exercise.spec, style = arch(10.5, 500, Color(0xFF7C7C86), line = 1.0))
+                            if (!exercise.isWarmup) {
+                                Text(exercise.spec, style = arch(10.5, 500, Color(0xFF7C7C86), line = 1.0))
+                            }
                             Text(
                                 "${exercise.target} · ${exercise.equipment}".uppercase(),
                                 style = arch(9.0, 700, Color(0xFF5F6068), track = 0.08, line = 1.0),
                             )
                         }
                         Text(
-                            if (exercise.hasLoad) "${saved.weightFor(exercise)} KG" else "BODY",
-                            style = arch(10.5, 700, C.Accent, track = 0.06, line = 1.0),
+                            when {
+                                exercise.isWarmup -> duration(exercise.time).uppercase()
+                                exercise.hasLoad -> "${saved.weightFor(exercise)} KG"
+                                else -> "BODY"
+                            },
+                            style = arch(
+                                10.5, 700,
+                                if (exercise.isWarmup) C.Warm else C.Accent,
+                                track = 0.06, line = 1.0,
+                            ),
                         )
                     }
                     Box(

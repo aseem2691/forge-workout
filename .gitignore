@@ -8,3 +8,7 @@ captures/
 .externalNativeBuild/
 .cxx/
 *.apk
+# tools/genplan.py inputs and scratch output
+tools/exercises.json
+tools/free-exercise-db/
+tools/media_list.txt

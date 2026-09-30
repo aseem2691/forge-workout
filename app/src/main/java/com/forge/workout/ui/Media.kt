@@ -6,6 +6,10 @@ import android.graphics.ImageDecoder
 import android.graphics.drawable.AnimatedImageDrawable
 import android.graphics.drawable.Drawable
 import android.widget.ImageView
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.keyframes
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
@@ -83,4 +88,54 @@ fun ExerciseGif(ref: String, modifier: Modifier = Modifier) {
             (drawable as? AnimatedImageDrawable)?.start()
         },
     )
+}
+
+/**
+ * Real-person demo: the start and end photos of the movement (free-exercise-db), looped as one
+ * rep — hold the start, ease into the end position, hold, ease back. Each frame is 850×567, so
+ * they are decoded per exercise rather than cached for the life of the process like thumbnails.
+ */
+@Composable
+fun ExercisePhotos(refs: List<String>, modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+    val paths = remember(refs) { refs.take(2).map(::mediaPath) }
+    val frames by produceState<List<ImageBitmap>>(initialValue = emptyList(), paths) {
+        value = withContext(Dispatchers.IO) {
+            paths.mapNotNull { path ->
+                runCatching {
+                    context.assets.open(path).use { BitmapFactory.decodeStream(it) }.asImageBitmap()
+                }.getOrNull()
+            }
+        }
+    }
+    val rep = rememberInfiniteTransition(label = "rep")
+    val end by rep.animateFloat(
+        initialValue = 0f,
+        targetValue = 0f,
+        animationSpec = infiniteRepeatable(
+            keyframes {
+                durationMillis = 2600
+                0f at 950
+                1f at 1300
+                1f at 2250
+            },
+        ),
+        label = "endFrame",
+    )
+
+    Box(modifier) {
+        frames.getOrNull(0)?.let {
+            Image(it, contentDescription = null, modifier = Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
+        }
+        frames.getOrNull(1)?.let {
+            Image(
+                it,
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .graphicsLayer { alpha = end },
+                contentScale = ContentScale.Crop,
+            )
+        }
+    }
 }

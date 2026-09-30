@@ -1,8 +1,9 @@
 # Forge — Home Training
 
 A native Android workout app implementing the `Home Workout App.dc.html` Claude Design prototype.
-Four-day split, dumbbells 2–24 kg, walkpad and a mat. Everything runs offline: the plan, all 66
-exercise animations and the form instructions are bundled in the APK.
+Four-day split, dumbbells 2–24 kg, walkpad and a mat. Everything runs offline: the plan, the
+exercise demos (real-person photos and 3D animations), the muscle map and the form instructions
+are bundled in the APK.
 
 ## The program
 
@@ -17,17 +18,46 @@ block advances automatically from the stored program start date.
 | **D** | Hybrid conditioning — deload the loads, raise the heart rate |
 
 Every block keeps the same four sessions — Mon upper, Tue lower/glutes, Thu push·pull, Sat full
-body — each with a strength block and a 40/20 HIIT finisher. 66 distinct exercises in total,
+body — each opening with a warm-up, then a strength block and a 40/20 HIIT finisher. 66 distinct exercises in total,
 selected from the dataset to need nothing but dumbbells, a mat, a chair and a walkpad. Block B is
 entirely body-weight apart from two light-dumbbell delt raises.
 
-`plan.json` is generated from the dataset rather than hand-written; the generator lives at
+`plan.json` is generated from the datasets rather than hand-written; the generator lives at
 `tools/genplan.py`.
+
+### Warm-up
+
+Every session starts with about 7 minutes of timed moves that run hands-free — a 40 s move, a
+10 s switch-over, the next move — ending in a 20 s hand-off to set up the first set:
+
+| Day | Warm-up |
+| --- | --- |
+| Mon upper, Thu push·pull | walkpad brisk walk 2:00 · arm circles · scapula push-up · cat-cow · inchworm · dynamic chest stretch · world's greatest stretch 1:00 |
+| Tue lower | walkpad brisk walk 2:00 · standing hip circles · bodyweight squat · glute bridge · forward lunge · world's greatest stretch 1:00 · jumping jacks 0:30 |
+| Sat full body | walkpad brisk walk 2:00 · arm circles · standing hip circles · inchworm · bodyweight squat · world's greatest stretch 1:00 · jumping jacks 0:30 |
+
+Warm-up moves are shown in amber, each with a one-line coaching cue, and never count as training
+sets. To skip it on a short day, tap the first strength exercise on the day screen.
+
+### Rest
+
+No break runs longer than **60 s** — between sets and between exercises. Rests the program
+designed longer (75–90 s on the heavy presses and squats) are capped at a minute; shorter ones
+(45 s on calves) are unchanged, and the HIIT finisher keeps its 40/20 interval. **+15 s** on the
+rest screen still buys time when a set needs it. The session lengths shown account for both the
+shorter rests and the warm-up.
 
 ## Install
 
 The signed APK is at `app/build/outputs/apk/release/app-release.apk` (a copy sits at `Forge.apk`
 in the project root).
+
+**Preview builds.** GitHub Actions builds every push with `-Pforge.preview`: package
+`com.forge.workout.preview`, labelled **Forge Preview**, signed with the committed
+`app/preview.keystore`. Release builds are signed with the local debug key, which CI doesn't
+have — a CI build could never update the installed app — so previews install *beside* it,
+start with their own empty data and leave the real app's untouched. Successive previews update
+each other. Download the `Forge-preview` artifact from the workflow run.
 
 ```bash
 adb install -r Forge.apk
@@ -51,23 +81,26 @@ exercise GIFs without pulling in an image library.
 | Screen | What it does |
 | --- | --- |
 | **Plan** | Program week, body-weight progress, real weekly stats, the 4-day split. Tap the body-weight card to log today's weight. |
-| **Day** | Session overview — target muscles, exercise list with demo thumbnails, strength block and HIIT finisher. Tap any exercise to jump straight to it. |
-| **Player** | Animated demo, set dots, weight stepper, rep logging (tap-count or auto-tempo) or a 40/20 countdown, rest overlay, and `?` for the dataset's step-by-step form cues. |
+| **Day** | Session overview — target muscles, exercise list with demo thumbnails, warm-up, strength block and HIIT finisher. Tap any exercise to jump straight to it. |
+| **Player** | Real-person demo (tap for the 3D model), muscle map, set dots, weight stepper, rep logging (tap-count or auto-tempo) or a countdown, rest overlay, and `?` for step-by-step form cues. |
 | **Done** | Session summary, then back to the week. |
 
 ## Architecture
 
 ```
-tools/genplan.py            regenerates assets/plan.json from the exercises dataset
+tools/genplan.py            regenerates assets/plan.json from both exercise datasets
+tools/genbodymap.py         converts the body-map polygons into assets/bodymap.json
 app/src/main/
   assets/plan.json          4 rotating blocks × 4 days
-  assets/media/             66 exercise GIFs + 180×180 thumbnails
+  assets/bodymap.json       front/back muscle polygons
+  assets/media/             3D GIFs + 180×180 thumbnails, fe_*.jpg photo frames
   java/com/forge/workout/
     WorkoutViewModel.kt     session state machine + deadline-based timers
     data/Plan.kt            program models, JSON loading
     data/Store.kt           DataStore persistence, week/streak derivation
     ui/Theme.kt             palette + Anton/Archivo type scale
-    ui/Media.kt             GIF + thumbnail loading from assets
+    ui/Media.kt             GIF, photo-loop and thumbnail loading from assets
+    ui/BodyMap.kt           front/back muscle map drawn on a Canvas
     ui/{Plan,Day,Player,Done}Screen.kt
 ```
 
@@ -94,8 +127,8 @@ to real data here:
   every tap-logged set recorded one rep short. Here the rep is counted first, then the set completes.
 - **Skip** no longer credits a set. In the prototype, skipping the last exercise called `finishSet()`
   and logged work you didn't do. A session with zero logged sets isn't recorded at all.
-- **Rest** uses each exercise's own rest from the dataset (90 s on heavy presses, 45 s on calves,
-  20 s in HIIT). The prototype's prop default collapsed every strength rest to 75 s.
+- **Rest** uses each exercise's own rest, capped at 60 s (45 s on calves, 20 s in HIIT). The
+  prototype's prop default collapsed every strength rest to 75 s.
 - **Timers are deadline-based** (`elapsedRealtime`), not per-tick decrements, so a backgrounded or
   throttled process cannot silently lose seconds mid-set.
 
@@ -174,13 +207,27 @@ workout is running on the watch, so start one there first.
 > Talking to the watch over Zepp's own protocol was deliberately not attempted — it is proprietary
 > and encrypted, needs pairing-key extraction, and breaks on firmware updates.
 
-## Display and media resolution
+## Exercise demos
 
-Every part of the UI that Forge draws — type, layout, icons, timer rings — is vector and scales to
-any density, so it renders natively at the S25 Ultra's 1440×3120. The one raster asset is the
-exercise media, and **the dataset only publishes it at 180×180**; there is no higher-resolution
-source. Those frames are upscaled to fill the demo panel and look correspondingly soft. Swapping in
-sharper media would mean sourcing it elsewhere — nothing in the app caps it.
+MuscleWiki's videos are its own copyrighted content and can't be bundled, so the demos come from
+openly licensed sources instead, in the same spirit — a real person doing the move, plus a map of
+the muscles it works:
+
+- **Real-person photos** from [free-exercise-db](https://github.com/yuhonas/free-exercise-db)
+  (public domain / Unlicense): the start and end position of each movement at 850×567, looped as
+  one rep — hold, ease into the end position, hold, ease back. 43 of the 66 training exercises
+  and most warm-up moves have a pair, each checked by eye against the 3D demo; `PHOTOS` in
+  `tools/genplan.py` is that list. Moves with no faithful match (burpees, skater hops, towel rows,
+  curtsey squats…) keep the 3D animation rather than show a different exercise.
+- **3D animations** from the exercises-dataset (Gym visual), with the working muscles painted
+  red. Tap the demo panel to switch between photo and 3D; the choice is remembered.
+- **Muscle map** — front and back figures with the worked muscles lit in the accent and the
+  assisting ones dimmer, beside the exercise name and larger in the `?` sheet. Polygons from
+  [react-body-highlighter](https://github.com/GV79/react-body-highlighter) (MIT), drawn
+  natively on a Canvas.
+
+Everything Forge draws is vector and renders natively at the S25 Ultra's 1440×3120. The 3D GIFs
+are published at 180×180 only and look soft upscaled; the photos are 850×567 and hold up.
 
 ## Tests
 
@@ -189,11 +236,21 @@ sharper media would mean sourcing it elsewhere — nothing in the app caps it.
 ```
 
 Covers the calendar arithmetic behind the rotating blocks and the Monday-start weekly reset —
-logic that can't be exercised from the UI without changing the device clock.
+logic that can't be exercised from the UI without changing the device clock — and pins the
+generated plan: a 5–8 minute warm-up on every day, no rest over 60 s, and every media file and
+muscle-map region the plan names actually bundled.
 
 ## Attribution
 
-Exercise media © **Gym visual**, redistributed via
+3D exercise media © **Gym visual**, redistributed via
 [hasaneyldrm/exercises-dataset](https://github.com/hasaneyldrm/exercises-dataset) (MIT). The dataset's
 NOTICE requires the Gym visual attribution stay intact — it is shown on the plan screen, on the
-player's demo panel, and in the how-to sheet. Fonts: Anton and Archivo (SIL Open Font License).
+player's demo panel, and in the how-to sheet.
+
+Exercise photos and some warm-up instructions from
+[free-exercise-db](https://github.com/yuhonas/free-exercise-db), dedicated to the public domain
+(Unlicense) by its maintainers. The dataset doesn't document where the photos were originally
+shot, so check their provenance before any distribution beyond personal use.
+
+Muscle-map polygons from [react-body-highlighter](https://github.com/GV79/react-body-highlighter)
+(MIT, © 2020 GV79). Fonts: Anton and Archivo (SIL Open Font License).

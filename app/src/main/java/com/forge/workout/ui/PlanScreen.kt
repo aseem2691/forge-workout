@@ -185,7 +185,8 @@ fun PlanScreen(
 
         item {
             Text(
-                "Exercise media © Gym visual · exercises-dataset (MIT)",
+                "3D demos © Gym visual · exercises-dataset (MIT) · photos: free-exercise-db (public domain) · " +
+                    "body map: react-body-highlighter (MIT)",
                 style = arch(9.5, 500, Color(0xFF4A4A52), line = 1.4),
                 textAlign = TextAlign.Center,
                 modifier = Modifier
@@ -290,7 +291,7 @@ private fun DayCard(
     } else {
         Modifier.background(C.CardAlt)
     }
-    val exercises = day.all
+    val exercises = day.main
 
     Column(
         modifier
@@ -341,7 +342,8 @@ private fun DayCard(
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 Text(day.flatTitle.uppercase(), style = display(20.0, line = 1.02))
                 Text(
-                    "${day.strength.size} strength moves · ${day.hiit.size}-move HIIT finisher",
+                    (if (day.warmup.isNotEmpty()) "${day.warmupMins}-min warm-up · " else "") +
+                        "${day.strength.size} strength moves · ${day.hiit.size}-move HIIT finisher",
                     style = arch(11.5, 500, Color(0xFF8A8A94), line = 1.35),
                 )
             }

@@ -28,6 +28,8 @@ object C {
     val Accent = Color(0xFFD8FB52)
     val AccentText = Color(0xFFC6E75F)
     val Blue = Color(0xFF8AD1FF)
+    /** Warm-up: amber, set apart from the strength accent and the HIIT blue. */
+    val Warm = Color(0xFFFFB86B)
     val OnAccent = Color(0xFF0D1005)
 
     val Text = Color(0xFFF4F4F2)

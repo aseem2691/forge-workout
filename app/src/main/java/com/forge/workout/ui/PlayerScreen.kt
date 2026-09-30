@@ -56,6 +56,7 @@ fun PlayerScreen(
     bpm: Int?,
     onClose: () -> Unit,
     onToggleHow: () -> Unit,
+    onToggleDemo: () -> Unit,
     onToggleRun: () -> Unit,
     onTap: () -> Unit,
     onMode: (String) -> Unit,
@@ -71,6 +72,10 @@ fun PlayerScreen(
     val isTimed = exercise.isTimed
     val isTap = !isTimed && state.mode == "tap"
     val isTempo = !isTimed && state.mode == "tempo"
+    val blockTint = blockColor(exercise)
+    // Photos by default; the 3D model on request, or when a move has no photos.
+    val showPhotos = exercise.hasPhotos && (saved.demo != "3d" || !exercise.hasGif)
+    val canSwitchDemo = exercise.hasPhotos && exercise.hasGif
 
     BoxWithConstraints(
         Modifier
@@ -96,11 +101,19 @@ fun PlayerScreen(
                     verticalArrangement = Arrangement.spacedBy(3.dp),
                 ) {
                     Text(
-                        if (exercise.isHiit) "HIIT · 40 / 20" else "STRENGTH BLOCK",
-                        style = arch(9.0, 800, if (exercise.isHiit) C.Blue else C.Accent, track = 0.2, line = 1.0),
+                        when {
+                            exercise.isWarmup -> "WARM-UP"
+                            exercise.isHiit -> "HIIT · 40 / 20"
+                            else -> "STRENGTH BLOCK"
+                        },
+                        style = arch(9.0, 800, blockTint, track = 0.2, line = 1.0),
                     )
                     Text(
-                        "Exercise ${state.exIdx + 1} / ${exercises.size}",
+                        if (exercise.isWarmup) {
+                            "Move ${state.exIdx + 1} / ${day.warmup.size}"
+                        } else {
+                            "Exercise ${state.exIdx - day.warmup.size + 1} / ${day.main.size}"
+                        },
                         style = arch(10.5, 600, C.Ghost, line = 1.0),
                     )
                 }
@@ -114,7 +127,8 @@ fun PlayerScreen(
                     .padding(top = 10.dp),
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
             ) {
-                exercises.forEachIndexed { index, _ ->
+                exercises.forEachIndexed { index, item ->
+                    val done = if (item.isWarmup) C.Warm else C.Accent
                     Box(
                         Modifier
                             .weight(1f)
@@ -122,8 +136,8 @@ fun PlayerScreen(
                             .clip(RoundedCornerShape(2.dp))
                             .background(
                                 when {
-                                    index < state.exIdx -> C.Accent
-                                    index == state.exIdx -> C.Accent.copy(alpha = 0.45f)
+                                    index < state.exIdx -> done
+                                    index == state.exIdx -> done.copy(alpha = 0.45f)
                                     else -> Color(0xFF22232A)
                                 },
                             ),
@@ -144,9 +158,14 @@ fun PlayerScreen(
                         .height(gifHeight)
                         .clip(RoundedCornerShape(20.dp))
                         .background(C.Light)
-                        .border(1.dp, C.Border, RoundedCornerShape(20.dp)),
+                        .border(1.dp, C.Border, RoundedCornerShape(20.dp))
+                        .clickable(enabled = canSwitchDemo, onClick = onToggleDemo),
                 ) {
-                    ExerciseGif(exercise.gif, Modifier.fillMaxSize())
+                    if (showPhotos) {
+                        ExercisePhotos(exercise.photos, Modifier.fillMaxSize())
+                    } else {
+                        ExerciseGif(exercise.gif, Modifier.fillMaxSize())
+                    }
                     Text(
                         exercise.target.uppercase(),
                         style = arch(9.0, 700, C.Accent, track = 0.1, line = 1.0),
@@ -168,12 +187,24 @@ fun PlayerScreen(
                             .padding(horizontal = 9.dp, vertical = 5.dp),
                     )
                     Text(
-                        "© GYM VISUAL",
-                        style = arch(7.5, 600, Color(0xFF8D8D95), track = 0.06, line = 1.0),
+                        if (showPhotos) "FREE-EXERCISE-DB" else "© GYM VISUAL",
+                        style = arch(
+                            7.5, 600,
+                            if (showPhotos) Color(0xFFC9C9D1) else Color(0xFF8D8D95),
+                            track = 0.06, line = 1.0,
+                        ),
                         modifier = Modifier
                             .align(Alignment.BottomEnd)
                             .padding(end = 11.dp, bottom = 8.dp),
                     )
+                    if (canSwitchDemo) {
+                        DemoSwitch(
+                            photos = showPhotos,
+                            modifier = Modifier
+                                .align(Alignment.BottomCenter)
+                                .padding(bottom = 9.dp),
+                        )
+                    }
                     if (bpm != null) {
                         Row(
                             Modifier
@@ -192,23 +223,34 @@ fun PlayerScreen(
                     }
                 }
 
-                Column(
-                    Modifier.padding(start = 20.dp, end = 20.dp, top = 15.dp),
-                    verticalArrangement = Arrangement.spacedBy(6.dp),
+                Row(
+                    Modifier.padding(start = 20.dp, end = 14.dp, top = 15.dp),
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Text(exercise.name.titleCase().uppercase(), style = display(25.0, line = 1.0))
-                    Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                        exercise.muscles.forEach { muscle ->
-                            Text(
-                                muscle.titleCase(),
-                                style = arch(9.5, 600, Color(0xFF9A9AA3), line = 1.0),
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(6.dp))
-                                    .background(Color(0xFF17181C))
-                                    .border(1.dp, C.BorderSoft, RoundedCornerShape(6.dp))
-                                    .padding(horizontal = 8.dp, vertical = 4.dp),
-                            )
+                    Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                        Text(exercise.name.titleCase().uppercase(), style = display(25.0, line = 1.0))
+                        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                            exercise.muscles.take(3).forEach { muscle ->
+                                Text(
+                                    muscle.titleCase(),
+                                    style = arch(9.5, 600, Color(0xFF9A9AA3), line = 1.0),
+                                    modifier = Modifier
+                                        .clip(RoundedCornerShape(6.dp))
+                                        .background(Color(0xFF17181C))
+                                        .border(1.dp, C.BorderSoft, RoundedCornerShape(6.dp))
+                                        .padding(horizontal = 8.dp, vertical = 4.dp),
+                                )
+                            }
                         }
+                    }
+                    if (exercise.bodyPrimary.isNotEmpty()) {
+                        BodyMap(
+                            exercise.bodyPrimary,
+                            exercise.bodySecondary,
+                            Modifier
+                                .padding(start = 10.dp)
+                                .size(width = 70.dp, height = 76.dp),
+                        )
                     }
                 }
 
@@ -388,7 +430,14 @@ fun PlayerScreen(
 
         if (state.resting) {
             val nextIndex = if (state.setIdx == -1) (state.exIdx + 1).coerceAtMost(exercises.size - 1) else state.exIdx
+            // During rest exIdx still points at the move just finished.
             RestOverlay(
+                label = when {
+                    !exercise.isWarmup -> "REST"
+                    exercises[nextIndex].isWarmup -> "NEXT MOVE"
+                    else -> "WARM-UP DONE"
+                },
+                tint = if (exercise.isWarmup) C.Warm else C.Blue,
                 left = state.restLeft,
                 total = state.restTotal,
                 next = exercises[nextIndex],
@@ -403,7 +452,9 @@ fun PlayerScreen(
 @Composable
 private fun ProgressNote(exercise: Exercise, saved: Persisted, weight: Int) {
     val logged = saved.lastPerf[exercise.id]
+    val tint = if (exercise.isWarmup) C.Warm else C.Accent
     val note = when {
+        exercise.isWarmup -> exercise.cue ?: "Easy pace — this is the warm-up."
         logged != null -> "Last time: $logged — today's working weight is $weight kg."
         exercise.last != null -> "Last time: ${exercise.last} — every rep cleared. Coach says go $weight kg today."
         exercise.isHiit -> "Work hard for 40, breathe for 20. ${exercise.sets} rounds."
@@ -412,15 +463,44 @@ private fun ProgressNote(exercise: Exercise, saved: Persisted, weight: Int) {
 
     Text(
         note,
-        style = arch(10.5, 600, C.AccentText, line = 1.35),
+        style = arch(10.5, 600, if (exercise.isWarmup) C.Warm else C.AccentText, line = 1.35),
         modifier = Modifier
             .padding(start = 20.dp, end = 20.dp, top = 11.dp)
             .fillMaxWidth()
             .clip(RoundedCornerShape(11.dp))
-            .background(C.Accent.copy(alpha = 0.08f))
-            .border(1.dp, C.Accent.copy(alpha = 0.18f), RoundedCornerShape(11.dp))
+            .background(tint.copy(alpha = 0.08f))
+            .border(1.dp, tint.copy(alpha = 0.18f), RoundedCornerShape(11.dp))
             .padding(horizontal = 12.dp, vertical = 9.dp),
     )
+}
+
+private fun blockColor(exercise: Exercise): Color = when {
+    exercise.isWarmup -> C.Warm
+    exercise.isHiit -> C.Blue
+    else -> C.Accent
+}
+
+/** Shows which demo is on; the whole panel is the tap target. */
+@Composable
+private fun DemoSwitch(photos: Boolean, modifier: Modifier = Modifier) {
+    Row(
+        modifier
+            .clip(RoundedCornerShape(8.dp))
+            .background(Color(0xDB0D1005))
+            .padding(3.dp),
+        horizontalArrangement = Arrangement.spacedBy(2.dp),
+    ) {
+        listOf("PHOTO" to photos, "3D" to !photos).forEach { (label, on) ->
+            Text(
+                label,
+                style = arch(7.5, 800, if (on) C.OnAccent else C.Ghost, track = 0.1, line = 1.0),
+                modifier = Modifier
+                    .clip(RoundedCornerShape(6.dp))
+                    .background(if (on) C.Accent else Color.Transparent)
+                    .padding(horizontal = 7.dp, vertical = 4.dp),
+            )
+        }
+    }
 }
 
 @Composable
@@ -547,6 +627,8 @@ private fun TapControl(count: Int, target: Int, size: Dp, onTap: () -> Unit) {
 
 @Composable
 private fun RestOverlay(
+    label: String,
+    tint: Color,
     left: Int,
     total: Int,
     next: Exercise,
@@ -562,7 +644,7 @@ private fun RestOverlay(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        Text("REST", style = arch(10.0, 800, C.Blue, track = 0.24, line = 1.0))
+        Text(label, style = arch(10.0, 800, tint, track = 0.24, line = 1.0))
         Spacer(Modifier.height(18.dp))
         Text("$left", style = display(92.0, line = 1.0))
         Spacer(Modifier.height(18.dp))
@@ -578,7 +660,7 @@ private fun RestOverlay(
                 Modifier
                     .fillMaxWidth(if (total > 0) left.toFloat() / total else 0f)
                     .fillMaxHeight()
-                    .background(C.Blue),
+                    .background(tint),
             )
         }
         Spacer(Modifier.height(18.dp))
@@ -678,6 +760,30 @@ private fun HowToSheet(exercise: Exercise, onClose: () -> Unit) {
                 }
             }
 
+            if (exercise.bodyPrimary.isNotEmpty()) {
+                Row(
+                    Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(18.dp),
+                ) {
+                    BodyMap(
+                        exercise.bodyPrimary,
+                        exercise.bodySecondary,
+                        Modifier.size(width = 118.dp, height = 124.dp),
+                    )
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        MapKey(C.Accent, "Worked", exercise.target.titleCase())
+                        if (exercise.bodySecondary.isNotEmpty()) {
+                            MapKey(
+                                C.Accent.copy(alpha = 0.4f),
+                                "Assisting",
+                                exercise.secondary.take(3).joinToString(", ") { it.titleCase() },
+                            )
+                        }
+                    }
+                }
+            }
+
             Column(verticalArrangement = Arrangement.spacedBy(11.dp)) {
                 exercise.steps.forEachIndexed { index, step ->
                     Row(horizontalArrangement = Arrangement.spacedBy(11.dp)) {
@@ -696,9 +802,27 @@ private fun HowToSheet(exercise: Exercise, onClose: () -> Unit) {
             }
 
             Text(
-                "Instructions from exercises-dataset (MIT) · demo © Gym visual",
+                exercise.credit.ifBlank { "Instructions from exercises-dataset (MIT) · demo © Gym visual" } +
+                    " · Body map: react-body-highlighter (MIT)",
                 style = arch(9.5, 500, Color(0xFF4A4A52), line = 1.4),
             )
+        }
+    }
+}
+
+@Composable
+private fun MapKey(color: Color, label: String, muscles: String) {
+    Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.Top) {
+        Box(
+            Modifier
+                .padding(top = 2.dp)
+                .size(9.dp)
+                .clip(RoundedCornerShape(3.dp))
+                .background(color),
+        )
+        Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
+            Text(label.uppercase(), style = arch(8.5, 700, C.Dim, track = 0.14, line = 1.0))
+            Text(muscles, style = arch(11.5, 600, Color(0xFFB9B9C1), line = 1.3))
         }
     }
 }
