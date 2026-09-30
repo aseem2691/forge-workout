@@ -44,7 +44,39 @@ No break runs longer than **60 s** — between sets and between exercises. Rests
 designed longer (75–90 s on the heavy presses and squats) are capped at a minute; shorter ones
 (45 s on calves) are unchanged, and the HIIT finisher keeps its 40/20 interval. **+15 s** on the
 rest screen still buys time when a set needs it. The session lengths shown account for both the
-shorter rests and the warm-up.
+shorter rests, the warm-up and the cool-down.
+
+### Cool-down
+
+Every training day ends with about 5 minutes of held stretches for what the day worked, run
+hands-free after the HIIT finisher: 60 s for one-sided stretches (switch at 30 s), 45 s for
+two-sided ones, 10 s between. Shown in lavender; never counted as training sets.
+
+| Day | Cool-down |
+| --- | --- |
+| Mon upper, Thu push·pull | towel shoulder opener · kneeling lat stretch · overhead triceps · rear delt · neck side |
+| Tue lower | hamstring (on the back) · all-fours quad · seated piriformis (chair) · calf against the wall · butterfly |
+| Sat full body | runner's stretch · seated glute · towel shoulder opener · kneeling lat stretch · seated forward fold |
+
+### Rest-day mobility
+
+The REST DAYS cards on the plan screen run three guided ~14-minute flows — 12 moves of 60 s, 10 s
+between — the same every week, any day you like:
+
+- **Wed · Hips & lower back** — knee circles, rocking frog, butterfly, piriformis, seated glute,
+  hamstring, quad, iron cross, side-lying stretch, seated side reach, forward fold, world's
+  greatest stretch.
+- **Fri · Upper back & shoulders** — wrist circles, two neck stretches, dynamic chest, towel
+  shoulder opener, chair chest stretch, kneeling lat, standing side stretch, rear delt, overhead
+  triceps, upper back, plank to upward dog.
+- **Sun · Full-body flow** — inchworm, world's greatest stretch, squat to overhead reach, step
+  back and reach, windmill, runner's stretch, seated wide-angle, rocking frog, kneeling lat, towel
+  shoulder opener, forward fold, plank to upward dog.
+
+A mobility session counts toward **time this week** and the **streak**, and shows in "Your
+sessions" labelled Mobility — but not toward **Sessions done x/4** or a training day's ✓. It is
+published to Health Connect as *stretching*. The walk on those days is tracked from the watch via
+Health Connect, as before.
 
 ## Install
 
@@ -139,6 +171,16 @@ to real data here:
   count and log itself unwatched. The prototype started every set paused.
 - **Rest can't be tapped through.** The rest overlay swallows taps, so nothing underneath — the
   LOG SET button, the rep counter — fires by accident while resting.
+
+- **End a workout early.** ✕ or Back in the player asks **Save & finish** (logs what's done and
+  shows the summary), **Discard** or **Keep going** — the clock is held while it's open. An
+  exercise stopped partway never earns the automatic +2 kg: it counts as cleared only if every
+  planned set was done at target.
+- **Resume after the app dies.** The session in progress is checkpointed at every logged set and
+  move — under its own storage key, so a damaged snapshot can never take the history with it. If
+  the app is killed, the plan screen shows **Workout in progress** with Resume (back to the start
+  of the pending set, paused; time away isn't counted), Save (dated by its start, ended at its
+  last checkpoint) or Discard.
 
 Added for daily use: the screen stays awake in the player, and the phone buzzes when a set ends,
 a rest finishes, and a session completes.

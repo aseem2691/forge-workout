@@ -21,8 +21,8 @@ android {
         minSdk = 28
         targetSdk = 36
         // Bump both on every release — otherwise an installed build is unidentifiable.
-        versionCode = 7
-        versionName = "1.6.1"
+        versionCode = 8
+        versionName = "1.7"
         manifestPlaceholders["appLabel"] = "@string/app_name"
     }
 

@@ -695,7 +695,11 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
         val a = p.active ?: return null
         val day = program.day(a.mobility, a.weekIdx, a.dayIdx)
         val move = day?.all?.getOrNull(a.exIdx)
-        val done = if (a.mobility) "${a.movesDone} moves done" else "${a.setsDone} sets logged"
+        val done = if (a.mobility) {
+            "${a.movesDone} ${if (a.movesDone == 1) "move" else "moves"} done"
+        } else {
+            "${a.setsDone} ${if (a.setsDone == 1) "set" else "sets"} logged"
+        }
         return ActiveCard(
             title = day?.flatTitle ?: "Unfinished workout",
             detail = listOfNotNull(move?.let { "Stopped at ${it.name.titleCase()}" }, done).joinToString(" · "),

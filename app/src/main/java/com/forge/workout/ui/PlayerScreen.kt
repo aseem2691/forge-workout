@@ -445,6 +445,8 @@ fun PlayerScreen(
                 nextWeight = saved.weightFor(exercises[nextIndex]),
                 onAddRest = onAddRest,
                 onEndRest = onEndRest,
+                // The overlay swallows taps, so ✕ underneath is out of reach during a rest.
+                onEndWorkout = onClose,
             )
         }
 
@@ -669,6 +671,7 @@ private fun RestOverlay(
     nextWeight: Int,
     onAddRest: () -> Unit,
     onEndRest: () -> Unit,
+    onEndWorkout: () -> Unit,
 ) {
     Column(
         Modifier
@@ -750,6 +753,15 @@ private fun RestOverlay(
                 Text("SKIP REST", style = arch(10.5, 700, C.OnAccent, track = 0.1, line = 1.0))
             }
         }
+        Spacer(Modifier.height(22.dp))
+        Text(
+            "END WORKOUT",
+            style = arch(10.0, 700, C.Faint, track = 0.14, line = 1.0),
+            modifier = Modifier
+                .clip(RoundedCornerShape(8.dp))
+                .clickable(onClick = onEndWorkout)
+                .padding(horizontal = 12.dp, vertical = 8.dp),
+        )
     }
 }
 
