@@ -9,11 +9,14 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -31,6 +34,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -48,6 +52,7 @@ import com.forge.workout.data.Exercise
 import com.forge.workout.data.Persisted
 import com.forge.workout.data.titleCase
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun PlayerScreen(
     day: Day,
@@ -153,20 +158,13 @@ fun PlayerScreen(
                         .fillMaxWidth()
                         .height(gifHeight)
                         .clip(RoundedCornerShape(20.dp))
-                        .background(C.Light)
+                        // Pure white, like the demos' own background, so the square animation
+                        // doesn't sit in visible bands. The target muscle is named in the chips
+                        // below and lit on the muscle map, so no label covers the figure.
+                        .background(Color.White)
                         .border(1.dp, C.Border, RoundedCornerShape(20.dp)),
                 ) {
                     ExerciseGif(exercise.gif, Modifier.fillMaxSize())
-                    Text(
-                        exercise.target.uppercase(),
-                        style = arch(9.0, 700, C.Accent, track = 0.1, line = 1.0),
-                        modifier = Modifier
-                            .align(Alignment.TopStart)
-                            .padding(start = 12.dp, top = 11.dp)
-                            .clip(RoundedCornerShape(7.dp))
-                            .background(Color(0xDB0D1005))
-                            .padding(horizontal = 9.dp, vertical = 5.dp),
-                    )
                     Text(
                         exercise.equipment.uppercase(),
                         style = arch(9.0, 700, Color(0xFFC9C9D1), track = 0.1, line = 1.0),
@@ -208,8 +206,11 @@ fun PlayerScreen(
                 ) {
                     Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                         Text(exercise.name.titleCase().uppercase(), style = display(25.0, line = 1.0))
-                        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                            exercise.muscles.take(3).forEach { muscle ->
+                        FlowRow(
+                            horizontalArrangement = Arrangement.spacedBy(6.dp),
+                            verticalArrangement = Arrangement.spacedBy(6.dp),
+                        ) {
+                            exercise.muscles.forEach { muscle ->
                                 Text(
                                     muscle.titleCase(),
                                     style = arch(9.5, 600, Color(0xFF9A9AA3), line = 1.0),
@@ -335,8 +336,9 @@ fun PlayerScreen(
 
                     isTempo -> {
                         val phase = state.tempoSec % 3
+                        val countingIn = state.running && state.leadIn > 0
                         RingControl(
-                            progress = phase / 3f,
+                            progress = if (countingIn) state.leadIn / 5f else phase / 3f,
                             color = C.Blue,
                             size = controlSize,
                             onClick = onToggleRun,
@@ -345,10 +347,17 @@ fun PlayerScreen(
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.spacedBy(1.dp),
                             ) {
-                                Text("${state.count}", style = display(46.0, line = 1.0))
                                 Text(
-                                    "OF ${exercise.reps} · " +
-                                        if (!state.running) "PAUSED" else if (phase == 2) "UP" else "DOWN",
+                                    if (countingIn) "${state.leadIn}" else "${state.count}",
+                                    style = display(46.0, if (countingIn) C.Blue else C.Text, line = 1.0),
+                                )
+                                Text(
+                                    when {
+                                        countingIn -> "GET READY"
+                                        !state.running -> "OF ${exercise.reps} · PAUSED"
+                                        phase == 2 -> "OF ${exercise.reps} · UP"
+                                        else -> "OF ${exercise.reps} · DOWN"
+                                    },
                                     style = arch(8.5, 700, C.Ghost, track = 0.16, line = 1.0),
                                 )
                             }
@@ -434,7 +443,8 @@ private fun ProgressNote(exercise: Exercise, saved: Persisted, weight: Int) {
     val tint = if (exercise.isWarmup) C.Warm else C.Accent
     val note = when {
         exercise.isWarmup -> exercise.cue ?: "Easy pace — this is the warm-up."
-        logged != null -> "Last time: $logged — today's working weight is $weight kg."
+        logged != null && exercise.hasLoad -> "Last time: $logged — today's working weight is $weight kg."
+        logged != null -> "Last time: $logged — match it or beat it."
         exercise.last != null -> "Last time: ${exercise.last} — every rep cleared. Coach says go $weight kg today."
         exercise.isHiit -> "Work hard for 40, breathe for 20. ${exercise.sets} rounds."
         else -> null
@@ -596,6 +606,9 @@ private fun RestOverlay(
         Modifier
             .fillMaxSize()
             .background(Color(0xF208080A))
+            // Swallow every tap: without this they reached the player underneath, so a tap
+            // where LOG SET sits logged an extra set during rest.
+            .clickable(interactionSource = remember { MutableInteractionSource() }, indication = null) {}
             .padding(28.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -728,7 +741,17 @@ private fun HowToSheet(exercise: Exercise, onClose: () -> Unit) {
                         Modifier.size(width = 118.dp, height = 124.dp),
                     )
                     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        MapKey(C.Accent, "Worked", exercise.target.titleCase())
+                        MapKey(
+                            C.Accent,
+                            "Worked",
+                            if (exercise.target == "cardiovascular system") {
+                                // Conditioning moves: the map lights the muscles doing the work.
+                                exercise.secondary.take(3).joinToString(", ") { it.titleCase() }
+                                    .ifBlank { exercise.target.titleCase() }
+                            } else {
+                                exercise.target.titleCase()
+                            },
+                        )
                         if (exercise.bodySecondary.isNotEmpty()) {
                             MapKey(
                                 C.Accent.copy(alpha = 0.4f),

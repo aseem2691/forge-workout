@@ -132,6 +132,13 @@ to real data here:
 - **Timers are deadline-based** (`elapsedRealtime`), not per-tick decrements, so a backgrounded or
   throttled process cannot silently lose seconds mid-set.
 
+- **Auto tempo starts itself.** In auto-tempo mode every strength set — the first and each one
+  after a rest — opens with a 5 s count-in (ticks over the last three seconds, a tone when it
+  goes) and then counts reps on its own. Tap the ring to pause; tap again to carry on without a
+  second count-in. The prototype started every set paused.
+- **Rest can't be tapped through.** The rest overlay swallows taps, so nothing underneath — the
+  LOG SET button, the rep counter — fires by accident while resting.
+
 Added for daily use: the screen stays awake in the player, and the phone buzzes when a set ends,
 a rest finishes, and a session completes.
 

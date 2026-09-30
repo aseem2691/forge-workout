@@ -62,6 +62,8 @@ data class SessionState(
     val restTotal: Int = 0,
     val showHow: Boolean = false,
     val tempoSec: Int = 0,
+    /** Seconds left in the auto-tempo count-in; 0 once counting has started (or when paused). */
+    val leadIn: Int = 0,
     /** Set when the working weight was stepped up on entering this exercise. */
     val progression: String? = null,
     val setsDone: Int = 0,
@@ -116,6 +118,15 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     private val pendingResults = mutableMapOf<String, Acc>()
+
+    /**
+     * Auto tempo starts on its own after this count-in, so a set can begin hands-free. It is
+     * modelled as a tempo start time in the future — pausing, the how-to sheet and [tick] all
+     * work off `tempoResumeAt` unchanged.
+     */
+    private val tempoLeadInMs = 5_000L
+
+    private fun autoTempo(e: Exercise, mode: String = _state.value.mode) = !e.isTimed && mode == "tempo"
 
     // ── watch ───────────────────────────────────────────────────────────────────
 
@@ -288,14 +299,14 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
         sessionActive = false
         _state.update {
             it.copy(
-                screen = Screen.Plan, running = false, resting = false, showHow = false,
+                screen = Screen.Plan, running = false, resting = false, showHow = false, leadIn = 0,
                 weekIdx = currentWeekIdx(),
             )
         }
     }
 
     fun goDay() = _state.update {
-        it.copy(screen = Screen.Day, running = false, resting = false, showHow = false)
+        it.copy(screen = Screen.Day, running = false, resting = false, showHow = false, leadIn = 0)
     }
 
     fun startDay() {
@@ -329,8 +340,9 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
         }
         workLeftMs = e.time * 1000L
         workEndAt = now + workLeftMs
+        val auto = autoTempo(e)
         tempoAccumMs = 0L
-        tempoResumeAt = now
+        tempoResumeAt = if (auto) now + tempoLeadInMs else now
         _state.update {
             it.copy(
                 screen = Screen.Player,
@@ -341,7 +353,8 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
                 showHow = false,
                 progression = note,
                 resting = false,
-                running = e.isTimed,
+                running = e.isTimed || auto,
+                leadIn = if (auto) (tempoLeadInMs / 1000).toInt() else 0,
                 remaining = e.time,
                 setsDone = if (fresh) 0 else it.setsDone,
                 repsDone = if (fresh) 0 else it.repsDone,
@@ -377,9 +390,11 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
         if (e.isTimed) {
             if (running) workLeftMs = (workEndAt - now).coerceAtLeast(0) else workEndAt = now + workLeftMs
         } else {
-            if (running) tempoAccumMs += now - tempoResumeAt else tempoResumeAt = now
+            // Pausing during the count-in banks nothing (the start is still in the future), and
+            // resuming counts straight away rather than running the count-in again.
+            if (running) tempoAccumMs += (now - tempoResumeAt).coerceAtLeast(0) else tempoResumeAt = now
         }
-        _state.update { it.copy(running = !running) }
+        _state.update { it.copy(running = !running, leadIn = 0) }
     }
 
     /**
@@ -395,9 +410,16 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
 
     fun setMode(mode: String) {
         val now = SystemClock.elapsedRealtime()
+        val e = current()
+        val auto = e != null && autoTempo(e, mode) && !_state.value.resting
         tempoAccumMs = 0L
-        tempoResumeAt = now
-        _state.update { it.copy(mode = mode, count = 0, tempoSec = 0, running = false) }
+        tempoResumeAt = if (auto) now + tempoLeadInMs else now
+        _state.update {
+            it.copy(
+                mode = mode, count = 0, tempoSec = 0, running = auto,
+                leadIn = if (auto) (tempoLeadInMs / 1000).toInt() else 0,
+            )
+        }
         viewModelScope.launch { store.update { it.copy(mode = mode) } }
     }
 
@@ -448,7 +470,7 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
                 _state.update {
                     it.copy(
                         setsDone = setsDone, repsDone = repsDone, volume = volume,
-                        setIdx = it.setIdx + 1, count = 0, tempoSec = 0, running = false,
+                        setIdx = it.setIdx + 1, count = 0, tempoSec = 0, running = false, leadIn = 0,
                         resting = true, restLeft = rest, restTotal = rest,
                     )
                 }
@@ -460,7 +482,7 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
                 _state.update {
                     it.copy(
                         setsDone = setsDone, repsDone = repsDone, volume = volume,
-                        setIdx = -1, count = 0, tempoSec = 0, running = false,
+                        setIdx = -1, count = 0, tempoSec = 0, running = false, leadIn = 0,
                         resting = true, restLeft = rest, restTotal = rest,
                     )
                 }
@@ -468,7 +490,7 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
 
             else -> {
                 _state.update {
-                    it.copy(setsDone = setsDone, repsDone = repsDone, volume = volume, running = false)
+                    it.copy(setsDone = setsDone, repsDone = repsDone, volume = volume, running = false, leadIn = 0)
                 }
                 finishSession()
             }
@@ -483,15 +505,18 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
         val e = list(s.dayIdx).getOrNull(index) ?: return
         workLeftMs = e.time * 1000L
         workEndAt = now + workLeftMs
+        val auto = autoTempo(e)
         tempoAccumMs = 0L
-        tempoResumeAt = now
+        tempoResumeAt = if (auto) now + tempoLeadInMs else now
         buzz(70)
-        alerts.go()
+        // With auto tempo the "go" tone marks the end of the count-in instead (see tick()).
+        if (!auto) alerts.go()
         if (!onScreen) alerts.restFinished(e.name) else alerts.clear()
         _state.update {
             it.copy(
                 resting = false, exIdx = index, setIdx = if (advancing) 0 else it.setIdx,
-                count = 0, tempoSec = 0, remaining = e.time, running = e.isTimed,
+                count = 0, tempoSec = 0, remaining = e.time, running = e.isTimed || auto,
+                leadIn = if (auto) (tempoLeadInMs / 1000).toInt() else 0,
             )
         }
     }
@@ -657,14 +682,25 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
                 _state.update { it.copy(remaining = left, elapsed = elapsed) }
             }
         } else {
+            if (now < tempoResumeAt) {
+                // Auto-tempo count-in: tick over the last three seconds, nothing counted yet.
+                val lead = ceil((tempoResumeAt - now) / 1000.0).toInt()
+                if (lead in 1..3 && lead != s.leadIn) alerts.tick()
+                _state.update { it.copy(leadIn = lead, count = 0, tempoSec = 0, elapsed = elapsed) }
+                return
+            }
+            if (s.leadIn > 0) {
+                alerts.go()
+                buzz(70)
+            }
             val tempoMs = tempoAccumMs + (now - tempoResumeAt)
             val seconds = (tempoMs / 1000).toInt()
             val count = seconds / 3
             if (count >= e.reps) {
-                _state.update { it.copy(count = e.reps, tempoSec = seconds, elapsed = elapsed) }
+                _state.update { it.copy(count = e.reps, tempoSec = seconds, leadIn = 0, elapsed = elapsed) }
                 finishSet()
             } else {
-                _state.update { it.copy(count = count, tempoSec = seconds, elapsed = elapsed) }
+                _state.update { it.copy(count = count, tempoSec = seconds, leadIn = 0, elapsed = elapsed) }
             }
         }
     }
