@@ -85,8 +85,9 @@ a separate mobility player (duplicates the player).
     (the duration is not inflated by the gap), using the session's own start date.
   - If the snapshot no longer resolves to a Day (plan changed in an update), Resume is hidden;
     Save & finish and Discard remain.
-- A malformed snapshot decodes to `null` (the existing `ignoreUnknownKeys` + `runCatching` parse
-  path) and is ignored.
+- The snapshot is stored under its own DataStore key (`"active"`), separate from the main state
+  blob. `Store` falls back to defaults for any blob it cannot decode, so keeping them apart means a
+  damaged snapshot reads as "no session in progress" and can never take the history with it.
 
 ## 3. Cool-down (training days)
 
