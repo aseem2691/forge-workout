@@ -206,7 +206,7 @@ class HealthConnectRepo(private val context: Context) {
     }
 
     /** Publishes a finished Forge session so it shows up in Health Connect and downstream apps. */
-    suspend fun publish(title: String, startMs: Long, endMs: Long, hiit: Boolean): Boolean {
+    suspend fun publish(title: String, startMs: Long, endMs: Long, hiit: Boolean, stretching: Boolean = false): Boolean {
         val hc = client ?: return false
         if (!hasPermissions() || endMs <= startMs) return false
         val zone = ZoneId.systemDefault().rules.getOffset(Instant.ofEpochMilli(startMs))
@@ -218,10 +218,10 @@ class HealthConnectRepo(private val context: Context) {
                         startZoneOffset = zone,
                         endTime = Instant.ofEpochMilli(endMs),
                         endZoneOffset = zone,
-                        exerciseType = if (hiit) {
-                            ExerciseSessionRecord.EXERCISE_TYPE_HIGH_INTENSITY_INTERVAL_TRAINING
-                        } else {
-                            ExerciseSessionRecord.EXERCISE_TYPE_STRENGTH_TRAINING
+                        exerciseType = when {
+                            stretching -> ExerciseSessionRecord.EXERCISE_TYPE_STRETCHING
+                            hiit -> ExerciseSessionRecord.EXERCISE_TYPE_HIGH_INTENSITY_INTERVAL_TRAINING
+                            else -> ExerciseSessionRecord.EXERCISE_TYPE_STRENGTH_TRAINING
                         },
                         title = title,
                         // Forge times the session itself on the phone.
@@ -236,6 +236,7 @@ class HealthConnectRepo(private val context: Context) {
     private fun exerciseName(type: Int): String? = when (type) {
         ExerciseSessionRecord.EXERCISE_TYPE_STRENGTH_TRAINING -> "Strength training"
         ExerciseSessionRecord.EXERCISE_TYPE_HIGH_INTENSITY_INTERVAL_TRAINING -> "HIIT"
+        ExerciseSessionRecord.EXERCISE_TYPE_STRETCHING -> "Stretching"
         ExerciseSessionRecord.EXERCISE_TYPE_RUNNING -> "Running"
         ExerciseSessionRecord.EXERCISE_TYPE_WALKING -> "Walking"
         ExerciseSessionRecord.EXERCISE_TYPE_CALISTHENICS -> "Calisthenics"

@@ -8,12 +8,13 @@ import android.os.Vibrator
 import android.os.VibratorManager
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.forge.workout.data.ActiveSession
 import com.forge.workout.data.Day
 import com.forge.workout.data.Exercise
-import com.forge.workout.data.ExerciseResult
 import com.forge.workout.data.Persisted
 import com.forge.workout.data.PlanLoader
 import com.forge.workout.data.Program
+import com.forge.workout.data.PendingResult
 import com.forge.workout.data.Progress
 import com.forge.workout.data.Range
 import com.forge.workout.data.SessionRecord
@@ -21,6 +22,8 @@ import com.forge.workout.data.Store
 import com.forge.workout.data.Week
 import com.forge.workout.data.WeightEntry
 import com.forge.workout.data.buildProgress
+import com.forge.workout.data.nextPosition
+import com.forge.workout.data.titleCase
 import com.forge.workout.watch.Alerts
 import com.forge.workout.watch.BodyFatReading
 import com.forge.workout.watch.HcStatus
@@ -64,6 +67,12 @@ data class SessionState(
     val tempoSec: Int = 0,
     /** Seconds left in the auto-tempo count-in; 0 once counting has started (or when paused). */
     val leadIn: Int = 0,
+    /** True while a rest-day mobility flow (Program.mobility[dayIdx]) is open or running. */
+    val mobility: Boolean = false,
+    /** The End-workout sheet is open; the clock is frozen behind it. */
+    val showEnd: Boolean = false,
+    /** Every completed set or move, warm-up and cool-down included — what a mobility flow records. */
+    val movesDone: Int = 0,
     /** Set when the working weight was stepped up on entering this exercise. */
     val progression: String? = null,
     val setsDone: Int = 0,
@@ -71,6 +80,9 @@ data class SessionState(
     val volume: Int = 0,
     val elapsed: Int = 0,
 )
+
+/** The plan screen's "Workout in progress" card. */
+data class ActiveCard(val title: String, val detail: String, val canResume: Boolean, val canSave: Boolean)
 
 class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
 
@@ -109,15 +121,8 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
     private var sessionActive = false
     private val pendingPerf = mutableMapOf<String, String>()
 
-    /** Per-exercise tally for the session in progress. */
-    private class Acc(val name: String, val targetReps: Int) {
-        var sets = 0
-        var reps = 0
-        var weight = 0
-        var cleared = true
-    }
-
-    private val pendingResults = mutableMapOf<String, Acc>()
+    /** Per-exercise tally for the session in progress, in the order exercises were first logged. */
+    private val results = linkedMapOf<String, PendingResult>()
 
     /**
      * Auto tempo starts on its own after this count-in, so a set can begin hands-free. It is
@@ -281,8 +286,11 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
 
     // ── plan helpers ────────────────────────────────────────────────────────────
 
-    fun list(dayIdx: Int): List<Exercise> = plan.getOrNull(dayIdx)?.all.orEmpty()
-    private fun current(): Exercise? = list(_state.value.dayIdx).getOrNull(_state.value.exIdx)
+    /** The Day the session screens show: a training day of the pinned week, or a mobility flow. */
+    fun sessionDay(s: SessionState = _state.value): Day? = program.day(s.mobility, s.weekIdx, s.dayIdx)
+
+    private fun moves(): List<Exercise> = sessionDay()?.all.orEmpty()
+    private fun current(): Exercise? = moves().getOrNull(_state.value.exIdx)
     private fun restFor(e: Exercise): Int = e.rest
 
     /** Today's session: an exact weekday match, otherwise the next training day in the week. */
@@ -308,7 +316,11 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
     // ── navigation ──────────────────────────────────────────────────────────────
 
     fun openDay(i: Int) = _state.update {
-        it.copy(screen = Screen.Day, dayIdx = i, weekIdx = currentWeekIdx())
+        it.copy(screen = Screen.Day, mobility = false, dayIdx = i, weekIdx = currentWeekIdx())
+    }
+
+    fun openMobility(i: Int) = _state.update {
+        it.copy(screen = Screen.Day, mobility = true, dayIdx = i, weekIdx = currentWeekIdx())
     }
 
     fun goPlan() {
@@ -331,7 +343,7 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun startEx(i: Int) {
-        val e = list(_state.value.dayIdx).getOrNull(i) ?: return
+        val e = moves().getOrNull(i) ?: return
         val now = SystemClock.elapsedRealtime()
         val fresh = !sessionActive
         if (fresh) {
@@ -339,7 +351,7 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
             sessionStartAt = now
             sessionStartWallMs = System.currentTimeMillis()
             pendingPerf.clear()
-            pendingResults.clear()
+            results.clear()
             hrSum = 0L; hrCount = 0; hrMax = 0
             _watchSummary.value = null
             connectSavedHeartRate()
@@ -372,29 +384,66 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
                 running = e.isTimed || auto,
                 leadIn = if (auto) (tempoLeadInMs / 1000).toInt() else 0,
                 remaining = e.time,
+                showEnd = false,
                 setsDone = if (fresh) 0 else it.setsDone,
+                movesDone = if (fresh) 0 else it.movesDone,
                 repsDone = if (fresh) 0 else it.repsDone,
                 volume = if (fresh) 0 else it.volume,
                 elapsed = if (fresh) 0 else it.elapsed,
             )
         }
+        checkpoint(i, 0)
+    }
+
+    private fun freeze() {
+        if (frozenAt == 0L) frozenAt = SystemClock.elapsedRealtime()
+    }
+
+    /** Shifts every deadline by the time the clock was held, so nothing ran on behind a sheet. */
+    private fun unfreeze() {
+        if (frozenAt == 0L) return
+        val delta = SystemClock.elapsedRealtime() - frozenAt
+        workEndAt += delta
+        restEndAt += delta
+        tempoResumeAt += delta
+        sessionStartAt += delta
+        frozenAt = 0L
     }
 
     /** The how-to sheet holds the clock rather than discarding it. */
     fun toggleHow() {
         val open = !_state.value.showHow
-        val now = SystemClock.elapsedRealtime()
-        if (open) {
-            frozenAt = now
-        } else if (frozenAt != 0L) {
-            val delta = now - frozenAt
-            workEndAt += delta
-            restEndAt += delta
-            tempoResumeAt += delta
-            sessionStartAt += delta
-            frozenAt = 0L
-        }
+        if (open) freeze() else unfreeze()
         _state.update { it.copy(showHow = open) }
+    }
+
+    /** ✕ or Back in the player: ask how to end, with the clock held and the session checkpointed. */
+    fun openEnd() {
+        if (_state.value.showEnd) return
+        freeze()
+        checkpoint()
+        _state.update { it.copy(showEnd = true, showHow = false) }
+    }
+
+    fun keepGoing() {
+        unfreeze()
+        _state.update { it.copy(showEnd = false) }
+    }
+
+    fun saveAndFinish() {
+        unfreeze()
+        finishSession()
+    }
+
+    /** Drops the session entirely — nothing is recorded — and returns to the day screen. */
+    fun discardSession() {
+        sessionActive = false
+        frozenAt = 0L
+        alerts.clear()
+        viewModelScope.launch { store.update { it.copy(active = null) } }
+        _state.update {
+            it.copy(screen = Screen.Day, showEnd = false, showHow = false, running = false, resting = false, leadIn = 0)
+        }
     }
 
     // ── controls ────────────────────────────────────────────────────────────────
@@ -453,63 +502,102 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
     /** Moves on without crediting a set — skipping should never inflate the log. */
     fun skip() {
         val s = _state.value
-        if (s.exIdx + 1 < list(s.dayIdx).size) startEx(s.exIdx + 1) else finishSession()
+        if (s.exIdx + 1 < moves().size) startEx(s.exIdx + 1) else finishSession()
     }
 
     fun finishSet() {
         val s = _state.value
         val e = current() ?: return
-        val list = list(s.dayIdx)
+        val list = moves()
         val weight = _saved.value.weightFor(e)
         val reps = if (e.isTimed) 0 else if (s.count > 0) s.count else e.reps
 
         if (!e.isTimed) {
             pendingPerf[e.id] = if (e.hasLoad) "$weight kg × $reps" else "$reps reps"
-            val acc = pendingResults.getOrPut(e.id) { Acc(e.name, e.reps) }
-            acc.sets++
-            acc.reps += reps
-            acc.weight = weight
-            if (reps < e.reps) acc.cleared = false
+            val r = results[e.id] ?: PendingResult(e.id, e.name, targetReps = e.reps, plannedSets = e.sets)
+            results[e.id] = r.copy(
+                sets = r.sets + 1, reps = r.reps + reps, weightKg = weight,
+                allSetsHitTarget = r.allSetsHitTarget && reps >= e.reps,
+            )
         }
 
-        // Warm-up moves lead into the session; they are not training sets and never count as one.
-        val setsDone = s.setsDone + if (e.isWarmup) 0 else 1
+        // Warm-up, cool-down and mobility moves are not training sets and never count as one.
+        val setsDone = s.setsDone + if (e.isRecovery) 0 else 1
+        val movesDone = s.movesDone + 1
         val repsDone = s.repsDone + reps
         val volume = s.volume + reps * weight * 2
+        val next = nextPosition(s.exIdx, s.setIdx, e.sets, list.size)
+
+        if (next == null) {
+            _state.update {
+                it.copy(
+                    setsDone = setsDone, movesDone = movesDone, repsDone = repsDone, volume = volume,
+                    running = false, leadIn = 0,
+                )
+            }
+            finishSession()
+            return
+        }
+
         val rest = restFor(e)
-        val now = SystemClock.elapsedRealtime()
+        restEndAt = SystemClock.elapsedRealtime() + rest * 1000L
+        buzz(40)
+        val sameMove = next.first == s.exIdx
+        _state.update {
+            it.copy(
+                setsDone = setsDone, movesDone = movesDone, repsDone = repsDone, volume = volume,
+                // setIdx -1 tells endRest() to advance to the next move.
+                setIdx = if (sameMove) next.second else -1,
+                count = 0, tempoSec = 0, running = false, leadIn = 0,
+                resting = true, restLeft = rest, restTotal = rest,
+            )
+        }
+        checkpoint(next.first, next.second)
+    }
 
-        when {
-            s.setIdx + 1 < e.sets -> {
-                restEndAt = now + rest * 1000L
-                buzz(40)
-                _state.update {
-                    it.copy(
-                        setsDone = setsDone, repsDone = repsDone, volume = volume,
-                        setIdx = it.setIdx + 1, count = 0, tempoSec = 0, running = false, leadIn = 0,
-                        resting = true, restLeft = rest, restTotal = rest,
-                    )
-                }
-            }
+    /** The next set still to do: during a rest between moves that is the following move. */
+    private fun pendingPosition(): Pair<Int, Int> {
+        val s = _state.value
+        return if (s.resting && s.setIdx == -1) s.exIdx + 1 to 0 else s.exIdx to s.setIdx.coerceAtLeast(0)
+    }
 
-            s.exIdx + 1 < list.size -> {
-                restEndAt = now + rest * 1000L
-                buzz(40)
-                _state.update {
-                    it.copy(
-                        setsDone = setsDone, repsDone = repsDone, volume = volume,
-                        setIdx = -1, count = 0, tempoSec = 0, running = false, leadIn = 0,
-                        resting = true, restLeft = rest, restTotal = rest,
-                    )
-                }
-            }
+    private fun snapshot(exIdx: Int, setIdx: Int): ActiveSession {
+        val s = _state.value
+        return ActiveSession(
+            mobility = s.mobility, weekIdx = s.weekIdx, dayIdx = s.dayIdx, exIdx = exIdx, setIdx = setIdx,
+            setsDone = s.setsDone, movesDone = s.movesDone, repsDone = s.repsDone, volume = s.volume,
+            elapsedSec = s.elapsed, startedAtMs = sessionStartWallMs,
+            lastCheckpointMs = System.currentTimeMillis(),
+            pendingPerf = pendingPerf.toMap(), results = results.values.toList(),
+            hrSum = hrSum, hrCount = hrCount, hrMax = hrMax,
+        )
+    }
 
-            else -> {
-                _state.update {
-                    it.copy(setsDone = setsDone, repsDone = repsDone, volume = volume, running = false, leadIn = 0)
-                }
-                finishSession()
+    /**
+     * Persists the session so it survives the process dying. One DataStore write per call —
+     * called at session start, each logged set, each move change and when the End sheet opens;
+     * never per tick. A finished or discarded session writes nothing more.
+     */
+    private fun checkpoint(exIdx: Int = pendingPosition().first, setIdx: Int = pendingPosition().second) {
+        if (!sessionActive) return
+        val snap = snapshot(exIdx, setIdx)
+        viewModelScope.launch { store.update { it.copy(active = snap) } }
+    }
+
+    /** Writes a session to history (and progression), clears the snapshot, syncs the watch. */
+    private fun record(snap: ActiveSession, title: String) {
+        val rec = snap.record(title)
+        viewModelScope.launch {
+            store.update {
+                it.copy(
+                    history = it.history + rec,
+                    lastPerf = it.lastPerf + snap.pendingPerf,
+                    exerciseHistory = (it.exerciseHistory + snap.exerciseResults(rec.epochDay)).takeLast(2000),
+                    programStart = if (it.programStart == 0L) rec.epochDay else it.programStart,
+                    active = null,
+                )
             }
+            syncWatch(rec)
         }
     }
 
@@ -518,7 +606,7 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
         val now = SystemClock.elapsedRealtime()
         val advancing = s.setIdx == -1
         val index = if (advancing) s.exIdx + 1 else s.exIdx
-        val e = list(s.dayIdx).getOrNull(index) ?: return
+        val e = moves().getOrNull(index) ?: return
         workLeftMs = e.time * 1000L
         workEndAt = now + workLeftMs
         val auto = autoTempo(e)
@@ -538,50 +626,21 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     private fun finishSession() {
-        val s = _state.value
-        val day = plan.getOrNull(s.dayIdx) ?: return
-        // Skipping straight through logs nothing and must not mark the day complete.
-        if (s.setsDone == 0) {
-            sessionActive = false
-            _state.update { it.copy(screen = Screen.Done, running = false, resting = false, showHow = false) }
+        val day = sessionDay() ?: return
+        val (exIdx, setIdx) = pendingPosition()
+        val snap = snapshot(exIdx, setIdx)
+        sessionActive = false
+        frozenAt = 0L
+        _state.update {
+            it.copy(screen = Screen.Done, running = false, resting = false, showHow = false, showEnd = false, leadIn = 0)
+        }
+        if (!snap.hasWork) {
+            // Nothing worth a history row: a warm-up alone, or a flow left before its first move.
+            viewModelScope.launch { store.update { it.copy(active = null) } }
             return
         }
-        val endedAtMs = System.currentTimeMillis()
-        val record = SessionRecord(
-            epochDay = LocalDate.now().toEpochDay(),
-            dayIdx = s.dayIdx,
-            dayTitle = day.flatTitle,
-            sets = s.setsDone,
-            reps = s.repsDone,
-            volume = s.volume,
-            seconds = s.elapsed,
-            startedAtMs = sessionStartWallMs,
-            endedAtMs = endedAtMs,
-            avgHr = if (hrCount > 0) (hrSum / hrCount).toInt() else null,
-            maxHr = hrMax.takeIf { it > 0 },
-        )
-        val perf = pendingPerf.toMap()
-        val results = pendingResults.map { (id, acc) ->
-            ExerciseResult(
-                exerciseId = id, name = acc.name, atMs = endedAtMs,
-                epochDay = record.epochDay, weightKg = acc.weight, sets = acc.sets,
-                reps = acc.reps, targetReps = acc.targetReps, cleared = acc.cleared,
-            )
-        }
-        viewModelScope.launch {
-            store.update {
-                it.copy(
-                    history = it.history + record,
-                    lastPerf = it.lastPerf + perf,
-                    exerciseHistory = (it.exerciseHistory + results).takeLast(2000),
-                    programStart = if (it.programStart == 0L) record.epochDay else it.programStart,
-                )
-            }
-            syncWatch(record)
-        }
-        sessionActive = false
         buzz(220)
-        _state.update { it.copy(screen = Screen.Done, running = false, resting = false, showHow = false) }
+        record(snap, day.flatTitle)
     }
 
     /**
@@ -597,6 +656,7 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
             startMs = record.startedAtMs,
             endMs = record.endedAtMs,
             hiit = record.dayTitle.contains("HIIT", ignoreCase = true),
+            stretching = record.isMobility,
         )
         val summary = health.summaryFor(record.startedAtMs, record.endedAtMs)
         _watchSummary.value = summary
@@ -628,6 +688,73 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
             _hcStatus.value = health.status()
             syncWatch(record)
         }
+    }
+
+    /** What the plan screen shows for a session the app stopped in the middle of, or null. */
+    fun activeCard(p: Persisted): ActiveCard? {
+        val a = p.active ?: return null
+        val day = program.day(a.mobility, a.weekIdx, a.dayIdx)
+        val move = day?.all?.getOrNull(a.exIdx)
+        val done = if (a.mobility) "${a.movesDone} moves done" else "${a.setsDone} sets logged"
+        return ActiveCard(
+            title = day?.flatTitle ?: "Unfinished workout",
+            detail = listOfNotNull(move?.let { "Stopped at ${it.name.titleCase()}" }, done).joinToString(" · "),
+            canResume = move != null,
+            canSave = a.hasWork,
+        )
+    }
+
+    /** Back into the player at the start of the pending set, paused; time away isn't counted. */
+    fun resumeActive() {
+        val a = _saved.value.active ?: return
+        val day = program.day(a.mobility, a.weekIdx, a.dayIdx) ?: return
+        val e = day.all.getOrNull(a.exIdx) ?: return
+        val now = SystemClock.elapsedRealtime()
+        sessionActive = true
+        sessionStartAt = now - a.elapsedSec * 1000L
+        sessionStartWallMs = a.startedAtMs
+        pendingPerf.clear()
+        pendingPerf.putAll(a.pendingPerf)
+        results.clear()
+        a.results.forEach { results[it.exerciseId] = it }
+        hrSum = a.hrSum; hrCount = a.hrCount; hrMax = a.hrMax
+        frozenAt = 0L
+        workLeftMs = e.time * 1000L
+        workEndAt = now + workLeftMs
+        tempoAccumMs = 0L
+        tempoResumeAt = now
+        _watchSummary.value = null
+        connectSavedHeartRate()
+        _state.update {
+            it.copy(
+                screen = Screen.Player, mobility = a.mobility, weekIdx = a.weekIdx, dayIdx = a.dayIdx,
+                exIdx = a.exIdx, setIdx = a.setIdx, count = 0, tempoSec = 0, leadIn = 0,
+                running = false, resting = false, remaining = e.time, showHow = false, showEnd = false,
+                progression = null, setsDone = a.setsDone, movesDone = a.movesDone,
+                repsDone = a.repsDone, volume = a.volume, elapsed = a.elapsedSec,
+            )
+        }
+    }
+
+    /** Saves a leftover session as it stood at its last checkpoint. */
+    fun saveActive() {
+        val a = _saved.value.active ?: return
+        if (!a.hasWork) return
+        val day = program.day(a.mobility, a.weekIdx, a.dayIdx)
+        record(a, day?.flatTitle ?: "Workout")
+        if (day != null) {
+            _state.update {
+                it.copy(
+                    screen = Screen.Done, mobility = a.mobility, weekIdx = a.weekIdx, dayIdx = a.dayIdx,
+                    setsDone = a.setsDone, movesDone = a.movesDone, repsDone = a.repsDone,
+                    volume = a.volume, elapsed = a.elapsedSec,
+                )
+            }
+        }
+    }
+
+    fun discardActive() {
+        viewModelScope.launch { store.update { it.copy(active = null) } }
     }
 
     override fun onCleared() {
