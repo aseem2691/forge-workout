@@ -5,6 +5,12 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
 }
 
+// `-Pforge.preview` (the CI build): the real app is signed with the maintainer's own debug key,
+// which CI doesn't have, so a CI APK could never update it. Preview builds get their own package
+// id, label and a committed preview-only key instead — they install beside the real app, leave
+// its data alone, and successive previews update each other.
+val preview = providers.gradleProperty("forge.preview").isPresent
+
 android {
     namespace = "com.forge.workout"
     compileSdk = 36
@@ -15,8 +21,18 @@ android {
         minSdk = 28
         targetSdk = 36
         // Bump both on every release — otherwise an installed build is unidentifiable.
-        versionCode = 5
-        versionName = "1.5"
+        versionCode = 6
+        versionName = "1.6"
+        manifestPlaceholders["appLabel"] = "@string/app_name"
+    }
+
+    signingConfigs {
+        create("preview") {
+            storeFile = file("preview.keystore")
+            storePassword = "android"
+            keyAlias = "forgepreview"
+            keyPassword = "android"
+        }
     }
 
     buildTypes {
@@ -28,7 +44,12 @@ android {
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             // Signed with the debug key so a release build installs directly from the CLI.
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.getByName(if (preview) "preview" else "debug")
+            if (preview) {
+                applicationIdSuffix = ".preview"
+                versionNameSuffix = "-preview"
+                manifestPlaceholders["appLabel"] = "Forge Preview"
+            }
         }
     }
 
