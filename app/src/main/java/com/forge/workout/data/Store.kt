@@ -35,7 +35,11 @@ data class SessionRecord(
     val maxHr: Int? = null,
     val calories: Int? = null,
     val watchTitle: String? = null,
-)
+    /** "training" or "mobility"; records saved before this field existed read as training. */
+    val kind: String = KIND_TRAINING,
+) {
+    val isMobility: Boolean get() = kind == KIND_MOBILITY
+}
 
 /** A manually entered weigh-in. Scale readings live in Health Connect, not here. */
 @Serializable
@@ -83,6 +87,8 @@ data class Persisted(
     val weightLog: List<WeightEntry> = emptyList(),
     /** Per-exercise results, oldest first — drives progression and per-exercise trends. */
     val exerciseHistory: List<ExerciseResult> = emptyList(),
+    /** The workout in progress, if the app stopped before it was finished or discarded. */
+    val active: ActiveSession? = null,
 ) {
     fun weightFor(e: Exercise): Int = weights[e.id] ?: e.weight
 
@@ -107,9 +113,13 @@ data class Persisted(
         return history.filter { it.epochDay >= monday }
     }
 
-    /** Day indices already completed this week — drives the "✓ Done" state on the plan screen. */
+    /** Training days completed this week — drives "Sessions done x/4" and the ✓ on day cards. */
     fun doneThisWeek(today: LocalDate = LocalDate.now()): Set<Int> =
-        thisWeek(today).map { it.dayIdx }.toSet()
+        thisWeek(today).filter { !it.isMobility }.map { it.dayIdx }.toSet()
+
+    /** Mobility flows (by index) completed this week — the ✓ on the rest-day cards. */
+    fun mobilityDoneThisWeek(today: LocalDate = LocalDate.now()): Set<Int> =
+        thisWeek(today).filter { it.isMobility }.map { it.dayIdx }.toSet()
 
     /** 1-based program week, derived from the stored start date. */
     fun weekNumber(today: LocalDate = LocalDate.now()): Int {
@@ -123,12 +133,22 @@ data class Persisted(
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore("forge")
 
+private val stateJson = Json { ignoreUnknownKeys = true; encodeDefaults = true }
+
+/** Reads the main state and, separately, the in-progress snapshot; a bad snapshot reads as none. */
+internal fun decodeState(state: String?, active: String?): Persisted {
+    val base = state?.let { runCatching { stateJson.decodeFromString<Persisted>(it) }.getOrNull() } ?: Persisted()
+    val snapshot = active?.let { runCatching { stateJson.decodeFromString<ActiveSession>(it) }.getOrNull() }
+    return base.copy(active = snapshot)
+}
+
+/** The main state without the snapshot, and the snapshot on its own (null when there is none). */
+internal fun encodeState(p: Persisted): Pair<String, String?> =
+    stateJson.encodeToString(p.copy(active = null)) to p.active?.let { stateJson.encodeToString(it) }
+
 class Store(private val context: Context) {
     private val key = stringPreferencesKey("state")
-    private val json = Json { ignoreUnknownKeys = true; encodeDefaults = true }
-
-    private fun parse(raw: String?): Persisted =
-        raw?.let { runCatching { json.decodeFromString<Persisted>(it) }.getOrNull() } ?: Persisted()
+    private val activeKey = stringPreferencesKey("active")
 
     /**
      * A read failure here — a corrupt file, a disk error — would otherwise kill the collector and
@@ -137,11 +157,13 @@ class Store(private val context: Context) {
      */
     val data: Flow<Persisted> = context.dataStore.data
         .catch { emit(emptyPreferences()) }
-        .map { parse(it[key]) }
+        .map { decodeState(it[key], it[activeKey]) }
 
     suspend fun update(transform: (Persisted) -> Persisted) {
         context.dataStore.edit { prefs ->
-            prefs[key] = json.encodeToString(transform(parse(prefs[key])))
+            val (state, active) = encodeState(transform(decodeState(prefs[key], prefs[activeKey])))
+            prefs[key] = state
+            if (active == null) prefs.remove(activeKey) else prefs[activeKey] = active
         }
     }
 }

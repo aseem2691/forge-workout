@@ -36,12 +36,17 @@ data class Exercise(
     val isTimed: Boolean get() = type == "time"
     val isHiit: Boolean get() = block == "hiit"
     val isWarmup: Boolean get() = block == "warmup"
+    val isCooldown: Boolean get() = block == "cooldown"
+    val isMobility: Boolean get() = block == "mobility"
+
+    /** Timed lead-in, lead-out and mobility moves: never training sets. */
+    val isRecovery: Boolean get() = isWarmup || isCooldown || isMobility
     val hasLoad: Boolean get() = weight > 0
 
     /** "3 sets × 12 reps" / "2 × 40s work / 20s rest", matching the design's spec() helper. */
     val spec: String
         get() = when {
-            isWarmup -> duration(time)
+            isRecovery -> duration(time)
             isTimed -> "$sets × ${time}s work / ${rest}s rest"
             else -> "$sets sets × $reps reps"
         }
@@ -58,12 +63,19 @@ data class Day(
     val title: String,
     val mins: Int,
     val coach: String,
+    /** "training" for the 4-day split, "mobility" for a rest-day flow. */
+    val kind: String = KIND_TRAINING,
     val warmup: List<Exercise> = emptyList(),
     val strength: List<Exercise> = emptyList(),
     val hiit: List<Exercise> = emptyList(),
+    val cooldown: List<Exercise> = emptyList(),
+    /** The timed moves of a mobility flow; empty on training days. */
+    val flow: List<Exercise> = emptyList(),
 ) {
-    /** The session in running order: warm-up, strength block, then the HIIT finisher. */
-    val all: List<Exercise> get() = warmup + strength + hiit
+    val isMobility: Boolean get() = kind == KIND_MOBILITY
+
+    /** The session in running order: warm-up, strength, HIIT finisher, cool-down (or the flow). */
+    val all: List<Exercise> get() = warmup + strength + hiit + cooldown + flow
 
     /** The training itself — what the exercise count, sets and muscle chips describe. */
     val main: List<Exercise> get() = strength + hiit
@@ -71,12 +83,16 @@ data class Day(
     val totalSets: Int get() = main.sumOf { it.sets }
 
     /** Warm-up length in minutes: the moves and the switch-overs between them. */
-    val warmupMins: Int
-        get() = ((warmup.sumOf { it.time + it.rest } - (warmup.lastOrNull()?.rest ?: 0)) / 60.0).roundToInt()
+    val warmupMins: Int get() = minutes(warmup)
+    val cooldownMins: Int get() = minutes(cooldown)
 
-    /** Distinct target muscles across the session, for the day-header chips. */
-    val muscles: List<String> get() = main.map { it.target }.filter { it.isNotBlank() }.distinct().take(5)
+    /** Distinct target muscles, for the day-header chips: the training, or the flow's stretches. */
+    val muscles: List<String>
+        get() = (if (isMobility) flow else main).map { it.target }.filter { it.isNotBlank() }.distinct().take(5)
 }
+
+private fun minutes(moves: List<Exercise>): Int =
+    ((moves.sumOf { it.time + it.rest } - (moves.lastOrNull()?.rest ?: 0)) / 60.0).roundToInt()
 
 /** One week of the training block. Weeks rotate so the program varies week to week. */
 @Serializable
@@ -87,7 +103,15 @@ data class Week(
 )
 
 @Serializable
-data class Program(val weeks: List<Week> = emptyList())
+data class Program(
+    val weeks: List<Week> = emptyList(),
+    /** Rest-day mobility flows — the same three every week. */
+    val mobility: List<Day> = emptyList(),
+) {
+    /** The Day a session points at, or null when it no longer exists (e.g. the plan changed). */
+    fun day(mobility: Boolean, weekIdx: Int, dayIdx: Int): Day? =
+        if (mobility) this.mobility.getOrNull(dayIdx) else weeks.getOrNull(weekIdx)?.days?.getOrNull(dayIdx)
+}
 
 private val json = Json { ignoreUnknownKeys = true }
 

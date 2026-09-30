@@ -120,7 +120,7 @@ fun buildProgress(
         Period(
             start = start,
             label = label(start, bucket),
-            sessions = rows.size,
+            sessions = rows.count { !it.isMobility },
             volumeKg = rows.sumOf { it.volume },
             minutes = rows.sumOf { it.seconds } / 60,
             reps = rows.sumOf { it.reps },
@@ -135,7 +135,7 @@ fun buildProgress(
         periods = periods,
         weighIns = weighInsInRange,
         bodyFat = bodyFatInRange,
-        sessions = inRange.size,
+        sessions = inRange.count { !it.isMobility },
         volumeKg = inRange.sumOf { it.volume },
         minutes = inRange.sumOf { it.seconds } / 60,
         reps = inRange.sumOf { it.reps },
