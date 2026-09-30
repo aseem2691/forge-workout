@@ -126,7 +126,8 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
      */
     private val tempoLeadInMs = 5_000L
 
-    private fun autoTempo(e: Exercise, mode: String = _state.value.mode) = !e.isTimed && mode == "tempo"
+    private fun autoTempo(e: Exercise, mode: String = _state.value.mode) =
+        !e.isTimed && mode == "tempo" && onScreen
 
     // ── watch ───────────────────────────────────────────────────────────────────
 
@@ -136,6 +137,21 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
 
     /** Set from the activity lifecycle: alerts only notify when the user can't see the screen. */
     var onScreen: Boolean = true
+        set(value) {
+            field = value
+            // Auto tempo counts — and logs — reps on its own, so it must never run unwatched (a
+            // call, the phone locked mid-set): leaving the screen pauses it like a tap on the
+            // ring. Timed moves keep running, with the alerts covering them.
+            if (!value) pauseTempo()
+        }
+
+    private fun pauseTempo() {
+        val s = _state.value
+        val e = current() ?: return
+        if (s.screen != Screen.Player || e.isTimed || !s.running) return
+        tempoAccumMs += (SystemClock.elapsedRealtime() - tempoResumeAt).coerceAtLeast(0)
+        _state.update { it.copy(running = false, leadIn = 0) }
+    }
 
     val bpm: StateFlow<Int?> = heart.bpm
     val hrState: StateFlow<HrState> = heart.state
