@@ -55,24 +55,33 @@ fun DoneScreen(
             Text("SESSION COMPLETE", style = arch(10.0, 800, C.Accent, track = 0.24, line = 1.0))
             Text("${day.flatTitle.uppercase()}\nDONE", style = display(42.0, line = 0.94))
             Text(
-                "That is ${state.setsDone} ${if (state.setsDone == 1) "set" else "sets"} banked. " +
-                    "Protein within the hour, and you are one session closer to target.",
+                if (state.mobility) {
+                    "That is ${state.movesDone} ${if (state.movesDone == 1) "move" else "moves"} of mobility. " +
+                        "An easy walk on the walkpad later finishes the rest day nicely."
+                } else {
+                    "That is ${state.setsDone} ${if (state.setsDone == 1) "set" else "sets"} banked. " +
+                        "Protein within the hour, and you are one session closer to target."
+                },
                 style = arch(12.5, 500, C.DayHeader, line = 1.5),
             )
         }
 
         Column(verticalArrangement = Arrangement.spacedBy(9.dp)) {
-            Row(horizontalArrangement = Arrangement.spacedBy(9.dp)) {
-                DoneTile(Modifier.weight(1f), "${state.setsDone}", "Sets completed")
-                DoneTile(Modifier.weight(1f), "${state.repsDone}", "Reps logged")
-            }
-            Row(horizontalArrangement = Arrangement.spacedBy(9.dp)) {
-                DoneTile(Modifier.weight(1f), formatTonnes(state.volume), "Volume lifted")
-                DoneTile(
-                    Modifier.weight(1f),
-                    "${max(1, (state.elapsed / 60.0).roundToInt())} min",
-                    "Time on task",
-                )
+            val minutes = "${max(1, (state.elapsed / 60.0).roundToInt())} min"
+            if (state.mobility) {
+                Row(horizontalArrangement = Arrangement.spacedBy(9.dp)) {
+                    DoneTile(Modifier.weight(1f), "${state.movesDone}", "Moves done")
+                    DoneTile(Modifier.weight(1f), minutes, "Time on task")
+                }
+            } else {
+                Row(horizontalArrangement = Arrangement.spacedBy(9.dp)) {
+                    DoneTile(Modifier.weight(1f), "${state.setsDone}", "Sets completed")
+                    DoneTile(Modifier.weight(1f), "${state.repsDone}", "Reps logged")
+                }
+                Row(horizontalArrangement = Arrangement.spacedBy(9.dp)) {
+                    DoneTile(Modifier.weight(1f), formatTonnes(state.volume), "Volume lifted")
+                    DoneTile(Modifier.weight(1f), minutes, "Time on task")
+                }
             }
         }
 

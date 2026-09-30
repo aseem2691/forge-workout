@@ -199,13 +199,17 @@ private fun ForgeApp(vm: WorkoutViewModel = viewModel()) {
     BackHandler(enabled = state.screen != Screen.Plan) {
         when (state.screen) {
             Screen.Day -> vm.goPlan()
-            Screen.Player -> if (state.showHow) vm.toggleHow() else vm.goDay()
+            Screen.Player -> when {
+                state.showHow -> vm.toggleHow()
+                state.showEnd -> vm.keepGoing()
+                else -> vm.openEnd()
+            }
             Screen.Done -> vm.goPlan()
             Screen.Plan -> Unit
         }
     }
 
-    val day = vm.plan.getOrNull(state.dayIdx)
+    val day = vm.sessionDay(state)
 
     when (state.screen) {
         Screen.Plan -> Column(Modifier.fillMaxSize()) {
@@ -219,6 +223,12 @@ private fun ForgeApp(vm: WorkoutViewModel = viewModel()) {
                         onOpenDay = vm::openDay,
                         onEditBody = { editingBody = true },
                         onOpenWatch = { vm.refreshHealthConnect(); showWatch = true },
+                        mobility = vm.program.mobility,
+                        activeCard = vm.activeCard(saved),
+                        onOpenMobility = vm::openMobility,
+                        onResume = vm::resumeActive,
+                        onSaveActive = vm::saveActive,
+                        onDiscardActive = vm::discardActive,
                     )
 
                     Tab.Progress -> ProgressScreen(
@@ -254,7 +264,10 @@ private fun ForgeApp(vm: WorkoutViewModel = viewModel()) {
                 state = state,
                 saved = saved,
                 bpm = bpm,
-                onClose = vm::goDay,
+                onClose = vm::openEnd,
+                onKeepGoing = vm::keepGoing,
+                onSaveAndFinish = vm::saveAndFinish,
+                onDiscard = vm::discardSession,
                 onToggleHow = vm::toggleHow,
                 onToggleRun = vm::toggleRun,
                 onTap = vm::tap,
@@ -271,7 +284,7 @@ private fun ForgeApp(vm: WorkoutViewModel = viewModel()) {
             val last = saved.history.lastOrNull()
             DoneScreen(
                 day = it,
-                nextDay = vm.plan[(state.dayIdx + 1) % vm.plan.size],
+                nextDay = if (state.mobility) vm.plan[vm.todayIndex()] else vm.plan[(state.dayIdx + 1) % vm.plan.size],
                 state = state,
                 watch = watchSummary,
                 sessionAvgHr = last?.avgHr,

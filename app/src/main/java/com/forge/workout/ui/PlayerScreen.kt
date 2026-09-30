@@ -50,6 +50,7 @@ import com.forge.workout.SessionState
 import com.forge.workout.data.Day
 import com.forge.workout.data.Exercise
 import com.forge.workout.data.Persisted
+import com.forge.workout.data.shouldRecord
 import com.forge.workout.data.titleCase
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -60,6 +61,9 @@ fun PlayerScreen(
     saved: Persisted,
     bpm: Int?,
     onClose: () -> Unit,
+    onKeepGoing: () -> Unit,
+    onSaveAndFinish: () -> Unit,
+    onDiscard: () -> Unit,
     onToggleHow: () -> Unit,
     onToggleRun: () -> Unit,
     onTap: () -> Unit,
@@ -104,14 +108,18 @@ fun PlayerScreen(
                     Text(
                         when {
                             exercise.isWarmup -> "WARM-UP"
+                            exercise.isCooldown -> "COOL-DOWN"
+                            exercise.isMobility -> "MOBILITY"
                             exercise.isHiit -> "HIIT · 40 / 20"
                             else -> "STRENGTH BLOCK"
                         },
                         style = arch(9.0, 800, blockTint, track = 0.2, line = 1.0),
                     )
                     Text(
-                        if (exercise.isWarmup) {
-                            "Move ${state.exIdx + 1} / ${day.warmup.size}"
+                        if (exercise.isRecovery) {
+                            val inBlock = exercises.filter { it.block == exercise.block }
+                            val position = exercises.take(state.exIdx).count { it.block == exercise.block } + 1
+                            "Move $position / ${inBlock.size}"
                         } else {
                             "Exercise ${state.exIdx - day.warmup.size + 1} / ${day.main.size}"
                         },
@@ -129,7 +137,7 @@ fun PlayerScreen(
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 exercises.forEachIndexed { index, item ->
-                    val done = if (item.isWarmup) C.Warm else C.Accent
+                    val done = if (item.isRecovery) blockColor(item) else C.Accent
                     Box(
                         Modifier
                             .weight(1f)
@@ -421,11 +429,16 @@ fun PlayerScreen(
             // During rest exIdx still points at the move just finished.
             RestOverlay(
                 label = when {
-                    !exercise.isWarmup -> "REST"
-                    exercises[nextIndex].isWarmup -> "NEXT MOVE"
-                    else -> "WARM-UP DONE"
+                    exercise.isRecovery && exercises[nextIndex].block == exercise.block -> "NEXT MOVE"
+                    exercise.isWarmup -> "WARM-UP DONE"
+                    exercises[nextIndex].isCooldown -> "COOL-DOWN NEXT"
+                    else -> "REST"
                 },
-                tint = if (exercise.isWarmup) C.Warm else C.Blue,
+                tint = when {
+                    exercise.isWarmup -> C.Warm
+                    exercise.isRecovery || exercises[nextIndex].isCooldown -> C.Calm
+                    else -> C.Blue
+                },
                 left = state.restLeft,
                 total = state.restTotal,
                 next = exercises[nextIndex],
@@ -434,15 +447,24 @@ fun PlayerScreen(
                 onEndRest = onEndRest,
             )
         }
+
+        if (state.showEnd) {
+            EndSheet(
+                logged = shouldRecord(state.mobility, state.setsDone, state.movesDone),
+                onSave = onSaveAndFinish,
+                onDiscard = onDiscard,
+                onKeepGoing = onKeepGoing,
+            )
+        }
     }
 }
 
 @Composable
 private fun ProgressNote(exercise: Exercise, saved: Persisted, weight: Int) {
     val logged = saved.lastPerf[exercise.id]
-    val tint = if (exercise.isWarmup) C.Warm else C.Accent
+    val tint = if (exercise.isRecovery) blockColor(exercise) else C.Accent
     val note = when {
-        exercise.isWarmup -> exercise.cue ?: "Easy pace — this is the warm-up."
+        exercise.isRecovery -> exercise.cue ?: "Easy pace — breathe and move well."
         logged != null && exercise.hasLoad -> "Last time: $logged — today's working weight is $weight kg."
         logged != null -> "Last time: $logged — match it or beat it."
         exercise.last != null -> "Last time: ${exercise.last} — every rep cleared. Coach says go $weight kg today."
@@ -452,7 +474,7 @@ private fun ProgressNote(exercise: Exercise, saved: Persisted, weight: Int) {
 
     Text(
         note,
-        style = arch(10.5, 600, if (exercise.isWarmup) C.Warm else C.AccentText, line = 1.35),
+        style = arch(10.5, 600, if (exercise.isRecovery) tint else C.AccentText, line = 1.35),
         modifier = Modifier
             .padding(start = 20.dp, end = 20.dp, top = 11.dp)
             .fillMaxWidth()
@@ -465,8 +487,54 @@ private fun ProgressNote(exercise: Exercise, saved: Persisted, weight: Int) {
 
 private fun blockColor(exercise: Exercise): Color = when {
     exercise.isWarmup -> C.Warm
+    exercise.isCooldown || exercise.isMobility -> C.Calm
     exercise.isHiit -> C.Blue
     else -> C.Accent
+}
+
+/** ✕ / Back: save what's done, throw it away, or carry on. Swallows taps like the rest overlay. */
+@Composable
+private fun EndSheet(logged: Boolean, onSave: () -> Unit, onDiscard: () -> Unit, onKeepGoing: () -> Unit) {
+    Column(
+        Modifier
+            .fillMaxSize()
+            .background(Color(0xE608080A))
+            .clickable(interactionSource = remember { MutableInteractionSource() }, indication = null) {},
+        verticalArrangement = Arrangement.Bottom,
+    ) {
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(topStart = 22.dp, topEnd = 22.dp))
+                .background(C.Card)
+                .padding(start = 22.dp, end = 22.dp, top = 22.dp, bottom = 26.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Text("END WORKOUT?", style = display(24.0, line = 1.0))
+            Text(
+                if (logged) "Save what you've done so far, or discard it." else "Nothing is logged yet.",
+                style = arch(12.0, 500, C.Muted, line = 1.45),
+            )
+            if (logged) SheetButton("SAVE & FINISH", C.Accent, C.OnAccent, onSave)
+            SheetButton(if (logged) "DISCARD WORKOUT" else "LEAVE", Color(0xFF17181C), Color(0xFFFF8A8A), onDiscard)
+            SheetButton("KEEP GOING", Color(0xFF17181C), C.Text, onKeepGoing)
+        }
+    }
+}
+
+@Composable
+private fun SheetButton(label: String, background: Color, foreground: Color, onClick: () -> Unit) {
+    Box(
+        Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(14.dp))
+            .background(background)
+            .clickable(onClick = onClick)
+            .padding(vertical = 15.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(label, style = display(16.0, foreground, line = 1.0, track = 0.07))
+    }
 }
 
 @Composable

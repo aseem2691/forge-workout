@@ -248,9 +248,13 @@ fun SessionListScreen(
                     )
                 }
                 Row(horizontalArrangement = Arrangement.spacedBy(14.dp)) {
-                    Fact("${record.sets}", "sets")
-                    Fact("${record.reps}", "reps")
-                    Fact(tonnes(record.volume), "volume")
+                    if (record.isMobility) {
+                        Fact("Mobility", "flow")
+                    } else {
+                        Fact("${record.sets}", "sets")
+                        Fact("${record.reps}", "reps")
+                        Fact(tonnes(record.volume), "volume")
+                    }
                     Fact("${record.seconds / 60}m", "time")
                 }
                 if (record.avgHr != null || record.calories != null) {

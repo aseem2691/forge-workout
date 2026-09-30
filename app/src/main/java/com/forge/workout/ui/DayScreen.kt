@@ -83,7 +83,7 @@ fun DayScreen(
                             Text("←", style = arch(15.0, 600, C.Text, line = 1.0))
                         }
                         Text(
-                            "DAY ${day.num} OF 4",
+                            if (day.isMobility) "REST DAY · ${day.day.uppercase()}" else "DAY ${day.num} OF 4",
                             style = arch(9.5, 800, C.DayEyebrow, track = 0.2, line = 1.0),
                         )
                         Spacer(Modifier.width(34.dp))
@@ -96,8 +96,13 @@ fun DayScreen(
 
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         MetaTile(Modifier.weight(1f), "${day.mins}", "Minutes")
-                        MetaTile(Modifier.weight(1f), "${day.main.size}", "Exercises")
-                        MetaTile(Modifier.weight(1f), "${day.totalSets}", "Total sets")
+                        if (day.isMobility) {
+                            MetaTile(Modifier.weight(1f), "${day.flow.size}", "Moves")
+                            MetaTile(Modifier.weight(1f), "MAT", "Equipment")
+                        } else {
+                            MetaTile(Modifier.weight(1f), "${day.main.size}", "Exercises")
+                            MetaTile(Modifier.weight(1f), "${day.totalSets}", "Total sets")
+                        }
                     }
 
                     FlowRow(
@@ -124,6 +129,8 @@ fun DayScreen(
                     if (index == 0 || exercises[index - 1].block != exercise.block) {
                         val (title, color, count) = when {
                             exercise.isWarmup -> Triple("WARM-UP", C.Warm, "${day.warmupMins} min")
+                            exercise.isCooldown -> Triple("COOL-DOWN", C.Calm, "${day.cooldownMins} min")
+                            exercise.isMobility -> Triple("MOBILITY FLOW", C.Calm, "${day.mins} min")
                             exercise.isHiit -> Triple(
                                 "HIIT FINISHER — 40 / 20",
                                 C.Blue,
@@ -166,7 +173,7 @@ fun DayScreen(
                         )
                         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
                             Text(exercise.name.titleCase(), style = arch(13.5, 600, C.Text, line = 1.25))
-                            if (!exercise.isWarmup) {
+                            if (!exercise.isRecovery) {
                                 Text(exercise.spec, style = arch(10.5, 500, Color(0xFF7C7C86), line = 1.0))
                             }
                             Text(
@@ -176,13 +183,13 @@ fun DayScreen(
                         }
                         Text(
                             when {
-                                exercise.isWarmup -> duration(exercise.time).uppercase()
+                                exercise.isRecovery -> duration(exercise.time).uppercase()
                                 exercise.hasLoad -> "${saved.weightFor(exercise)} KG"
                                 else -> "BODY"
                             },
                             style = arch(
                                 10.5, 700,
-                                if (exercise.isWarmup) C.Warm else C.Accent,
+                                if (exercise.isWarmup) C.Warm else if (exercise.isRecovery) C.Calm else C.Accent,
                                 track = 0.06, line = 1.0,
                             ),
                         )
@@ -216,7 +223,7 @@ fun DayScreen(
                     horizontalArrangement = Arrangement.spacedBy(9.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Text("START WORKOUT", style = display(17.0, C.OnAccent, line = 1.0, track = 0.08))
+                    Text(if (day.isMobility) "START FLOW" else "START WORKOUT", style = display(17.0, C.OnAccent, line = 1.0, track = 0.08))
                     Text("▶", style = arch(13.0, 700, C.OnAccent, line = 1.0))
                 }
             }

@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.forge.workout.ActiveCard
 import com.forge.workout.data.Day
 import com.forge.workout.data.Persisted
 import com.forge.workout.data.Week
@@ -44,9 +45,16 @@ fun PlanScreen(
     onOpenDay: (Int) -> Unit,
     onEditBody: () -> Unit,
     onOpenWatch: () -> Unit,
+    mobility: List<Day>,
+    activeCard: ActiveCard?,
+    onOpenMobility: (Int) -> Unit,
+    onResume: () -> Unit,
+    onSaveActive: () -> Unit,
+    onDiscardActive: () -> Unit,
 ) {
     val plan = week.days
     val done = saved.doneThisWeek()
+    val mobilityDone = saved.mobilityDoneThisWeek()
     val today = LocalDate.now()
     val weekSessions = saved.thisWeek()
 
@@ -83,6 +91,30 @@ fun PlanScreen(
                     "LET'S\nGET AFTER IT",
                     style = display(40.0, line = 0.92),
                 )
+            }
+        }
+
+        activeCard?.let { card ->
+            item {
+                Column(
+                    Modifier
+                        .padding(start = 20.dp, end = 20.dp, top = 12.dp)
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(Color(0xFF1F2713))
+                        .border(1.dp, Color(0xFF4A5A24), RoundedCornerShape(16.dp))
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    Text("WORKOUT IN PROGRESS", style = arch(9.0, 800, C.Accent, track = 0.2, line = 1.0))
+                    Text(card.title.uppercase(), style = display(20.0, line = 1.05))
+                    Text(card.detail, style = arch(11.5, 500, C.Muted, line = 1.4))
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        if (card.canResume) CardButton("RESUME", C.Accent, C.OnAccent, Modifier.weight(1f), onResume)
+                        if (card.canSave) CardButton("SAVE", Color(0xFF26272C), C.Text, Modifier.weight(1f), onSaveActive)
+                        CardButton("DISCARD", Color(0xFF26272C), Color(0xFFFF8A8A), Modifier.weight(1f), onDiscardActive)
+                    }
+                }
             }
         }
 
@@ -165,20 +197,34 @@ fun PlanScreen(
         }
 
         item {
+            Text(
+                "REST DAYS · MOBILITY",
+                style = display(15.0, line = 1.0, track = 0.06),
+                modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 12.dp, bottom = 8.dp),
+            )
+        }
+
+        itemsIndexed(mobility) { index, flow ->
             Row(
                 Modifier
-                    .padding(horizontal = 20.dp)
+                    .padding(start = 20.dp, end = 20.dp, bottom = 9.dp)
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(15.dp))
-                    .border(1.dp, Color(0xFF26272C), RoundedCornerShape(15.dp))
-                    .padding(horizontal = 16.dp, vertical = 13.dp),
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    .background(C.CardAlt)
+                    .border(1.dp, C.Border, RoundedCornerShape(15.dp))
+                    .clickable { onOpenMobility(index) }
+                    .padding(horizontal = 15.dp, vertical = 13.dp),
                 verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                Text("REST", style = display(15.0, Color(0xFF4D4D55), line = 1.0))
+                Text(flow.day.uppercase(), style = arch(10.0, 800, C.Calm, track = 0.1, line = 1.0))
+                Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                    Text(flow.flatTitle.uppercase(), style = display(16.0, line = 1.05))
+                    Text("${flow.mins} min · ${flow.flow.size} moves", style = arch(10.5, 500, C.Muted, line = 1.2))
+                }
                 Text(
-                    "Wed / Fri / Sun — 30 min easy walkpad, 15 min mobility on the mat.",
-                    style = arch(11.0, 500, Color(0xFF65656E), line = 1.4),
+                    if (index in mobilityDone) "✓ DONE" else "›",
+                    style = arch(10.0, 700, if (index in mobilityDone) C.Calm else C.Faint, track = 0.1, line = 1.0),
                 )
             }
         }
@@ -193,6 +239,20 @@ fun PlanScreen(
                     .padding(top = 14.dp, start = 20.dp, end = 20.dp),
             )
         }
+    }
+}
+
+@Composable
+private fun CardButton(label: String, background: Color, foreground: Color, modifier: Modifier, onClick: () -> Unit) {
+    Box(
+        modifier
+            .clip(RoundedCornerShape(11.dp))
+            .background(background)
+            .clickable(onClick = onClick)
+            .padding(vertical = 11.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(label, style = arch(10.5, 800, foreground, track = 0.1, line = 1.0))
     }
 }
 
