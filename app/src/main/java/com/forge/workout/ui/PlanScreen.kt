@@ -185,8 +185,7 @@ fun PlanScreen(
 
         item {
             Text(
-                "3D demos © Gym visual · exercises-dataset (MIT) · photos: free-exercise-db (public domain) · " +
-                    "body map: react-body-highlighter (MIT)",
+                "Exercise media © Gym visual · exercises-dataset (MIT) · body map: react-body-highlighter (MIT)",
                 style = arch(9.5, 500, Color(0xFF4A4A52), line = 1.4),
                 textAlign = TextAlign.Center,
                 modifier = Modifier

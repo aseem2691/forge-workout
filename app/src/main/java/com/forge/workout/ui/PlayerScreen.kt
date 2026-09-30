@@ -56,7 +56,6 @@ fun PlayerScreen(
     bpm: Int?,
     onClose: () -> Unit,
     onToggleHow: () -> Unit,
-    onToggleDemo: () -> Unit,
     onToggleRun: () -> Unit,
     onTap: () -> Unit,
     onMode: (String) -> Unit,
@@ -73,9 +72,6 @@ fun PlayerScreen(
     val isTap = !isTimed && state.mode == "tap"
     val isTempo = !isTimed && state.mode == "tempo"
     val blockTint = blockColor(exercise)
-    // Photos by default; the 3D model on request, or when a move has no photos.
-    val showPhotos = exercise.hasPhotos && (saved.demo != "3d" || !exercise.hasGif)
-    val canSwitchDemo = exercise.hasPhotos && exercise.hasGif
 
     BoxWithConstraints(
         Modifier
@@ -158,14 +154,9 @@ fun PlayerScreen(
                         .height(gifHeight)
                         .clip(RoundedCornerShape(20.dp))
                         .background(C.Light)
-                        .border(1.dp, C.Border, RoundedCornerShape(20.dp))
-                        .clickable(enabled = canSwitchDemo, onClick = onToggleDemo),
+                        .border(1.dp, C.Border, RoundedCornerShape(20.dp)),
                 ) {
-                    if (showPhotos) {
-                        ExercisePhotos(exercise.photos, Modifier.fillMaxSize())
-                    } else {
-                        ExerciseGif(exercise.gif, Modifier.fillMaxSize())
-                    }
+                    ExerciseGif(exercise.gif, Modifier.fillMaxSize())
                     Text(
                         exercise.target.uppercase(),
                         style = arch(9.0, 700, C.Accent, track = 0.1, line = 1.0),
@@ -187,24 +178,12 @@ fun PlayerScreen(
                             .padding(horizontal = 9.dp, vertical = 5.dp),
                     )
                     Text(
-                        if (showPhotos) "FREE-EXERCISE-DB" else "© GYM VISUAL",
-                        style = arch(
-                            7.5, 600,
-                            if (showPhotos) Color(0xFFC9C9D1) else Color(0xFF8D8D95),
-                            track = 0.06, line = 1.0,
-                        ),
+                        "© GYM VISUAL",
+                        style = arch(7.5, 600, Color(0xFF8D8D95), track = 0.06, line = 1.0),
                         modifier = Modifier
                             .align(Alignment.BottomEnd)
                             .padding(end = 11.dp, bottom = 8.dp),
                     )
-                    if (canSwitchDemo) {
-                        DemoSwitch(
-                            photos = showPhotos,
-                            modifier = Modifier
-                                .align(Alignment.BottomCenter)
-                                .padding(bottom = 9.dp),
-                        )
-                    }
                     if (bpm != null) {
                         Row(
                             Modifier
@@ -478,29 +457,6 @@ private fun blockColor(exercise: Exercise): Color = when {
     exercise.isWarmup -> C.Warm
     exercise.isHiit -> C.Blue
     else -> C.Accent
-}
-
-/** Shows which demo is on; the whole panel is the tap target. */
-@Composable
-private fun DemoSwitch(photos: Boolean, modifier: Modifier = Modifier) {
-    Row(
-        modifier
-            .clip(RoundedCornerShape(8.dp))
-            .background(Color(0xDB0D1005))
-            .padding(3.dp),
-        horizontalArrangement = Arrangement.spacedBy(2.dp),
-    ) {
-        listOf("PHOTO" to photos, "3D" to !photos).forEach { (label, on) ->
-            Text(
-                label,
-                style = arch(7.5, 800, if (on) C.OnAccent else C.Ghost, track = 0.1, line = 1.0),
-                modifier = Modifier
-                    .clip(RoundedCornerShape(6.dp))
-                    .background(if (on) C.Accent else Color.Transparent)
-                    .padding(horizontal = 7.dp, vertical = 4.dp),
-            )
-        }
-    }
 }
 
 @Composable

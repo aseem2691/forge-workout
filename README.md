@@ -2,8 +2,7 @@
 
 A native Android workout app implementing the `Home Workout App.dc.html` Claude Design prototype.
 Four-day split, dumbbells 2–24 kg, walkpad and a mat. Everything runs offline: the plan, the
-exercise demos (real-person photos and 3D animations), the muscle map and the form instructions
-are bundled in the APK.
+animated exercise demos, the muscle map and the form instructions are bundled in the APK.
 
 ## The program
 
@@ -22,7 +21,7 @@ body — each opening with a warm-up, then a strength block and a 40/20 HIIT fin
 selected from the dataset to need nothing but dumbbells, a mat, a chair and a walkpad. Block B is
 entirely body-weight apart from two light-dumbbell delt raises.
 
-`plan.json` is generated from the datasets rather than hand-written; the generator lives at
+`plan.json` is generated from the dataset rather than hand-written; the generator lives at
 `tools/genplan.py`.
 
 ### Warm-up
@@ -32,9 +31,9 @@ Every session starts with about 7 minutes of timed moves that run hands-free —
 
 | Day | Warm-up |
 | --- | --- |
-| Mon upper, Thu push·pull | walkpad brisk walk 2:00 · arm circles · scapula push-up · cat-cow · inchworm · dynamic chest stretch · world's greatest stretch 1:00 |
-| Tue lower | walkpad brisk walk 2:00 · standing hip circles · bodyweight squat · glute bridge · forward lunge · world's greatest stretch 1:00 · jumping jacks 0:30 |
-| Sat full body | walkpad brisk walk 2:00 · arm circles · standing hip circles · inchworm · bodyweight squat · world's greatest stretch 1:00 · jumping jacks 0:30 |
+| Mon upper, Thu push·pull | walkpad brisk walk 2:00 · step back and reach · scapula push-up · plank to upward dog · inchworm · dynamic chest stretch · world's greatest stretch 1:00 |
+| Tue lower | walkpad brisk walk 2:00 · windmill toe touch · squat to overhead reach · glute bridge · forward lunge · world's greatest stretch 1:00 · jumping jacks 0:30 |
+| Sat full body | walkpad brisk walk 2:00 · step back and reach · windmill toe touch · inchworm · squat to overhead reach · world's greatest stretch 1:00 · jumping jacks 0:30 |
 
 Warm-up moves are shown in amber, each with a one-line coaching cue, and never count as training
 sets. To skip it on a short day, tap the first strength exercise on the day screen.
@@ -82,24 +81,25 @@ exercise GIFs without pulling in an image library.
 | --- | --- |
 | **Plan** | Program week, body-weight progress, real weekly stats, the 4-day split. Tap the body-weight card to log today's weight. |
 | **Day** | Session overview — target muscles, exercise list with demo thumbnails, warm-up, strength block and HIIT finisher. Tap any exercise to jump straight to it. |
-| **Player** | Real-person demo (tap for the 3D model), muscle map, set dots, weight stepper, rep logging (tap-count or auto-tempo) or a countdown, rest overlay, and `?` for step-by-step form cues. |
+| **Player** | Animated demo, muscle map, set dots, weight stepper, rep logging (tap-count or auto-tempo) or a countdown, rest overlay, and `?` for step-by-step form cues. |
 | **Done** | Session summary, then back to the week. |
 
 ## Architecture
 
 ```
-tools/genplan.py            regenerates assets/plan.json from both exercise datasets
+tools/genplan.py            regenerates assets/plan.json from the exercises dataset
+tools/upscale_media.py      upscales the dataset's GIFs into the 720×720 WebP demos
 tools/genbodymap.py         converts the body-map polygons into assets/bodymap.json
 app/src/main/
   assets/plan.json          4 rotating blocks × 4 days
   assets/bodymap.json       front/back muscle polygons
-  assets/media/             3D GIFs + 180×180 thumbnails, fe_*.jpg photo frames
+  assets/media/             75 animated WebP demos + 180×180 thumbnails
   java/com/forge/workout/
     WorkoutViewModel.kt     session state machine + deadline-based timers
     data/Plan.kt            program models, JSON loading
     data/Store.kt           DataStore persistence, week/streak derivation
     ui/Theme.kt             palette + Anton/Archivo type scale
-    ui/Media.kt             GIF, photo-loop and thumbnail loading from assets
+    ui/Media.kt             animated demo and thumbnail loading from assets
     ui/BodyMap.kt           front/back muscle map drawn on a Canvas
     ui/{Plan,Day,Player,Done}Screen.kt
 ```
@@ -209,25 +209,28 @@ workout is running on the watch, so start one there first.
 
 ## Exercise demos
 
-MuscleWiki's videos are its own copyrighted content and can't be bundled, so the demos come from
-openly licensed sources instead, in the same spirit — a real person doing the move, plus a map of
-the muscles it works:
+Every move — training and warm-up — has the dataset's 3D demo: the working muscles painted red,
+the start and end positions held with a dissolve between them. The dataset only publishes these
+at **180×180**, which looked soft stretched across the demo panel, so `tools/upscale_media.py`
+upscales every frame 4× with Real-ESRGAN (`realesr-general-x4v3`, BSD-3) and re-encodes the
+loops as **720×720 animated WebP** with the original timing. Android plays those natively.
 
-- **Real-person photos** from [free-exercise-db](https://github.com/yuhonas/free-exercise-db)
-  (public domain / Unlicense): the start and end position of each movement at 850×567, looped as
-  one rep — hold, ease into the end position, hold, ease back. 43 of the 66 training exercises
-  and most warm-up moves have a pair, each checked by eye against the 3D demo; `PHOTOS` in
-  `tools/genplan.py` is that list. Moves with no faithful match (burpees, skater hops, towel rows,
-  curtsey squats…) keep the 3D animation rather than show a different exercise.
-- **3D animations** from the exercises-dataset (Gym visual), with the working muscles painted
-  red. Tap the demo panel to switch between photo and 3D; the choice is remembered.
-- **Muscle map** — front and back figures with the worked muscles lit in the accent and the
-  assisting ones dimmer, beside the exercise name and larger in the `?` sheet. Polygons from
-  [react-body-highlighter](https://github.com/GV79/react-body-highlighter) (MIT), drawn
-  natively on a Canvas.
+Next to the exercise name, and larger in the `?` sheet, a **muscle map** lights the worked muscles
+on front and back figures — accent for the target, dimmer for the assisting muscles. Polygons from
+[react-body-highlighter](https://github.com/GV79/react-body-highlighter) (MIT), drawn natively on a
+Canvas.
 
-Everything Forge draws is vector and renders natively at the S25 Ultra's 1440×3120. The 3D GIFs
-are published at 180×180 only and look soft upscaled; the photos are 850×567 and hold up.
+What was tried and why it isn't here:
+
+- **MuscleWiki** — the look we'd want, but its videos are its own copyrighted content.
+- **Full-motion animation.** The free dataset (and ExerciseDB's free tier, byte-for-byte the same
+  files) carries only the two key poses per move. The same Gym visual animations exist in full
+  motion under a paid AscendAPI / Gym visual licence. AI frame interpolation (FILM) can't invent
+  the in-between poses — for a lateral raise it produced both arm positions faded together.
+- **Real-person photos** ([free-exercise-db](https://github.com/yuhonas/free-exercise-db), public
+  domain) — sharper, but only start/end stills, and less clear than the 3D demos.
+- **wger videos** (CC BY-SA 4.0) — real 1080p video, but 46 exercises, mostly barbell and machine;
+  about 8 overlap this plan.
 
 ## Tests
 
@@ -237,20 +240,15 @@ are published at 180×180 only and look soft upscaled; the photos are 850×567 a
 
 Covers the calendar arithmetic behind the rotating blocks and the Monday-start weekly reset —
 logic that can't be exercised from the UI without changing the device clock — and pins the
-generated plan: a 5–8 minute warm-up on every day, no rest over 60 s, and every media file and
-muscle-map region the plan names actually bundled.
+generated plan: a 5–8 minute warm-up on every day, no rest over 60 s, and every demo, thumbnail
+and muscle-map region the plan names actually bundled.
 
 ## Attribution
 
-3D exercise media © **Gym visual**, redistributed via
-[hasaneyldrm/exercises-dataset](https://github.com/hasaneyldrm/exercises-dataset) (MIT). The dataset's
-NOTICE requires the Gym visual attribution stay intact — it is shown on the plan screen, on the
-player's demo panel, and in the how-to sheet.
-
-Exercise photos and some warm-up instructions from
-[free-exercise-db](https://github.com/yuhonas/free-exercise-db), dedicated to the public domain
-(Unlicense) by its maintainers. The dataset doesn't document where the photos were originally
-shot, so check their provenance before any distribution beyond personal use.
+Exercise media © **Gym visual**, redistributed via
+[hasaneyldrm/exercises-dataset](https://github.com/hasaneyldrm/exercises-dataset) (MIT) and
+upscaled for the app. The dataset's NOTICE requires the Gym visual attribution stay intact — it is
+shown on the plan screen, on the player's demo panel, and in the how-to sheet.
 
 Muscle-map polygons from [react-body-highlighter](https://github.com/GV79/react-body-highlighter)
 (MIT, © 2020 GV79). Fonts: Anton and Archivo (SIL Open Font License).

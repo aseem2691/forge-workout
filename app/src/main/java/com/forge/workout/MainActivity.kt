@@ -256,7 +256,6 @@ private fun ForgeApp(vm: WorkoutViewModel = viewModel()) {
                 bpm = bpm,
                 onClose = vm::goDay,
                 onToggleHow = vm::toggleHow,
-                onToggleDemo = vm::toggleDemo,
                 onToggleRun = vm::toggleRun,
                 onTap = vm::tap,
                 onMode = vm::setMode,

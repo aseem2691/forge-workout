@@ -14,6 +14,7 @@ data class Exercise(
     val equipment: String = "",
     val category: String = "",
     val steps: List<String> = emptyList(),
+    /** Animated 3D demo: the dataset's GIF, upscaled to a 720×720 animated WebP. */
     val gif: String = "",
     val thumb: String = "",
     val sets: Int = 1,
@@ -24,8 +25,6 @@ data class Exercise(
     val last: String? = null,
     val type: String = "reps",
     val block: String? = null,
-    /** Real-person start/end frames (free-exercise-db), played as a two-frame loop. */
-    val photos: List<String> = emptyList(),
     /** Body-map regions (assets/bodymap.json) the move works hardest, then the ones assisting. */
     val bodyPrimary: List<String> = emptyList(),
     val bodySecondary: List<String> = emptyList(),
@@ -38,8 +37,6 @@ data class Exercise(
     val isHiit: Boolean get() = block == "hiit"
     val isWarmup: Boolean get() = block == "warmup"
     val hasLoad: Boolean get() = weight > 0
-    val hasPhotos: Boolean get() = photos.size >= 2
-    val hasGif: Boolean get() = gif.isNotBlank()
 
     /** "3 sets × 12 reps" / "2 × 40s work / 20s rest", matching the design's spec() helper. */
     val spec: String

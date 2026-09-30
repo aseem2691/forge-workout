@@ -83,8 +83,6 @@ data class Persisted(
     val weightLog: List<WeightEntry> = emptyList(),
     /** Per-exercise results, oldest first — drives progression and per-exercise trends. */
     val exerciseHistory: List<ExerciseResult> = emptyList(),
-    /** Demo panel preference: "photo" (real-person frames) or "3d" (the animated model). */
-    val demo: String = "photo",
 ) {
     fun weightFor(e: Exercise): Int = weights[e.id] ?: e.weight
 

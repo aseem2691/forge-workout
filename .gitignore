@@ -10,5 +10,5 @@ captures/
 *.apk
 # tools/genplan.py inputs and scratch output
 tools/exercises.json
-tools/free-exercise-db/
+tools/.media-src/
 tools/media_list.txt

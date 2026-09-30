@@ -12,8 +12,8 @@ import java.io.File
 
 /**
  * plan.json is generated, so these pin the generator's promises: every session opens with a
- * 5–8 minute warm-up, no rest runs past a minute, and every media file and body-map region the
- * plan names actually ships in the APK.
+ * 5–8 minute warm-up, no rest runs past a minute, and every demo, thumbnail and body-map region
+ * the plan names actually ships in the APK.
  */
 class PlanTest {
 
@@ -53,15 +53,13 @@ class PlanTest {
     }
 
     @Test
-    fun `every demo the plan names is bundled`() {
+    fun `every move has an animated demo and a thumbnail bundled`() {
         val media = File(assets, "media")
         exercises.forEach { e ->
-            (listOf(e.thumb) + e.photos + listOfNotNull(e.gif.takeIf { it.isNotBlank() })).forEach { ref ->
-                val file = File(media, ref.substringAfterLast('/'))
-                assertTrue("${e.name}: missing $ref", file.isFile)
+            assertTrue("${e.name}: demo ${e.gif} is not an upscaled WebP", e.gif.endsWith(".webp"))
+            listOf(e.gif, e.thumb).forEach { ref ->
+                assertTrue("${e.name}: missing $ref", File(media, ref.substringAfterLast('/')).isFile)
             }
-            assertTrue("${e.name} has neither photos nor a 3D demo", e.hasPhotos || e.hasGif)
-            if (e.photos.isNotEmpty()) assertEquals(e.name, 2, e.photos.size)
         }
     }
 

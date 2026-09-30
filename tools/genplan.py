@@ -1,26 +1,20 @@
 #!/usr/bin/env python3
-"""Build Forge's multi-week plan.json from the exercises-dataset and free-exercise-db.
+"""Build Forge's multi-week plan.json from the exercises-dataset.
 
 Usage:
     curl -L -o tools/exercises.json \
       https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/main/data/exercises.json
-    git clone --depth 1 https://github.com/yuhonas/free-exercise-db tools/free-exercise-db
-    pip install pillow
     python3 tools/genplan.py app/src/main/assets/plan.json
 
-Writes media_list.txt next to this script; fetch each gif/jpg name from the exercises-dataset's
-videos/ (gif) or images/ (jpg) directory into app/src/main/assets/media/. The free-exercise-db
-photo frames (fe_*.jpg) are copied and recompressed into that directory directly.
+Writes media_list.txt next to this script: the dataset's 180×180 GIFs (videos/) and thumbnails
+(images/) the plan uses. Thumbnails go into app/src/main/assets/media/ as they are; the GIFs are
+upscaled into the .webp demos the plan points at by tools/upscale_media.py.
 """
 import json, os, sys, re
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SRC = json.load(open(os.path.join(HERE, 'exercises.json')))
 BY_ID = {e['id']: e for e in SRC}
-
-# free-exercise-db (Unlicense): real-person start/end photos, played as a two-frame loop.
-FE_DIR = os.environ.get('FREE_EXERCISE_DB', os.path.join(HERE, 'free-exercise-db'))
-FE = {e['id']: e for e in json.load(open(os.path.join(FE_DIR, 'dist', 'exercises.json')))}
 
 # No strength rest runs longer than a minute. The designed values are kept below for the record
 # (and for the session-length adjustment); the plan ships the capped ones.
@@ -41,8 +35,8 @@ def H(i, sets=2):
 
 # ── warm-up ──────────────────────────────────────────────────────────────────────────────────
 # Timed moves run hands-free before the strength block: a walkpad ramp, then mobility for the
-# joints the day loads. ~7 minutes of work plus short switch-overs. 'fe:' ids are
-# free-exercise-db entries; plain ids are exercises-dataset entries (which bring the 3D GIF).
+# joints the day loads. ~7 minutes of work plus short switch-overs. Every move is an
+# exercises-dataset entry, so each has the same animated 3D demo as the training moves.
 
 WARMUP_SWITCH = 10  # seconds to get into the next move
 WARMUP_HANDOFF = 20  # after the last move: set up the bells for the first set
@@ -53,14 +47,14 @@ def W(src, secs, cue, name=None, equipment=None, steps=None):
     return dict(src=src, time=secs, cue=cue, name=name, equipment=equipment, steps=steps)
 
 
-WALK = W('fe:Walking_Treadmill', 120,
+WALK = W('0684', 120,
          "Brisk walk on the walkpad. Build to a pace you could still hold a conversation at.",
          name='walkpad brisk walk', equipment='walkpad',
          steps=["Start the walkpad at an easy pace and stand tall, arms swinging naturally.",
                 "Every 30 seconds nudge the speed up a notch.",
                 "Finish at a brisk pace: breathing harder, but still able to talk."])
-ARMS = W('fe:Arm_Circles', 40, "Small circles that grow bigger. Reverse direction halfway.",
-         name='arm circles')
+REACH = W('1687', 40, "Step back into a short lunge as both arms reach overhead. Alternate legs.",
+          name='step back and reach')
 SCAP = W('3021', 40, "Arms stay straight. Let the chest sink between the shoulder blades, then push "
                      "the floor away.",
          steps=["High plank: hands under the shoulders, body in one straight line.",
@@ -68,21 +62,27 @@ SCAP = W('3021', 40, "Arms stay straight. Let the chest sink between the shoulde
                 "Push the floor away until the shoulder blades spread apart and the upper back "
                 "rounds slightly.",
                 "Small, controlled range — only the shoulder blades move."])
-CAT = W('fe:Cat_Stretch', 40, "Round the spine up, then let it sag. Slow, with your breath.",
-        name='cat-cow',
-        steps=["On hands and knees: hands under the shoulders, knees under the hips.",
-               "Breathe out, pull the belly in and round the whole spine up, letting the head drop.",
-               "Breathe in, let the belly sink and lift the chest and gaze.",
-               "Flow slowly between the two for the whole interval."])
+UPDOG = W('1366', 40, "From a plank, lower the hips and lift the chest, then press back to plank.",
+          name='plank to upward dog',
+          steps=["Start in a high plank, hands under the shoulders.",
+                 "Lower the hips toward the floor while pressing the chest forward and up, arms "
+                 "straight.",
+                 "Roll the shoulders back and lift the gaze.",
+                 "Press the hips back up to plank and repeat, slow and smooth."])
 INCH = W('1471', 40, "Walk the hands out to a plank and back in. Legs as straight as you can.")
 CHEST = W('1167', 40, "Swing the arms wide open, then hug across the chest. Loose and rhythmic.",
           name='dynamic chest stretch')
 WGS = W('1604', 60, "Lunge, elbow to instep, then rotate that arm to the ceiling. Switch sides at "
                     "30 s.", name="world's greatest stretch")
-HIPS = W('fe:Standing_Hip_Circles', 40, "Big slow circles with the knee. Switch legs halfway.",
-         name='standing hip circles')
-SQUAT = W('fe:Bodyweight_Squat', 40, "Easy tempo, full depth, chest up. No load yet.",
-          name='bodyweight squat')
+WINDMILL = W('3214', 40, "Hinge and rotate: hand to the opposite foot, other arm to the ceiling. "
+                         "Alternate sides.",
+             name='windmill toe touch',
+             steps=["Feet wide, arms reaching overhead.",
+                    "Hinge at the hips and rotate to bring one hand down to the opposite foot.",
+                    "Stand tall again and repeat to the other side.",
+                    "Soft knees, smooth pace — this is mobility, not a stretch to force."])
+SQUAT = W('1685', 40, "Sit into the squat, then drive up and reach both arms to the ceiling.",
+          name='squat to overhead reach')
 BRIDGE = W('3013', 40, "Squeeze the glutes at the top and lower slowly.", name='glute bridge')
 LUNGE = W('3470', 40, "Alternate legs. Upright torso, back knee hovering above the floor.",
           name='forward lunge')
@@ -90,38 +90,11 @@ JACKS = W('3224', 30, "Light and springy — heart rate up before the first set.
           name='jumping jacks')
 
 WARMUPS = {
-    'upper': [WALK, ARMS, SCAP, CAT, INCH, CHEST, WGS],
-    'lower': [WALK, HIPS, SQUAT, BRIDGE, LUNGE, WGS, JACKS],
-    'full': [WALK, ARMS, HIPS, INCH, SQUAT, WGS, JACKS],
+    'upper': [WALK, REACH, SCAP, UPDOG, INCH, CHEST, WGS],
+    'lower': [WALK, WINDMILL, SQUAT, BRIDGE, LUNGE, WGS, JACKS],
+    'full': [WALK, REACH, WINDMILL, INCH, SQUAT, WGS, JACKS],
 }
 DAY_WARMUP = {'Mon': 'upper', 'Tue': 'lower', 'Thu': 'upper', 'Sat': 'full'}
-
-# ── real-person photos ───────────────────────────────────────────────────────────────────────
-# exercises-dataset id → free-exercise-db id, each checked by eye against the 3D demo. Only
-# faithful matches are listed; the rest keep the 3D animation alone.
-PHOTOS = {
-    '0259': 'Push-Ups_-_Close_Triceps_Position', '0274': 'Crunches',
-    '0283': 'Push-Ups_-_Close_Triceps_Position', '0285': 'Dumbbell_Alternate_Bicep_Curl',
-    '0286': 'Dumbbell_One-Arm_Shoulder_Press', '0292': 'One-Arm_Dumbbell_Row',
-    '0293': 'Bent_Over_Two-Dumbbell_Row', '0295': 'Dumbbell_Clean',
-    '0296': 'Close-Grip_Dumbbell_Press', '0299': 'Cuban_Press', '0310': 'Front_Dumbbell_Raise',
-    '0313': 'Hammer_Curls', '0334': 'Side_Lateral_Raise', '0336': 'Dumbbell_Lunges',
-    '0375': 'Bent-Arm_Dumbbell_Pullover', '0378': 'Seated_Bent-Over_Rear_Delt_Raise',
-    '0381': 'Dumbbell_Rear_Lunge', '0406': 'Dumbbell_Shrug', '0413': 'Dumbbell_Squat',
-    '0416': 'Dumbbell_Bicep_Curl', '0417': 'Standing_Dumbbell_Calf_Raise',
-    '0426': 'Standing_Dumbbell_Press', '0430': 'Standing_Dumbbell_Triceps_Extension',
-    '0431': 'Dumbbell_Step_Ups', '0432': 'Stiff-Legged_Dumbbell_Deadlift',
-    '0433': 'Straight-Arm_Dumbbell_Pullover', '0437': 'Standing_Dumbbell_Upright_Row',
-    '0514': 'Freehand_Jump_Squat', '0630': 'Mountain_Climbers',
-    '0660': 'Close-Grip_Push-Up_off_of_a_Dumbbell', '0662': 'Pushups', '0672': 'Bench_Dips',
-    '0687': 'Russian_Twist', '1459': 'Stiff-Legged_Dumbbell_Deadlift',
-    '1757': 'Kettlebell_One-Legged_Deadlift', '1760': 'Goblet_Squat',
-    '2137': 'Arnold_Dumbbell_Press', '2292': 'Bent_Over_Dumbbell_Rear_Delt_Raise_With_Head_On_Bench',
-    '2368': 'Split_Squats', '3013': 'Butt_Lift_Bridge', '3220': 'Star_Jump',
-    '3470': 'Bodyweight_Walking_Lunge', '3582': 'Split_Jump',
-    # warm-up moves
-    '1471': 'Inchworm', '1167': 'Dynamic_Chest_Stretch', '1604': 'Worlds_Greatest_Stretch',
-}
 
 # ── body map ─────────────────────────────────────────────────────────────────────────────────
 # Both datasets' muscle names → the regions drawn by the body map (assets/bodymap.json).
@@ -160,24 +133,7 @@ def body(target_names, secondary_names):
     return (primary, secondary) if primary else (secondary, [])
 
 
-# Dataset vocabulary for free-exercise-db-only moves, so chips read the same across the app.
-FE_TARGET = {'quadriceps': 'quads', 'shoulders': 'delts', 'abdominals': 'abs', 'chest': 'pectorals',
-             'middle back': 'upper back'}
-
-photo_files = set()
-
-
-def photo_pair(fe_id):
-    e = FE.get(fe_id)
-    if e is None or len(e.get('images') or []) < 2:
-        raise SystemExit(f"free-exercise-db has no photo pair for {fe_id}")
-    names = [f'fe_{fe_id}_{i}.jpg' for i in (0, 1)]
-    photo_files.update((fe_id, i, n) for i, n in enumerate(names))
-    return ['assets/' + n for n in names]
-
-
 CREDIT_GV = 'Instructions from exercises-dataset (MIT) · 3D demo © Gym visual'
-CREDIT_FE = 'Photos from free-exercise-db (public domain)'
 
 
 WEEKS = [
@@ -290,16 +246,15 @@ def build(slot):
         raise SystemExit(f"NO MEDIA for {slot['id']} {e['name']}")
     secondary = [m for m in (e.get('secondary_muscles') or []) if m][:5]
     primary_regions, secondary_regions = body([e.get('target', '')], secondary)
-    photos = photo_pair(PHOTOS[e['id']]) if e['id'] in PHOTOS else []
     out = dict(
         id=e['id'], name=e['name'], target=e.get('target', ''),
         secondary=secondary,
         equipment=e.get('equipment', ''), category=e.get('category', ''),
         steps=steps,
-        gif='assets/' + media_name(gif), thumb='assets/' + media_name(img),
-        photos=photos,
+        # The 180×180 GIF, upscaled to a 720×720 animated WebP by tools/upscale_media.py.
+        gif='assets/' + media_name(gif).replace('.gif', '.webp'), thumb='assets/' + media_name(img),
         bodyPrimary=primary_regions, bodySecondary=secondary_regions,
-        credit=CREDIT_GV + (' · ' + CREDIT_FE if photos else ''),
+        credit=CREDIT_GV,
         sets=slot['sets'], weight=slot['weight'], rest=slot['rest'], type=slot['type'],
     )
     if slot['type'] == 'time':
@@ -311,30 +266,10 @@ def build(slot):
     return out
 
 
-def build_fe(fe_id):
-    """A warm-up move that exists only in free-exercise-db: photos, no 3D demo."""
-    e = FE[fe_id]
-    photos = photo_pair(fe_id)
-    target = e['primaryMuscles'][0]
-    primary_regions, secondary_regions = body(e['primaryMuscles'], e['secondaryMuscles'])
-    return dict(
-        id='fe-' + fe_id, name=e['name'].lower(), target=FE_TARGET.get(target, target),
-        secondary=[FE_TARGET.get(m, m) for m in e['secondaryMuscles']][:5],
-        equipment=e.get('equipment') or 'body weight', category=e.get('category') or '',
-        steps=e.get('instructions') or [],
-        gif='', thumb=photos[0], photos=photos,
-        bodyPrimary=primary_regions, bodySecondary=secondary_regions,
-        credit='Instructions and ' + CREDIT_FE[0].lower() + CREDIT_FE[1:],
-    )
-
-
 def build_warmup(moves):
     out = []
     for n, m in enumerate(moves):
-        if m['src'].startswith('fe:'):
-            e = build_fe(m['src'][3:])
-        else:
-            e = build(dict(id=m['src'], sets=1, time=m['time'], rest=0, weight=0, type='time'))
+        e = build(dict(id=m['src'], sets=1, time=m['time'], rest=0, weight=0, type='time'))
         last = n == len(moves) - 1
         e.update(sets=1, time=m['time'], rest=WARMUP_HANDOFF if last else WARMUP_SWITCH,
                  weight=0, type='time', block='warmup', cue=m['cue'])
@@ -344,8 +279,7 @@ def build_warmup(moves):
             e['equipment'] = m['equipment']
         if m['steps']:
             e['steps'] = m['steps']
-            e['credit'] = ' · '.join(
-                (['3D demo © Gym visual'] if e['gif'] else []) + ([CREDIT_FE] if e['photos'] else []))
+            e['credit'] = '3D demo © Gym visual'
         out.append(e)
     return out
 
@@ -365,9 +299,8 @@ for w in WEEKS:
                    strength=[build(s) for s in d['strength']],
                    hiit=[build(s) for s in d['hiit']])
         for e in day['warmup'] + day['strength'] + day['hiit']:
-            for ref in [e['gif'], e['thumb']]:
-                if ref and not ref.split('/')[-1].startswith('fe_'):
-                    media.add(ref.split('/')[-1])
+            media.add(e['gif'].split('/')[-1].replace('.webp', '.gif'))
+            media.add(e['thumb'].split('/')[-1])
         days.append(day)
     weeks_out.append(dict(label=w['label'], focus=w['focus'], days=days))
 
@@ -387,13 +320,3 @@ print(f"weeks={len(weeks_out)} unique exercises={len(uniq_ex)} media files={len(
 print(f"wrote {out_path} ({os.path.getsize(out_path)//1024} KB)")
 with open(os.path.join(HERE, 'media_list.txt'), 'w') as f:
     f.write('\n'.join(sorted(media)))
-
-# Photo frames: the dataset ships 850×567 JPEGs; recompress them into the APK's media folder.
-from PIL import Image
-
-media_dir = os.path.join(os.path.dirname(os.path.abspath(out_path)), 'media')
-for fe_id, i, name in sorted(photo_files):
-    frame = Image.open(os.path.join(FE_DIR, 'exercises', FE[fe_id]['images'][i])).convert('RGB')
-    frame.thumbnail((850, 850))
-    frame.save(os.path.join(media_dir, name), 'JPEG', quality=80, optimize=True)
-print(f"photo frames={len(photo_files)}")
