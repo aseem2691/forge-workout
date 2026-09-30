@@ -21,7 +21,11 @@ import com.forge.workout.data.SessionRecord
 import com.forge.workout.data.Store
 import com.forge.workout.data.Week
 import com.forge.workout.data.WeightEntry
+import com.forge.workout.data.activeStartMs
+import com.forge.workout.data.bankTempo
 import com.forge.workout.data.buildProgress
+import com.forge.workout.data.leftoverToSave
+import com.forge.workout.data.recorded
 import com.forge.workout.data.nextPosition
 import com.forge.workout.data.titleCase
 import com.forge.workout.watch.Alerts
@@ -154,7 +158,7 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
         val s = _state.value
         val e = current() ?: return
         if (s.screen != Screen.Player || e.isTimed || !s.running) return
-        tempoAccumMs += (SystemClock.elapsedRealtime() - tempoResumeAt).coerceAtLeast(0)
+        tempoAccumMs = bankTempo(tempoAccumMs, tempoResumeAt, SystemClock.elapsedRealtime(), frozenAt)
         _state.update { it.copy(running = false, leadIn = 0) }
     }
 
@@ -347,6 +351,10 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
         val now = SystemClock.elapsedRealtime()
         val fresh = !sessionActive
         if (fresh) {
+            // A workout the app stopped in the middle of is saved, never overwritten by this one.
+            leftoverToSave(_saved.value.active)?.let { old ->
+                record(old, program.day(old.mobility, old.weekIdx, old.dayIdx)?.flatTitle ?: "Workout", show = false)
+            }
             sessionActive = true
             sessionStartAt = now
             sessionStartWallMs = System.currentTimeMillis()
@@ -457,7 +465,7 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
         } else {
             // Pausing during the count-in banks nothing (the start is still in the future), and
             // resuming counts straight away rather than running the count-in again.
-            if (running) tempoAccumMs += (now - tempoResumeAt).coerceAtLeast(0) else tempoResumeAt = now
+            if (running) tempoAccumMs = bankTempo(tempoAccumMs, tempoResumeAt, now, frozenAt) else tempoResumeAt = now
         }
         _state.update { it.copy(running = !running, leadIn = 0) }
     }
@@ -584,20 +592,17 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch { store.update { it.copy(active = snap) } }
     }
 
-    /** Writes a session to history (and progression), clears the snapshot, syncs the watch. */
-    private fun record(snap: ActiveSession, title: String) {
+    /**
+     * Writes a session to history (and progression), clears the snapshot, syncs the watch. Saving
+     * the same session twice records it once. [show] = false syncs without touching the Done
+     * screen's watch block (for a leftover saved as a new session starts).
+     */
+    private fun record(snap: ActiveSession, title: String, show: Boolean = true) {
         val rec = snap.record(title)
         viewModelScope.launch {
-            store.update {
-                it.copy(
-                    history = it.history + rec,
-                    lastPerf = it.lastPerf + snap.pendingPerf,
-                    exerciseHistory = (it.exerciseHistory + snap.exerciseResults(rec.epochDay)).takeLast(2000),
-                    programStart = if (it.programStart == 0L) rec.epochDay else it.programStart,
-                    active = null,
-                )
-            }
-            syncWatch(rec)
+            var added = false
+            store.update { p -> p.recorded(snap, title).also { added = it.history.size > p.history.size } }
+            if (added) syncWatch(rec, show)
         }
     }
 
@@ -648,18 +653,19 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
      * same window. The watch only reaches Health Connect once the Zepp app syncs, so this is
      * best-effort — [refreshWatchSync] re-runs it on demand.
      */
-    private suspend fun syncWatch(record: SessionRecord) {
+    private suspend fun syncWatch(record: SessionRecord, show: Boolean = true) {
         if (_hcStatus.value != HcStatus.Ready) return
-        _syncing.value = true
+        if (show) _syncing.value = true
+        // A resumed session's time away is left out of the window the watch is matched against.
         health.publish(
             title = "Forge — ${record.dayTitle}",
-            startMs = record.startedAtMs,
+            startMs = record.activeStartMs,
             endMs = record.endedAtMs,
             hiit = record.dayTitle.contains("HIIT", ignoreCase = true),
             stretching = record.isMobility,
         )
-        val summary = health.summaryFor(record.startedAtMs, record.endedAtMs)
-        _watchSummary.value = summary
+        val summary = health.summaryFor(record.activeStartMs, record.endedAtMs)
+        if (show) _watchSummary.value = summary
         if (summary != null) {
             store.update { saved ->
                 saved.copy(
@@ -678,7 +684,7 @@ class WorkoutViewModel(app: Application) : AndroidViewModel(app) {
                 )
             }
         }
-        _syncing.value = false
+        if (show) _syncing.value = false
     }
 
     /** "Sync now" on the done screen — the watch often lands in Health Connect a minute late. */

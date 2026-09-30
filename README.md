@@ -180,7 +180,8 @@ to real data here:
   move — under its own storage key, so a damaged snapshot can never take the history with it. If
   the app is killed, the plan screen shows **Workout in progress** with Resume (back to the start
   of the pending set, paused; time away isn't counted), Save (dated by its start, ended at its
-  last checkpoint) or Discard.
+  last checkpoint) or Discard. Starting another workout instead saves the unfinished one first, so
+  logged sets are never overwritten; saving the same session twice records it once.
 
 Added for daily use: the screen stays awake in the player, and the phone buzzes when a set ends,
 a rest finishes, and a session completes.

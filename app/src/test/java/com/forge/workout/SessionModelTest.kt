@@ -10,7 +10,11 @@ import com.forge.workout.data.Program
 import com.forge.workout.data.Range
 import com.forge.workout.data.SessionRecord
 import com.forge.workout.data.Week
+import com.forge.workout.data.activeStartMs
+import com.forge.workout.data.bankTempo
 import com.forge.workout.data.buildProgress
+import com.forge.workout.data.leftoverToSave
+import com.forge.workout.data.recorded
 import com.forge.workout.data.cleared
 import com.forge.workout.data.decodeState
 import com.forge.workout.data.encodeState
@@ -168,5 +172,50 @@ class SessionModelTest {
         assertNull(program.day(mobility = false, weekIdx = 0, dayIdx = 3))
         assertNull(program.day(mobility = false, weekIdx = 5, dayIdx = 0))
         assertNull(program.day(mobility = true, weekIdx = 0, dayIdx = 0))
+    }
+
+    @Test
+    fun `time behind a frozen sheet is never counted as tempo reps`() {
+        // Counting since t=1000; End sheet froze the clock at t=5000; app left the screen at t=65000.
+        assertEquals(4_000L, bankTempo(accumMs = 0L, resumeAt = 1_000L, now = 65_000L, frozenAt = 5_000L))
+        // Not frozen: everything since resuming counts.
+        assertEquals(64_000L, bankTempo(accumMs = 0L, resumeAt = 1_000L, now = 65_000L, frozenAt = 0L))
+        // Still in the count-in (start in the future): nothing is banked.
+        assertEquals(2_000L, bankTempo(accumMs = 2_000L, resumeAt = 70_000L, now = 65_000L, frozenAt = 0L))
+    }
+
+    @Test
+    fun `the watch window after a resume covers the active time, not the time away`() {
+        val resumedNextDay = SessionRecord(
+            epochDay = 1, dayIdx = 0, dayTitle = "t", sets = 3, reps = 30, volume = 0, seconds = 1_800,
+            startedAtMs = 0L, endedAtMs = 86_400_000L,
+        )
+        assertEquals(86_400_000L - 1_800_000L, resumedNextDay.activeStartMs)
+        val straightThrough = resumedNextDay.copy(startedAtMs = 1_000_000L, endedAtMs = 2_700_000L)
+        assertEquals(1_000_000L, straightThrough.activeStartMs)
+    }
+
+    @Test
+    fun `a leftover with logged work is kept when a new session starts, an empty one is not`() {
+        val worked = ActiveSession(setsDone = 2, movesDone = 9)
+        assertEquals(worked, leftoverToSave(worked))
+        assertNull(leftoverToSave(ActiveSession(setsDone = 0, movesDone = 7)))
+        assertNull(leftoverToSave(null))
+    }
+
+    @Test
+    fun `saving the same session twice records it once`() {
+        val snap = ActiveSession(
+            setsDone = 1, repsDone = 8, startedAtMs = 1_000L, lastCheckpointMs = 2_000L,
+            pendingPerf = mapOf("0426" to "14 kg × 8"),
+            results = listOf(PendingResult("0426", "press", targetReps = 8, plannedSets = 4, sets = 1, reps = 8, weightKg = 14)),
+        )
+        val start = Persisted(active = snap)
+        val once = start.recorded(snap, "Upper", utc)
+        val twice = once.recorded(snap, "Upper", utc)
+        assertEquals(1, twice.history.size)
+        assertEquals(1, twice.exerciseHistory.size)
+        assertNull(twice.active)
+        assertEquals("14 kg × 8", twice.lastPerf["0426"])
     }
 }

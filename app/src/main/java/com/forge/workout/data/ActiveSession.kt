@@ -94,3 +94,36 @@ fun nextPosition(exIdx: Int, setIdx: Int, sets: Int, moves: Int): Pair<Int, Int>
     exIdx + 1 < moves -> exIdx + 1 to 0
     else -> null
 }
+
+/**
+ * Tempo time to bank when counting stops. Time behind a frozen sheet never counts (the clock was
+ * held), and neither does a count-in still to come — otherwise leaving the app with the End sheet
+ * open would credit reps nobody did.
+ */
+fun bankTempo(accumMs: Long, resumeAt: Long, now: Long, frozenAt: Long): Long =
+    accumMs + ((if (frozenAt != 0L) frozenAt else now) - resumeAt).coerceAtLeast(0)
+
+/** A snapshot the app stopped in the middle of, worth saving before a new session replaces it. */
+fun leftoverToSave(active: ActiveSession?): ActiveSession? = active?.takeIf { it.hasWork }
+
+/**
+ * Where the session's active time begins, for matching the watch and publishing to Health
+ * Connect: a resumed session ends at its last checkpoint, but its time away is left out.
+ */
+val SessionRecord.activeStartMs: Long get() = maxOf(startedAtMs, endedAtMs - seconds * 1000L)
+
+/**
+ * This state with [snap] saved into history and the snapshot cleared. Saving the same session
+ * again changes nothing, so a double tap can never record it twice.
+ */
+fun Persisted.recorded(snap: ActiveSession, title: String, zone: ZoneId = ZoneId.systemDefault()): Persisted {
+    val rec = snap.record(title, zone)
+    if (rec.startedAtMs != 0L && history.any { it.startedAtMs == rec.startedAtMs }) return copy(active = null)
+    return copy(
+        history = history + rec,
+        lastPerf = lastPerf + snap.pendingPerf,
+        exerciseHistory = (exerciseHistory + snap.exerciseResults(rec.epochDay)).takeLast(2000),
+        programStart = if (programStart == 0L) rec.epochDay else programStart,
+        active = null,
+    )
+}
